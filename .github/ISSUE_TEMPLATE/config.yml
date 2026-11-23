@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report something sensitive privately
+    url: https://github.com/cafesecurity/research/security/advisories/new
+    about: Operating detail, a working bypass, or a weakness in a live system. Only the maintainer sees it.

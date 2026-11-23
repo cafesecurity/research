@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this research, please cite it as below."
+type: dataset
+title: "Café Security Research"
+abstract: >-
+  Open, reproducible research on AI and cybersecurity. Each study publishes its
+  findings as numbered claims with their evidence, its method and its corrections.
+authors:
+  - name: "Café Security Research"
+    website: "https://research.cafesecurity.com/"
+version: "1.3"
+date-released: "2026-11-23"
+license: CC-BY-4.0
+repository: "https://github.com/cafesecurity/research"
+keywords:
+  - AI security
+  - cybersecurity
+  - agentic AI
+  - ARTEX
+  - threat research
+  - reproducible research
+preferred-citation:
+  type: report
+  title: "ARTEX: what the code says"
+  authors:
+    - name: "Café Security Research"
+  year: 2026
+  month: 11
+  version: "1.0"
+  url: "https://github.com/cafesecurity/research/tree/main/studies/artex-2026-11"

@@ -1,0 +1,19 @@
+name: Report a mistake
+description: An error in a report, the method, a script or a link.
+title: "[Mistake] "
+labels: ["mistake"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: File and section, or claim ID.
+      placeholder: studies/artex-2026-11/reports/teardown.md, "Spotting it"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What's wrong, and what it should say
+    validations:
+      required: true

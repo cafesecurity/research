@@ -1,0 +1,140 @@
+# Site configuration for research.cafesecurity.com.
+# Build: python3 scripts/build_site.py && mkdocs build --strict
+site_name: Café Security Research
+site_url: https://research.cafesecurity.com/
+site_description: Open, reproducible research on AI and cybersecurity, for CISOs, business leaders and security teams.
+# No repo_url: Material's repository widget would make every visitor's browser call
+# api.github.com. The footer links to the repository instead.
+# The footer and author details come from site/overrides; see "Author name" in README.md.
+copyright: "Text and data CC BY 4.0 · Scripts MIT"
+
+docs_dir: _site_src
+site_dir: _site
+
+theme:
+  name: material
+  custom_dir: site/overrides
+  language: en
+  font: false            # IBM Plex is served from this site, not a third party
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle: {icon: material/weather-night, name: Switch to dark mode}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle: {icon: material/weather-sunny, name: Switch to light mode}
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+extra:
+  # Author name: empty by default, so pages credit Café Security Research only.
+  # Set the SITE_AUTHOR build variable (the name as it should appear, title included) to add a
+  # personal byline everywhere, and SITE_AUTHOR_LINKS (comma-separated profile URLs)
+  # to tell search engines which profiles are the author's.
+  brand: Café Security Research
+  author_name: !ENV [SITE_AUTHOR, ""]
+  author_links: !ENV [SITE_AUTHOR_LINKS, ""]
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/cafesecurity/research
+      name: The research repository on GitHub
+
+extra_css:
+  - assets/stylesheets/extra.css
+extra_javascript:
+  - assets/javascripts/claims.js
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+      clickable_checkbox: true
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - Home: index.md
+  - ARTEX:
+      - artex/index.md
+      - Guides:
+          - Overview: artex/overview.md
+          - CISOs & leaders: artex/for-leaders.md
+          - Security teams: artex/for-security-teams.md
+          - Red teams & vendors: artex/for-red-teams.md
+          - Policy & government: artex/for-policy.md
+      - Reference:
+          - Study summary: artex/study.md
+          - Teardown report: artex/teardown.md
+          - Prompt design: artex/prompt-design.md
+          - Questions and answers: artex/faq.md
+          - Claims explorer: claims.md
+          - Methodology: artex/methodology.md
+          - Corrections: artex/corrections.md
+  - MCP guide:
+      - mcp/index.md
+      - Quick start: mcp/quickstart.md
+      - The lifecycle:
+          - 0. Decide: mcp/guide/00-decide.md
+          - 1. Threat model: mcp/guide/01-threat-model.md
+          - 2. Design: mcp/guide/02-design.md
+          - 3. Build: mcp/guide/03-build.md
+          - 4. Test: mcp/guide/04-test.md
+          - 5. Release: mcp/guide/05-release.md
+          - 6. Deploy and operate: mcp/guide/06-deploy-operate.md
+          - 7. Change: mcp/guide/07-change.md
+          - 8. Incident and retire: mcp/guide/08-incident-retire.md
+          - Using a coding agent safely: mcp/guide/coding-agents.md
+      - Checklists:
+          - mcp/checklists/index.md
+          - All on one page: mcp/checklists/all-in-one.md
+          - 0. Decide: mcp/checklists/00-decide.md
+          - 1. Threat model: mcp/checklists/01-threat-model.md
+          - 2. Design: mcp/checklists/02-design.md
+          - 3. Build: mcp/checklists/03-build.md
+          - 4. Test: mcp/checklists/04-test.md
+          - 5. Release: mcp/checklists/05-release.md
+          - 6. Deploy and operate: mcp/checklists/06-deploy-operate.md
+          - 7. Change: mcp/checklists/07-change.md
+          - 8. Incident and retire: mcp/checklists/08-incident-retire.md
+          - Using a coding agent: mcp/checklists/coding-agents.md
+      - Reference:
+          - The model: mcp/reference/model.md
+          - Spec checklist: mcp/reference/spec-checklist.md
+          - Frameworks: mcp/reference/frameworks.md
+          - Case file: mcp/reference/case-file.md
+          - For security leads: mcp/reference/for-security-leads.md
+          - Sources: mcp/reference/sources.md
+          - Changelog: mcp/changelog.md
+  - About:
+      - about/index.md
+      - Publication policy: about/publication-policy.md
+      - Contributing: about/contributing.md
+      - Reporting privately: about/security.md
+      - Licence: about/licence.md

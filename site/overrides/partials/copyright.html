@@ -1,0 +1,7 @@
+{#- Footer. Credits the author by name only when the SITE_AUTHOR build variable is set. -#}
+<div class="md-copyright">
+  <div class="md-copyright__highlight">
+    © 2026 {{ config.extra.author_name or config.extra.brand }}{% if config.extra.author_name %} · {{ config.extra.brand }}{% endif %}
+    {% if config.copyright %} · {{ config.copyright }}{% endif %}
+  </div>
+</div>

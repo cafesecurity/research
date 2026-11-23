@@ -1,0 +1,118 @@
+# Frequently asked questions about ARTEX, for study artex-2026-11.
+#
+# Each answer says only what its listed claims support; claim IDs refer to claims.yaml.
+# The research site renders this file as a page. Licence: CC BY 4.0. Café Security Research.
+
+title: "ARTEX: frequently asked questions"
+description: "Plain answers about ARTEX, the AI hacking tool the FBI warned about in November 2026, for CISOs, business leaders and security teams. Every answer links to its evidence."
+updated: 2026-11-23
+
+questions:
+
+- id: what-is-artex
+  question: What is ARTEX?
+  answer: |
+    A free, open-source tool that runs a small team of AI agents against a target. A planner decides what to try next and workers, three at a time by default, carry it out using a command line, a browser and standard security tools. It works with any AI model that speaks the Anthropic or OpenAI interfaces, and is built on a general-purpose agent engine.
+  claims: [C030, C031, C035, C050, C012]
+
+- id: why-does-it-matter
+  question: Why does it matter if nothing it does is new?
+  answer: |
+    Because it makes ordinary attack work cheap, fast and unattended. ARTEX contains no exploit library: the AI model decides what to do, so a better model makes it more capable without its code changing. The FBI issued an alert about it on 13 November 2026.
+  claims: [C042, C128, C120]
+
+- id: still-available
+  question: Is ARTEX still available after its author withdrew it?
+  answer: |
+    Yes. The author withdrew the original on 8 October 2026, but a surviving copy has had 16 tagged releases since, the latest dated 14 November. Researchers count 11 families of forks, and Censys counted 1,465 exposed ARTEX consoles in early November.
+  claims: [C007, C110, C122, C121]
+
+- id: who-uses-it
+  question: Who is behind the attacks that use it?
+  answer: |
+    This study doesn't attribute attacks: ARTEX is public and widely copied, so the tool alone says nothing about who is using it. For reported activity, see the FBI's alert and Amazon's threat intelligence report.
+  claims: [C120, C127]
+
+- id: models
+  question: Which AI models does it use?
+  answer: |
+    Whichever the operator chooses. It talks to models through the Anthropic interface by default, or through OpenAI's interfaces. It can switch to backup model accounts when one is revoked, but that's off by default.
+  claims: [C050, C051]
+
+- id: destroy-or-steal
+  question: Is it built to destroy systems or to steal data?
+  answer: |
+    Its defaults guard against damage, not data loss. Built-in rules block destructive commands such as wiping disks, but the rule against piping data out to another host ships switched off. Those rules also cover only eight tools; browser automation, plugins and custom tools aren't checked.
+  claims: [C085, C086, C015]
+
+- id: scope
+  question: Does it stay in scope, and does it avoid government sites?
+  answer: |
+    Only loosely. Operators' scope limits are written into the agents' instructions as text, and nothing enforces them. A separate check blocks government and education domains by default and can apply a per-task allowlist, but it only checks what the agents record and the work they hand out, never the commands they run. The built-in blocklist can be deleted.
+  claims: [C081, C082, C083, C084]
+
+- id: block
+  question: Can we block it?
+  answer: |
+    Not with a single rule. Its workers are told that a first block doesn't mean a route is exhausted, and to try every way round it before giving up, so a WAF or rate limit on its own won't stop it. What helps is layered basics: fewer exposed services, short-lived credentials, and alerts on activity moving at machine speed.
+  claims: [C090, C089, C128]
+
+- id: detect
+  question: How do we spot it?
+  answer: |
+    For consoles: the default port is 8787, and an unauthenticated health check names the service as "artex" with its version. Published favicon hashes help too, but forks change branding. For activity: watch behaviour rather than fixed indicators, because the AI writes different commands each run. In AWS, look for stolen long-lived keys being used to search logs for more secrets.
+  claims: [C100, C104, C123, C124, C128, C126]
+
+- id: first-steps
+  question: What should we do first?
+  answer: |
+    Assume you're already being probed and ask whether anyone would notice. Then reduce what's exposed to the internet, replace long-lived and leaked keys, and make data leaving the organisation the hard part, because ARTEX's defaults won't stop it. Decoy credentials and canary tokens make good tripwires, because these agents hunt for secrets.
+  claims: [C085, C126, C127]
+
+- id: failsafe
+  question: Is the FailSafe version of ARTEX safe?
+  answer: |
+    It's rebuilt from source that contains no trace of the backdoor found in some prebuilt images, but it keeps ARTEX's full capability. By default its agents can also read the operator's AI model keys and database password from their environment. FailSafe itself notes that a reproducible build can't prove the source matches the original author's release.
+  claims: [C001, C005, C004, C106, C008]
+
+- id: legal
+  question: Is it legal to use ARTEX?
+  answer: |
+    Only with permission. Across the UK, the EU, the US and Canada, using it against computers you aren't authorised to access is a crime: under the Computer Misuse Act 1990 in the UK, national laws implementing an EU directive in each member state, the Computer Fraud and Abuse Act in the US, and the Criminal Code in Canada. Authorised testing is not. The UK, EU and Canada also make supplying such a tool for misuse an offence, each with its own test, and Canada's covers possessing one. Elsewhere, the Council of Europe's cybercrime convention sets the same baseline for its 84 parties, which include Australia, Japan and the Philippines. In the US, federal prosecutors are told not to charge good-faith security research. This is general information, not legal advice: check your local law and get written authorisation before any test.
+  claims: [C150, C151, C152, C153, C154, C155]
+
+- id: not-the-only-one
+  question: Is ARTEX the only AI hacking tool like this?
+  answer: |
+    No. Google's threat intelligence team named CAIRN, CyberStrikeAI and PentAGI alongside ARTEX in real intrusions. In 2025, criminals discussed using HexStrike AI against newly disclosed Citrix flaws within hours of its release, and Villager, an AI-driven pentest package, was downloaded about 10,000 times in two months. One census counted about 70 open-source offensive agents by March 2026. Legitimate tools exist too, from open-source PentestGPT and CAI to commercial services such as XBOW. This study looks at ARTEX because the FBI warned about it and its code is public. The defences it points to aren't specific to ARTEX.
+  claims: [C160, C161, C162, C163, C165, C166, C167, C168]
+
+- id: hire-ai-pentest
+  question: Should we use AI-driven penetration testing ourselves?
+  answer: |
+    It can be worth it, but ask how the tool is controlled. ARTEX shows the defaults can't be assumed: approvals switched off, scope checks that don't cover the commands agents run, full unredacted recordings of target traffic, and operator secrets readable by the agents. Ask any supplier which approvals are on, how scope is enforced in the network, and where recordings are kept.
+  claims: [C033, C083, C060, C106]
+
+- id: turn-against-operator
+  question: Could a target turn ARTEX against the person running it?
+  answer: |
+    Possibly, but nobody has shown it yet. Its agents read web pages and responses the target controls, and we found no instruction, in ARTEX or its engine, to treat that content as data rather than instructions. Its agents can also read the operator's keys. Whether a target can actually steer it hasn't been tested.
+  claims: [C093, C020, C106, C094]
+
+- id: prompts
+  question: Will you publish ARTEX's prompts?
+  answer: |
+    No, but we describe how they're designed. The prompts are where ARTEX's attack behaviour comes from, and copied out they would work in other agent tools, so a clean, translated copy would help attackers more than defenders. What defenders need is in the design. The instructions are an editable setting, not code. The planner is told to keep work going and push promising entry points deep. Workers record only vulnerabilities they've proven. A report writer saves exploit code with every finding. And the prompts assert that every engagement is authorised, though nothing checks it. The prompt design report covers this in full.
+  claims: [C170, C175, C177, C180, C184, C185]
+
+- id: how-checked
+  question: How do you know all this, and can I check it?
+  answer: |
+    We read the source code of ARTEX, a later release and the agent engine it runs on, without running any of it. Every finding is a numbered claim with a file, line and commit, or a public source. A script in the repository re-checks every code claim against your own copies of the source.
+  claims: [C011, C110]
+
+- id: unknowns
+  question: What don't we know yet?
+  answer: |
+    Whether a target can steer ARTEX's agents, how far the 11 fork families differ from the version reviewed, and how ARTEX behaves when actually running, since this study only read the code.
+  claims: [C094, C122]

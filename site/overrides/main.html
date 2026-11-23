@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{#- Author details come from the SITE_AUTHOR build variable; without it, pages credit
+    only the brand. See extra.author_name in mkdocs.yml. -#}
+{% block extrahead %}
+  {% set brand = config.extra.brand %}
+  {% set author = config.extra.author_name %}
+  {% set links = (config.extra.author_links or "").split(",") | map("trim") | select | list %}
+  <meta name="author" content="{{ author or brand }}">
+  {% if page and page.canonical_url %}
+  <meta property="og:type" content="{% if page.is_homepage %}website{% else %}article{% endif %}">
+  <meta property="og:site_name" content="{{ config.site_name }}">
+  <meta property="og:title" content="{% if page.meta and page.meta.title %}{{ page.meta.title }}{% else %}{{ page.title | striptags }}{% endif %}">
+  <meta property="og:description" content="{% if page.meta and page.meta.description %}{{ page.meta.description }}{% else %}{{ config.site_description }}{% endif %}">
+  <meta property="og:url" content="{{ page.canonical_url }}">
+  <meta property="og:locale" content="en_GB">
+  {% endif %}
+  {% set org = {"@type": "ResearchOrganization", "@id": config.site_url ~ "#org", "name": brand, "url": config.site_url} %}
+  {% if author %}
+    {% set person = {"@type": "Person", "@id": config.site_url ~ "about/#author", "name": author,
+                     "url": config.site_url ~ "about/", "sameAs": links, "affiliation": {"@id": config.site_url ~ "#org"}} %}
+    {% set graph = [person, org] %}
+  {% else %}
+    {% set graph = [org] %}
+  {% endif %}
+  <script type="application/ld+json">
+  {{ {"@context": "https://schema.org", "@graph": graph} | tojson }}
+  </script>
+{% endblock %}
+
+{#- Share links after the page content. Plain links, no third-party scripts. -#}
+{% block content %}
+  {{ super() }}
+  {% if page and page.canonical_url and not page.is_homepage %}
+    {% set u = page.canonical_url %}
+    {% set t = (page.meta.title if page.meta and page.meta.title else page.title | striptags) ~ " — " ~ config.site_name %}
+    <div class="cs-share" markdown="0">
+      <span class="cs-share-label">Share</span>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ u | urlencode }}" rel="noopener nofollow" target="_blank">LinkedIn</a>
+      <a href="https://twitter.com/intent/tweet?text={{ t | urlencode }}&url={{ u | urlencode }}" rel="noopener nofollow" target="_blank">X</a>
+      <a href="https://bsky.app/intent/compose?text={{ (t ~ ' ' ~ u) | urlencode }}" rel="noopener nofollow" target="_blank">Bluesky</a>
+      <a href="mailto:?subject={{ t | urlencode }}&body={{ u | urlencode }}">Email</a>
+    </div>
+  {% endif %}
+{% endblock %}

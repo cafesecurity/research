@@ -1,0 +1,15 @@
+# Response headers for every page (Cloudflare Workers static assets).
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000
+
+# Fonts rarely change.
+/assets/fonts/*
+  Cache-Control: public, max-age=2592000
+
+# Preview and workers.dev addresses stay out of search results.
+https://:version.:subdomain.workers.dev/*
+  X-Robots-Tag: noindex

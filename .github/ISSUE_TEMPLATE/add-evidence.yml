@@ -1,0 +1,28 @@
+name: Add evidence
+description: A source, another version or fork, or a result that bears on a study.
+title: "[Evidence] <study>: "
+labels: ["evidence"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Primary sources are best. If the evidence includes operating detail or a working bypass, use the private route in SECURITY.md instead.
+  - type: input
+    id: study
+    attributes:
+      label: Study and claims it affects
+      placeholder: artex-2026-11#C030, C127
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: What it is, where it's from (link, or repository and commit), and what it shows.
+    validations:
+      required: true
+  - type: textarea
+    id: effect
+    attributes:
+      label: What it changes
+      description: Does it support, contradict or extend the claim?

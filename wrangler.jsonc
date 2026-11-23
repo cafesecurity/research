@@ -1,0 +1,19 @@
+// Hosting for research.cafesecurity.com on Cloudflare (Workers static assets).
+// Cloudflare builds the site with scripts/build_site.py and mkdocs, then serves _site/.
+{
+  "name": "cafesecurity-research",
+  "compatibility_date": "2026-11-23",
+  "assets": {
+    "directory": "./_site",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "research.cafesecurity.com", "custom_domain": true }
+  ],
+  // Keep the workers.dev address for preview builds of pull requests;
+  // site/pages/_headers stops search engines indexing it.
+  "workers_dev": true,
+  "preview_urls": true,
+  "send_metrics": false
+}

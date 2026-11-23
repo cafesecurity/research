@@ -1,0 +1,44 @@
+name: Challenge a claim
+description: You think a claim is wrong, overstated or missing evidence.
+title: "[Challenge] <study>#<claim ID>: "
+labels: ["challenge"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Challenges are how this research gets better. If your evidence would help someone attack others, don't post it here; use the private route in SECURITY.md.
+  - type: input
+    id: claim
+    attributes:
+      label: Claim
+      description: Study and claim ID, for example artex-2026-11#C083.
+      placeholder: artex-2026-11#C083
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong
+      description: Which part of the claim, and what you think is true instead.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: File, line and commit for code; a link for anything else. Say how you checked.
+    validations:
+      required: true
+  - type: dropdown
+    id: checked
+    attributes:
+      label: Did you run scripts/check_claims.py?
+      options:
+        - "No"
+        - "Yes, it passed"
+        - "Yes, it failed (paste the output below)"
+  - type: textarea
+    id: output
+    attributes:
+      label: Checker output (if any)
+      render: text

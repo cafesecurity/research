@@ -1,0 +1,13 @@
+# Never commit copies of the software under review.
+sources/
+vendor-src/
+
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+_site_src/
+_site/
+.wrangler/
+node_modules/
+.cache/
