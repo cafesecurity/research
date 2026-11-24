@@ -489,6 +489,11 @@ def fetch_guide(key, g):
         git("-c", "advice.detachedHead=false", "checkout", "-q", "FETCH_HEAD")
         if git("rev-parse", "HEAD") != g["commit"]:
             raise RuntimeError("fetched the wrong commit")
+        if g.get("tag"):
+            out = git("ls-remote", g["repo"], f"refs/tags/{g['tag']}^{{}}", f"refs/tags/{g['tag']}")
+            shas = {line.split()[0] for line in out.splitlines() if line.strip()}
+            if g["commit"] not in shas:
+                raise RuntimeError(f"tag {g['tag']} does not point at the pinned commit")
     except (subprocess.CalledProcessError, RuntimeError) as e:
         detail = getattr(e, "stderr", "") or str(e)
         fail(f"guide {key}: could not fetch {g['repo']} at {g['commit']}: {detail.strip()}")
@@ -520,6 +525,7 @@ def build_guide(key, g):
         return None
     base = key
     repo, commit = g["repo"].rstrip("/"), g["commit"]
+    ref = g.get("tag") or commit  # what GitHub links point at
     gmap = {name: f"{base}/{dst}" for name, dst in GUIDE_TOP.items() if os.path.exists(os.path.join(src, name))}
     for sec in GUIDE_SECTIONS:
         d = os.path.join(src, sec)
@@ -530,7 +536,7 @@ def build_guide(key, g):
 
     def github(path, frag=""):
         kind = "tree" if os.path.isdir(os.path.join(src, path)) else "blob"
-        return f"{repo}/{kind}/{commit}/{path}" + (f"#{frag}" if frag else "")
+        return f"{repo}/{kind}/{ref}/{path}" + (f"#{frag}" if frag else "")
 
     for src_rel, dst_rel in gmap.items():
         with open(os.path.join(src, src_rel), encoding="utf-8") as f:
@@ -558,8 +564,9 @@ def build_guide(key, g):
         if src_rel == "README.md":
             note = (f'!!! note "The web edition"\n'
                     f"    This guide lives in its [GitHub repository]({repo}), which also holds the setup script, "
-                    f"the skills and the example server. This copy matches commit "
-                    f"[`{commit[:7]}`]({repo}/tree/{commit}).\n")
+                    f"the skills and the example server. This copy matches "
+                    + (f"release [{g['tag']}]({repo}/releases/tag/{g['tag']})" if g.get("tag")
+                       else f"commit [`{commit[:7]}`]({repo}/tree/{commit})") + ".\n")
             body = re.sub(r"^(# .+\n)", lambda m: m.group(1) + "\n" + note, body, count=1, flags=re.M)
         else:
             body += (f"\n\n---\n\nPart of the [{g['title']}]({rel_link(dst_rel, gmap['README.md'])}). "
