@@ -49,7 +49,7 @@ Each study has a short address on the site (`/artex/` for `studies/artex-2026-11
 
 **Guides from other repositories.** `site/guides.json` lists guides published on the site from their own repositories, each pinned to a commit. The build fetches that commit (into `.cache/`, which git ignores) and publishes it under the guide's key, so the MCP Security Guide appears at `/mcp/`. Links to the guide's other files, such as its scripts and skills, point to GitHub at the same commit. To publish a newer version, change the commit (or a release tag's commit) in `guides.json`. To preview local edits to a guide, set `GUIDE_DIR_MCP` to your checkout.
 
-The site is hosted on Cloudflare as a Workers static-assets site. Cloudflare runs the same build on every push, deploys `main` to research.cafesecurity.com and gives each pull request a preview address. Response headers, including the content security policy, are in `site/pages/_headers`.
+The site is hosted on Cloudflare as a Workers static-assets site. Cloudflare runs the same build on every push, deploys `main` to research.cafesecurity.com, and serves it nowhere else (no `workers.dev` or preview addresses). Pull requests are checked by the GitHub Actions build. Response headers, including the content security policy, are in `site/pages/_headers`.
 
 **Author name.** By default the site credits Café Security Research only. To add a personal byline across every page, its footer and the search-engine data, set the build variable `SITE_AUTHOR` to the name as it should appear (title included), and optionally `SITE_AUTHOR_LINKS` to comma-separated profile URLs. In Cloudflare these go under the Worker's Settings → Build → Variables and secrets. Unset them to go back to brand only.
 

@@ -11,9 +11,9 @@
   "routes": [
     { "pattern": "research.cafesecurity.com", "custom_domain": true }
   ],
-  // Keep the workers.dev address for preview builds of pull requests;
-  // site/pages/_headers stops search engines indexing it.
-  "workers_dev": true,
-  "preview_urls": true,
+  // Served only at the custom domain: no workers.dev address and no preview
+  // addresses. Pull requests are checked by the GitHub Actions build instead.
+  "workers_dev": false,
+  "preview_urls": false,
   "send_metrics": false
 }
