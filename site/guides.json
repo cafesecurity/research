@@ -2,7 +2,7 @@
   "mcp": {
     "title": "MCP Security Guide",
     "repo": "https://github.com/cafesecurity/mcp-security-guide",
-    "commit": "0ed5ab457b910fbe43fb3704109f2021695d7414",
-    "tag": "v0.9"
+    "commit": "aa14a3e4b9ce128f9ae9ac2e23b95834c5d08e16",
+    "tag": "v1.0"
   }
 }
