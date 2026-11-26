@@ -16,6 +16,8 @@ theme:
   custom_dir: site/overrides
   language: en
   font: false            # IBM Plex is served from this site, not a third party
+  logo: assets/brand/mark.svg      # the Café Security mark (from cafesecurity/website, public/brand/mark-medium-dark.svg, the light version for the navy header)
+  favicon: assets/brand/favicon.svg
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -138,3 +140,4 @@ nav:
       - Contributing: about/contributing.md
       - Reporting privately: about/security.md
       - Licence: about/licence.md
+  - Café Security: https://cafesecurity.com/

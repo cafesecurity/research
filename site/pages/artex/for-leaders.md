@@ -66,7 +66,7 @@ This deserves singling out, because it breaks an assumption built into most patc
 
 This is where the optimism is earned. ARTEX is built for success, not for stealth:
 
-- It is **noisy**. It makes many tool calls at machine speed and records all its traffic, so network monitoring can see it stage by stage (C203, C200).
+- It is **noisy**. It makes many tool calls at machine speed and records all its traffic, so network monitoring can see it stage by stage (C203, C200). The newest version has stopped naming itself in web requests (C209), so the noise to watch is its behaviour, not its name (C210).
 - It is **fingerprintable**. An unauthenticated endpoint names the service and version, on a default port (C104, C100).
 - It **exposes its own operator**. Its agents run with the operator's model keys and database password in reach (C106), and a careless deployment can be claimed by the first visitor (C102).
 

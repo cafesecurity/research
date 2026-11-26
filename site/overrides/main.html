@@ -3,6 +3,7 @@
 {#- Author details come from the SITE_AUTHOR build variable; without it, pages credit
     only the brand. See extra.author_name in mkdocs.yml. -#}
 {% block extrahead %}
+  <link rel="icon" href="{{ 'assets/brand/favicon.ico' | url }}" sizes="48x48">
   {% set brand = config.extra.brand %}
   {% set author = config.extra.author_name %}
   {% set links = (config.extra.author_links or "").split(",") | map("trim") | select | list %}

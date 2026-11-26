@@ -207,3 +207,6 @@
 .md-typeset .page-source { font-size: .8rem; color: var(--md-default-fg-color--light); }
 /* Navigation at a readable size: Material's default is .7rem */
 .md-tabs__link, .md-nav { font-size: .8rem; }
+
+/* Café Security mark in the header: a little larger than Material's default so it reads on the navy bar. */
+.md-header__button.md-logo img { height: 1.8rem; width: auto; }

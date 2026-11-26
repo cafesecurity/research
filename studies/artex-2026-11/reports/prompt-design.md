@@ -1,6 +1,6 @@
 # How ARTEX's prompts are designed
 
-<!--if-brand-->**Café Security Research**<!--/if-brand--><!--if-named:**{name}** · Café Security Research--> · Version 1.0, 23 November 2026
+<!--if-brand-->**Café Security Research**<!--/if-brand--><!--if-named:**{name}** · Café Security Research--> · Version 1.1, 26 November 2026
 
 Part of the study [ARTEX: what the code says](../README.md). Every finding here is a numbered claim in [`claims.yaml`](../claims.yaml), with its evidence. Please cite as: <!--if-brand-->Café Security Research<!--/if-brand--><!--if-named:{cite}--> (2026). *How ARTEX's prompts are designed* (v1.0).<!--if-named: Café Security Research.-->
 
@@ -16,7 +16,7 @@ ARTEX's own code is mostly plumbing. What it does to a target comes from an AI m
 
 ## How the prompts are built
 
-Each built-in agent (goals, planner, main agent, worker, the standalone pentest agent and a platform assistant) has an instruction template. At first start ARTEX copies the built-in text into its database, and from then on the database copy is what runs. An operator can edit it in the console; if an edit breaks the template, ARTEX falls back to the original (C170).
+Each built-in agent (goals, planner, main agent, worker, the standalone pentest agent and a platform assistant) has an instruction template. The built-in templates are written in Chinese (C217). At first start ARTEX copies the built-in text into its database, and from then on the database copy is what runs. An operator can edit it in the console; if an edit breaks the template, ARTEX falls back to the original (C170).
 
 The code adds a few sections after the editable text that editing can't remove. They're housekeeping: where to save files, how to use the recorded traffic, and how the goals agent records scope (C171). The safety-relevant wording, such as the worker's rule to act only within the authorised scope, sits in the editable part.
 
@@ -61,3 +61,4 @@ This is a reading of the prompts and the code that assembles them in v0.3.15, wi
 ## Revision history
 
 - **1.0, 23 November 2026.** First version.
+- **1.1, 26 November 2026.** Noted that the built-in templates are written in Chinese (C217), and that v0.3.30 tells its agents to copy the target's own request headers (C209).

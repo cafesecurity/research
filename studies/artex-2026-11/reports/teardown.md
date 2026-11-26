@@ -97,6 +97,7 @@ flowchart TB
 | Recording proxy | Copies every web request and response between the tools and the target, in full and unredacted. On by default, listening only locally. | `traffic/traffic.go:1-4`, `cmd/artex/main.go:57` |
 | Notifications | Sends findings to Telegram, email, webhooks and three workplace chat apps (DingTalk, Feishu, WeCom). | `notify/` |
 | Reports | Builds a Markdown report from the shared record and keeps evidence for each finding. | `report/`, `evidence/` |
+| Size | About 59,300 lines of Go in 174 files (plus about 28,100 lines of tests) and a web console of about 52,800 lines of TypeScript; the engine adds about 18,800 lines of Go. Counts are non-blank lines at v0.3.15. Its built-in agent instructions are written in Chinese, as are some code comments. | C216, C217 |
 
 ### The agents
 
@@ -163,6 +164,7 @@ Two details matter for defenders:
 
 - **ARTEX labels its own blocks** as platform policy, "not target defence", so the agent doesn't try to get round them. The comment explaining why says a bare block looks just like a target's WAF, and the agent's instinct then is to rewrite, re-encode and retry (`guard/guard.go:126-141`).
 - **A tally of "blocked" results** (403, WAF, rate limit, CAPTCHA and similar) is kept, with a comment saying it lets the planner change strategy. In the reviewed code the tally only reaches the audit screen, not the planner (`guard/guard.go:143-163`, `server/server.go:3870`).
+- **Escaped commands.** The v0.3.30 changelog says the rules now also match decoded strings, fixing dangerous commands that newlines, tabs or escaped quotes let past the rules in earlier versions (`CHANGELOG.md:16` in v0.3.30). We didn't test the earlier behaviour.
 
 ## Through two lenses
 
@@ -183,6 +185,7 @@ Two details matter for defenders:
 | Favicon SHA-256 | `8b567c0244f2dbee787165aea9c4ddabaaafb0fdb3b29899ac898c60a589856b` (original) | [4] | Rebrands change it |
 | Page title | The original uses a fixed ARTEX-branded title [5]; forks use generic titles such as "401 Authorization Required", and one imitates a Google sign-in page [4] | [4][5] | Titles are easy to change |
 | Sessions | One admin password; no login throttling found; sign-in tokens last 7 days | `server/auth.go:22` | Applies to v0.3.15 |
+| Agent control endpoint | `/mcp` lets outside agents view, create, pause and steer tasks, with its own access tokens | v0.3.30 `CHANGELOG.md:11` | New in v0.3.30; off by default |
 
 Around one in ten exposed consoles also hosted other attack tooling, such as Cobalt Strike [2]. ReversingLabs consolidated 3,147 IP indicators from vendor reporting and its own searches [4]; use them for hunting, not as proof.
 
@@ -194,6 +197,7 @@ Around one in ten exposed consoles also hosted other attack tooling, such as Cob
 - Rewritten and re-encoded retries after a block (`agent/worker.go:234`, `guard/guard.go:126-137`).
 - In cloud environments: stolen long-lived keys used to search logs for more secrets, and abuse of public sign-up pools [5].
 - Some activity is detectable even when the agent fails its goal [10].
+- Tool names in web requests, in older builds only. Requests from earlier versions could carry `norma/0.4` (the engine's web fetch) or `artex-enrich/1.0` [13][15]. From v0.3.30 ARTEX sends ordinary browser user agents and its agents are told to copy the target's own headers (`internal/httpidentity/useragent.go`, `agent/prompt.go:24`), so use these names to search old logs, not as live signatures.
 
 Detection engineers' consistent advice is to watch behaviour, because the model writes different commands each run [7][9].
 
@@ -206,7 +210,10 @@ Detection engineers' consistent advice is to watch behaviour, because the model 
 | Consoles found on default port 8787 | SOC Prime, citing Censys [8] | Confirmed: default listen address `:8787` on all interfaces. |
 | The backdoor was in prebuilt images, not the source | CSA [3]; FailSafe `UPSTREAM.md` | Consistent: the reviewed source has no hidden command function in its login code. |
 | Withdrawn by its author on 8 October | Dark Reading [9] | Consistent: the surviving copy's v0.3.15 is dated 9 October, with 15 more releases to 14 November. |
-| Agentic tools are loud | Dark Reading [9] | Consistent: no stealth features found; it records everything it does. |
+| Agentic tools are loud | Dark Reading [9] | Mostly consistent: v0.3.15 has no stealth features and records everything it does. v0.3.30 adds the first one we've found: ordinary browser user agents, and agents told to copy the target's own headers. |
+| Traffic labelled as an authorised test ("authorized-pentest/bitrise-readonly") alongside the client name "norma/0.4" | Bitrise [13][14] | Consistent: every built-in prompt describes the work as an authorised penetration test, and the engine's web fetch sends "norma/0.4". The labels are our inference from the prompts. |
+| User agents included "artex-enrich/1.0" and "norma/0.4" (a researcher's agent that escaped its test environment) | WorkOS [15] | Partly consistent: both strings are in the code, but the engine that sends "artex-enrich/1.0" is never called in either version we reviewed, so that agent probably ran a different build or fork. |
+| ARTEX's default instructions tell it to give up on a blocked path | Abdelgawad [16] | Contradicted: in both versions the workers are told a first block doesn't mean a route is exhausted, and to try every way round it. His observation that a goal forbidding changes to his TV didn't stop a write-capable scan fits the scope findings. |
 
 ## Limits of this review
 
@@ -268,7 +275,10 @@ Each finding maps to one or more claims in [`claims.yaml`](../claims.yaml), whic
 | Web fetch has no internal-address block | C019 |
 | No hard-coded C2 in ARTEX; no phoning home in the engine | C107, C022 |
 | Findings still hold in v0.3.30 | C110 |
-| Public reporting checked against the code | C120-C131 |
+| Public reporting checked against the code | C120-C131, C211, C212, C213 |
+| Tool names in web traffic, and their replacement in v0.3.30 | C208, C209, C210 |
+| Escaped commands; the agent control endpoint | C214, C215 |
+| Size and language of the code | C216, C217 |
 | The Rule of Two, and ARTEX holding all three properties | C140, C141 |
 
 ## Appendix C: sources
@@ -285,9 +295,14 @@ Each finding maps to one or more claims in [`claims.yaml`](../claims.yaml), whic
 10. Let's Data Science, "ExtraHop Maps Network Behaviors of ARTEX Agentic Attack Framework" (a summary of ExtraHop Reveal Labs' lab study; secondary source), November 2026. https://letsdatascience.com/news/extrahop-maps-network-behaviors-of-artex-agentic-attack-fram-bd5e78dd
 11. Meta, "Agents Rule of Two: A Practical Approach to AI Agent Security", 31 Oct 2025. https://ai.meta.com/blog/practical-ai-agent-security/
 12. <!--if-named:{cite}, -->"CIA vs FBI", AI x Cybersecurity video series (introduces Feed, Behaviour, Impact). https://youtu.be/kyFyf-6hko4
+13. Bitrise, "ARTEX incident report", November 2026. https://bitrise.io/artex-incident-report
+14. Bitrise, "Security advisory, November 2026". https://bitrise.io/security-advisory-november-2026
+15. WorkOS, "Update for October 30th, 2026 Data Security Incident", 6 Nov 2026. https://workos.com/security/bulletins/update-for-october-30th-2026-data-security-incident
+16. Gabriel Abdelgawad, "What My SIEM Missed When I Ran ARTEX", 24 Nov 2026 (a single first-hand account). https://www.gabrielabdelgawad.com/p/what-my-siem-missed-when-i-ran-artex
 
 ## Revision history
 
 - 22 Nov 2026: first version (published in cafesecurity/ai-tools as a draft).
 - 22 Nov 2026: added the engine review (norma v0.4.3, hash-verified); secrets in the agents' environment; the workers' instructions on blocks; updated the open question on prompt injection.
 - 22 Nov 2026: v1.0, moved to the research repository; findings mapped to claim IDs; sources 11 and 12 added.
+- 26 Nov 2026: v1.4. v0.3.30's browser user agents (the first stealth feature found) and what that means for tool names in logs; Bitrise, WorkOS and Abdelgawad checked against the code; escaped-command fix and the new agent control endpoint; size and language of the code. Sources 13-16 added.

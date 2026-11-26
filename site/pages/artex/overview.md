@@ -44,7 +44,7 @@ Read as a list, that sounds bleak. It is not, for three reasons.
 
 **The failures so far are ones we know how to fix.** The expert consensus on the 2026 agent escapes is that they were containment and harness failures, not model malice: an agent left to decide its own scope is grading its own test, and the fix is to enforce boundaries outside the agent, in code (C198, C204). That is ordinary engineering.
 
-**These tools are loud.** ARTEX's own design makes it noisy and fingerprintable (C203), and network monitoring can see an agent-run attack stage by stage (C200). An AI agent cannot hide its traffic (C205).
+**These tools are loud.** ARTEX's own design makes it noisy and fingerprintable (C203), and network monitoring can see an agent-run attack stage by stage (C200). An AI agent cannot hide its traffic (C205). It is starting to hide its name, though: since v0.3.30 it sends ordinary browser user agents (C209), so watch what it does rather than what it calls itself (C210).
 
 **Defence improves with the same AI.** In the Hugging Face incident, the company's own AI-based anomaly detection and the provider's security team both flagged the activity — in one event an AI attacked and AI systems helped stop it (C196, C205). The same models that find flaws help find and fix them.
 

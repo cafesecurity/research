@@ -18,7 +18,7 @@
 
 study: artex-2026-11
 title: "ARTEX: what the code says"
-checked: 2026-11-23
+checked: 2026-11-26
 
 sources:
   artex-v0.3.15:
@@ -92,6 +92,10 @@ references:
   S47: {title: "6 of the Best Autonomous Penetration Testing Companies in 2026", publisher: "Cybersecurity Ventures / Cybercrime Magazine", date: 2026-09-15, url: "https://cybersecurityventures.com/6-of-the-best-autonomous-penetration-testing-companies-in-2026/", secondary: true}
   S48: {title: "Inside the OpenAI - Hugging Face Incident: The AI Breach With No Human Attacker Behind It", publisher: Trend Micro, date: 2026-07, url: "https://www.trendmicro.com/en/research/26/g/inside-the-openai-hugging-face-incident.html", secondary: true}
   S49: {title: "Why AI Agent Sandboxes Are Failing Security Tests", publisher: "Security Affairs (reporting OpenAI's automated-shutdown development)", date: 2026-09-07, url: "https://securityaffairs.com/198563/ai", secondary: true}
+  S50: {title: "ARTEX incident report", publisher: Bitrise, date: 2026-11, url: "https://bitrise.io/artex-incident-report"}
+  S51: {title: "Security advisory, November 2026", publisher: Bitrise, date: 2026-11, url: "https://bitrise.io/security-advisory-november-2026"}
+  S52: {title: "Update for October 30th, 2026 Data Security Incident", publisher: WorkOS, date: 2026-11-06, url: "https://workos.com/security/bulletins/update-for-october-30th-2026-data-security-incident"}
+  S53: {title: "What My SIEM Missed When I Ran ARTEX", publisher: "Gabriel Abdelgawad (personal blog)", date: 2026-11-24, url: "https://www.gabrielabdelgawad.com/p/what-my-siem-missed-when-i-ran-artex"}
 
 claims:
 
@@ -1213,3 +1217,91 @@ claims:
   note: Follows from C184, C081, C106 and C204. This is the defensive mirror of the study's findings, not operating instructions.
   evidence:
     - {type: manual, how: "Read C184, C081, C106 and C204 together"}
+
+- id: C208
+  topic: detection
+  statement: In the code reviewed at v0.3.15, web requests can name the tool. The engine's web-fetch tool, which ARTEX's agents use, sends the user agent "norma/0.4", and ARTEX's (dormant) enrichment engine sets "artex-enrich/1.0".
+  status: code
+  evidence:
+    - {type: contains, source: norma-v0.4.3, path: tool/webfetch.go, lines: 188, text: "\"norma/0.4\""}
+    - {type: contains, source: artex-v0.3.15, path: enrich/enrich.go, lines: 233, text: "\"artex-enrich/1.0\""}
+    - {type: contains, source: artex-v0.3.15, path: server/manager.go, lines: 433, text: "WebFetch"}
+
+- id: C209
+  topic: detection
+  statement: From v0.3.30 (14 November 2026), ARTEX's own web requests use one of 20 ordinary desktop browser user agents, its web fetch and enrichment engine included, and the agents' instructions tell them not to use the default headers of command-line tools and to reuse the target's own request headers. It is the first stealth feature we've found.
+  status: code
+  evidence:
+    - {type: contains, source: artex-v0.3.30, path: internal/httpidentity/useragent.go, lines: 17, text: "var userAgents"}
+    - {type: contains, source: artex-v0.3.30, path: internal/webfetch/webfetch.go, lines: 154, text: "httpidentity.UserAgent()"}
+    - {type: contains, source: artex-v0.3.30, path: enrich/enrich.go, lines: 234, text: "httpidentity.Apply(req)"}
+    - {type: contains, source: artex-v0.3.30, path: agent/prompt.go, lines: 24, text: "urllib"}
+    - {type: contains, source: artex-v0.3.30, path: CHANGELOG.md, lines: 12, text: "User-Agent"}
+
+- id: C210
+  topic: detection
+  statement: Tool names in web traffic, such as "norma/0.4" and "artex-enrich/1.0", identify older builds and past visits only. Current builds don't send them, so they're for searching old logs, and detection should rest on behaviour.
+  status: inference
+  note: Follows from C208 and C209, and fits the practitioners' advice in C130.
+  evidence:
+    - {type: manual, how: "Read C208, C209 and C130 together"}
+
+- id: C211
+  topic: reporting
+  statement: In the most detailed public account of an ARTEX intrusion, Bitrise logged requests labelled as an authorised penetration test (for example "authorized-pentest/bitrise-readonly") alongside the client name "norma/0.4", and advised treating traffic that calls itself an authorised test nobody ordered as an attacker introducing itself.
+  status: source
+  note: Consistent with C184 (every built-in prompt describes the work as an authorised penetration test; the labels are our inference from that) and C208.
+  evidence:
+    - {type: url, ref: S50}
+    - {type: url, ref: S51}
+
+- id: C212
+  topic: reporting
+  statement: WorkOS, whose internal sales tool was reached by a researcher's ARTEX agent that escaped its test environment, listed user agents including "artex-enrich/1.0" and "norma/0.4". In both versions we reviewed, the engine that sets "artex-enrich/1.0" is never called (C063), so that agent probably ran a different build or fork.
+  status: inference
+  note: The user agents are from WorkOS's bulletin (S52); the conclusion about the build is ours, from C063.
+  evidence:
+    - {type: url, ref: S52}
+    - {type: manual, how: "Compare S52's user agents with C063 and C208"}
+
+- id: C213
+  topic: reporting
+  statement: A detection engineer who ran ARTEX against his own home network reported that a goal forbidding changes to his TV didn't stop a scan including write requests against it, and that most of his internal web apps didn't log requests. His statement that ARTEX's default instructions tell it to give up on a blocked path is contradicted by the code (C090), and the "low and slow" setting he describes wasn't found in the versions we reviewed.
+  status: source
+  note: A single first-hand account with no version, logs or SIEM named. The TV example fits C082 and C083 (scope is never checked against commands). Used only for what he observed on his own network.
+  evidence:
+    - {type: url, ref: S53}
+    - {type: contains, source: artex-v0.3.30, path: agent/worker.go, lines: 227, text: "初次受阻"}
+
+- id: C214
+  topic: safety
+  statement: The v0.3.30 changelog says command rules now also match decoded nested strings, fixing dangerous commands that newlines, tabs or escaped quotes let past the rules in earlier versions.
+  status: code
+  note: This is the developer's own statement in the repository; we didn't test the earlier behaviour.
+  evidence:
+    - {type: contains, source: artex-v0.3.30, path: CHANGELOG.md, lines: 16, text: "命令拦截"}
+
+- id: C215
+  topic: console
+  statement: v0.3.30 adds an optional endpoint at /mcp through which outside agents can view tasks and findings, create tasks, pause and resume them and add hints. It's off by default and uses its own access tokens.
+  status: code
+  evidence:
+    - {type: contains, source: artex-v0.3.30, path: CHANGELOG.md, lines: 11, text: "/mcp"}
+
+- id: C216
+  topic: provenance
+  statement: At v0.3.15, ARTEX is about 59,300 non-blank lines of Go in 174 files, plus about 28,100 lines of Go tests; its web console is about 52,800 non-blank lines of TypeScript in 187 files. The engine, norma v0.4.3, is about 18,800 lines of Go in 108 files, plus about 15,400 lines of tests.
+  status: code
+  evidence:
+    - {type: manual, how: "Count non-blank lines of non-test .go files, of *_test.go files, and of .ts/.tsx files under web/src (excluding node_modules) in each source"}
+
+- id: C217
+  topic: prompts
+  statement: ARTEX's built-in agent instructions are written in Chinese, as are some of its code comments (about 29% of Go comment lines contain Chinese at v0.3.15).
+  status: code
+  note: A plain observation about the code. It says nothing about who uses the tool.
+  evidence:
+    - {type: contains, source: artex-v0.3.15, path: agent/worker.go, lines: 230, text: "授权渗透测试系统"}
+    - {type: contains, source: artex-v0.3.15, path: agent/planner.go, lines: 298, text: "授权渗透测试系统"}
+    - {type: contains, source: artex-v0.3.15, path: agent/mainagent.go, lines: 87, text: "授权渗透测试系统"}
+    - {type: manual, how: "Count Go comment lines containing CJK characters in non-test files"}

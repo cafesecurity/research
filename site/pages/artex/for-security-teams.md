@@ -18,12 +18,14 @@ That is why the signal lives in behaviour and on the network, not in a payload.
 
 ## Indicators to hunt for
 
-ARTEX is built for success, not stealth, which gives defenders concrete handholds. The [teardown's "Spotting it" section](teardown.md) has the full detail; the key indicators:
+ARTEX is built for success rather than stealth, which gives defenders concrete handholds, though the newest version has started to blend in (below). The [teardown's "Spotting it" section](teardown.md) has the full detail; the key indicators:
 
 - **A console on port 8787.** ARTEX listens on all interfaces on port 8787 by default, and the upstream compose file publishes it (C100).
 - **Two unauthenticated endpoints.** A health check returns the service name and version without login (C104), and a status endpoint reveals whether the admin password has been set (C103). Both are exact fingerprints.
 - **A local recording proxy.** ARTEX runs a traffic-recording proxy on localhost port 8788 (C060) — relevant for host-level and operator-side detection.
 - **Fork fingerprints.** Public reporting catalogues eleven fork families with distinct favicon hashes and console titles (C122); an English-language fork, ScopeWeaver, keeps the multi-agent design (C200).
+
+- **Tool names in web requests, for older builds only.** Earlier versions could send `norma/0.4` or `artex-enrich/1.0` as the user agent, and Bitrise and WorkOS logged them (C208, C211, C212). From v0.3.30 (14 November) ARTEX sends ordinary browser user agents and tells its agents to copy the target's own headers (C209). Search old logs for the names; don't rely on them for new activity (C210).
 
 Treat these as starting points for hunting and exposure scanning, not as a complete signature set — forks and configurations vary, and a careful operator changes defaults.
 

@@ -30,5 +30,6 @@ The review went through three passes. Each pass re-checked every earlier finding
 | # | Was | Now | Claims |
 | --- | --- | --- | --- |
 | 1 | No instruction to treat target content as data was found in ARTEX's prompts. | Narrowed to the prompts of ARTEX's *agents*. Reviewing the prompts for version 1.2 found that the optional AI judge's prompt does tell its model to treat input as untrusted; the judge reviews the agents' tool calls and is off by default, so the finding about the agents stands. | C093, C182 |
+| 2 | Public reporting that agentic tools are loud is consistent with the code: "no stealth features found". | True of v0.3.15 only. v0.3.30 (14 November) sends ordinary browser user agents and tells its agents to copy the target's own headers, so tool names in web traffic now only identify older builds. | C209, C210, C130 |
 
 To propose a correction, [open an issue](../../.github/ISSUE_TEMPLATE/report-a-mistake.yml).
