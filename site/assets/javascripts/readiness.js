@@ -149,12 +149,18 @@
   function tableRows(st) {
     return rows(st).map(function (r) { return [String(r.ws.rank), r.ws.title, r.ws.team, r.id, r.text, r.owner, STATUS_LABEL[r.status], r.due, r.notes, r.updated]; });
   }
-  function csvField(v) { v = String(v == null ? "" : v); return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  // Spreadsheet formula injection: a value starting with = + - @ (or a tab or return) would run as
+  // a formula when a CSV or pasted table is opened in Excel or Sheets. Plans can arrive in a shared
+  // link, so prefix such values with an apostrophe, which spreadsheets show as plain text.
+  // fromCSV strips it again. The .xlsx export writes every cell as text, so needs no prefix.
+  function noFormula(v) { v = String(v == null ? "" : v); return /^[=+\-@\t\r]/.test(v) ? "'" + v : v; }
+  function unFormula(v) { return /^'[=+\-@\t\r]/.test(v) ? v.slice(1) : v; }
+  function csvField(v) { v = noFormula(v); return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
   function toCSV(st) {
     return "\uFEFF" + [COLUMNS].concat(tableRows(st)).map(function (r) { return r.map(csvField).join(","); }).join("\r\n") + "\r\n";
   }
   function toTSV(st) {
-    return [COLUMNS].concat(tableRows(st)).map(function (r) { return r.map(function (v) { return String(v).replace(/[\t\r\n]+/g, " "); }).join("\t"); }).join("\n");
+    return [COLUMNS].concat(tableRows(st)).map(function (r) { return r.map(function (v) { return noFormula(String(v).replace(/[\t\r\n]+/g, " ")); }).join("\t"); }).join("\n");
   }
   function parseCSV(text) {
     text = String(text).replace(/^\uFEFF/, "");
@@ -186,13 +192,13 @@
       if (/^custom-/.test(id) && !st.custom.some(function (c) { return c.id === id; })) {
         var ws = PLAN.filter(function (w) { return w.title === (r[iWs] || "").trim(); })[0];
         if (!ws) return;
-        st.custom.push({ id: id, ws: ws.id, text: str((r[iTask] || "").trim(), 300) || "New task" });
+        st.custom.push({ id: id, ws: ws.id, text: str(unFormula((r[iTask] || "").trim()), 300) || "New task" });
       }
       var e = entry(st, id);
-      if (iOwner >= 0) e.owner = str(r[iOwner] || "", 200);
+      if (iOwner >= 0) e.owner = str(unFormula(r[iOwner] || ""), 200);
       var s = byLabel[(r[iStatus] || "").trim().toLowerCase()]; if (s) e.status = s;
       if (iDue >= 0) e.due = isoDate((r[iDue] || "").trim());
-      if (iNotes >= 0) e.notes = str(r[iNotes] || "", 4000);
+      if (iNotes >= 0) e.notes = str(unFormula(r[iNotes] || ""), 4000);
       e.updated = new Date().toISOString(); n++;
     });
     return n;
