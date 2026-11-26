@@ -197,16 +197,21 @@
     });
     return n;
   }
-  function mdCell(v) { return String(v || "").replace(/\|/g, "\\|").replace(/[\r\n]+/g, "<br>"); }
+  // Markdown export. Plans can arrive in a shared link, so treat every value as untrusted:
+  // escape backslashes before pipes (a "\|" typed by the user must not close the cell), and turn
+  // HTML's special characters into entities so nothing renders as markup in a Markdown viewer.
+  function mdHtml(v) { return String(v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function mdText(v) { return mdHtml(v).replace(/\\/g, "\\\\").replace(/[\r\n]+/g, " "); }
+  function mdCell(v) { return mdHtml(v).replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/[\r\n]+/g, "<br>"); }
   function toMarkdown(st) {
     var s = st.settings, L = [];
-    L.push("# AI pentest agent readiness plan" + (s.org ? ": " + s.org : ""));
+    L.push("# AI pentest agent readiness plan" + (s.org ? ": " + mdText(s.org) : ""));
     L.push("");
-    L.push("Plan owner: " + (s.owner || "not set") + " · Start: " + (longDate(s.start) || "not set") + " · Target: " + (longDate(s.target) || "not set"));
+    L.push("Plan owner: " + (mdText(s.owner) || "not set") + " · Start: " + (longDate(s.start) || "not set") + " · Target: " + (longDate(s.target) || "not set"));
     var p = progress(rows(st));
     L.push("Progress: " + p.done + " of " + p.total + " tasks done (" + p.pct + "%)");
     L.push("");
-    L.push("## For the board"); L.push(""); L.push(boardAnswer(st)); L.push("");
+    L.push("## For the board"); L.push(""); L.push(mdText(boardAnswer(st))); L.push("");
     PLAN.forEach(function (ws) {
       var list = rows(st).filter(function (r) { return r.ws === ws; });
       L.push("## " + ws.rank + ". " + ws.title + " (" + ws.team + ")"); L.push("");
