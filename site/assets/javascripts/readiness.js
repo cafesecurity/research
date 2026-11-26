@@ -140,7 +140,7 @@
     if (todo.length) parts.push((parts.length ? "we plan to " : "We plan to ") + joinList(todo));
     var second = parts.length ? parts.join("; ") : "We've reviewed each area and recorded what doesn't apply to us";
     var target = st.settings.target;
-    if (target && (doing.length || todo.length)) second += (done.length || doing.length) ? ", and we'll have it done by " + longDate(target) : " by " + longDate(target);
+    if (target && (doing.length || todo.length)) second += ", all by " + longDate(target);
     return first + " " + second + ".";
   }
 
