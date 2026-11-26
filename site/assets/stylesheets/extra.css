@@ -276,3 +276,14 @@
 .cs-planner ul.pl-ws-list { margin: .7rem 0 0; padding: 0; }
 .cs-planner ul.pl-ws-list li { margin: 0; }
 .pl-ws-list span { white-space: nowrap; }
+
+/* Planner buttons: Material's default buttons use the primary colour, which is navy and
+   disappears on the dark scheme. Give them their own colours in both schemes. */
+.cs-planner .md-button { color: var(--cs-navy); border-color: var(--cs-navy); background: transparent; }
+.cs-planner .md-button:hover, .cs-planner .md-button:focus { color: #fff; background: var(--cs-navy); border-color: var(--cs-navy); }
+.cs-planner .md-button--primary { color: #fff; background: var(--cs-navy); }
+[data-md-color-scheme="slate"] .cs-planner .md-button { color: #E8F0FA; border-color: #8FB8E8; }
+[data-md-color-scheme="slate"] .cs-planner .md-button:hover, [data-md-color-scheme="slate"] .cs-planner .md-button:focus { color: #0B1F3A; background: #E8F0FA; border-color: #E8F0FA; }
+[data-md-color-scheme="slate"] .cs-planner .md-button--primary { color: #0B1F3A; background: #5FC4C4; border-color: #5FC4C4; }
+[data-md-color-scheme="slate"] .pl-progress { border: 1px solid #8FB8E8; }
+[data-md-color-scheme="slate"] .pl-tool-group strong { color: #E8F0FA; }
