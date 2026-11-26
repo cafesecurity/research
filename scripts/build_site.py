@@ -150,14 +150,15 @@ def page_map(study_ids):
         m[f"{d}/CORRECTIONS.md"] = f"{p}/corrections.md"
         m[f"{d}/claims.yaml"] = "claims.md"
         m[f"{d}/faq.yaml"] = f"{p}/faq.md"
-        # Indicators: the README becomes /<study>/indicators/, and every other file is
+        # Indicators: the README becomes /<study>/indicators/ (as indicators.md, not index.md, so the
+        # Reference section in the menu keeps its own entry for it), and every other file is
         # published as-is next to it so it can be downloaded from the site.
         ind = os.path.join(ROOT, d, "indicators")
         if os.path.isdir(ind):
             for base, _, files in os.walk(ind):
                 for name in sorted(files):
                     rel = os.path.relpath(os.path.join(base, name), os.path.join(ROOT, d)).replace(os.sep, "/")
-                    m[f"{d}/{rel}"] = f"{p}/" + (rel[: -len("README.md")] + "index.md" if name == "README.md" else rel)
+                    m[f"{d}/{rel}"] = f"{p}/" + ("indicators.md" if rel == "indicators/README.md" else rel)
         reports = os.path.join(ROOT, d, "reports")
         if os.path.isdir(reports):
             for name in sorted(os.listdir(reports)):

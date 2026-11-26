@@ -97,7 +97,7 @@ nav:
           - Study summary: artex/study.md
           - Teardown report: artex/teardown.md
           - Prompt design: artex/prompt-design.md
-          - Detection rules and indicators: artex/indicators/index.md
+          - Indicators and detections: artex/indicators.md
           - Questions and answers: artex/faq.md
           - Claims explorer: claims.md
           - Methodology: artex/methodology.md

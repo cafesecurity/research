@@ -32,7 +32,7 @@ The newest version of ARTEX, v0.3.30, stopped naming itself in web requests: it 
 
 ## Detection rules and indicators
 
-The detection workstream links to [rules and indicators](indicators/index.md) you can load: Sigma rules for the alerts, with Splunk, Microsoft Sentinel and Google Cloud versions; names seen in incidents and console fingerprints, each with its source; and YARA rules for finding a copy of ARTEX on your own systems. They're starting points, written from the code and from public incident reports, so tune them before you rely on them.
+The detection workstream links to [rules and indicators](indicators.md) you can load: Sigma rules for the alerts, with Splunk, Microsoft Sentinel and Google Cloud versions; names seen in incidents and console fingerprints, each with its source; and YARA rules for finding a copy of ARTEX on your own systems. They're starting points, written from the code and from public incident reports, so tune them before you rely on them.
 
 ## Exports
 

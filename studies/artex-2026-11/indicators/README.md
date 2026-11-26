@@ -21,6 +21,55 @@ Part of the study [ARTEX: what the code says](../README.md). These files turn th
 | [`indicators.csv`](indicators.csv) | Names seen in incidents and console fingerprints, each with its source, the claims behind it and a caveat. |
 | [`yara/artex.yar`](yara/artex.yar) | YARA rules for finding a copy of ARTEX on systems you manage. |
 
+## How to use them
+
+Whatever you run, do two things first. Replace the placeholder address ranges (`10.0.0.0/8` and `192.0.2.0/24`) with your own office, VPN and cloud egress ranges. Then run each search by hand over the last few weeks before you turn it into an alert, so you can see how often it fires and tune it.
+
+### Splunk
+
+1. Open a search from [`queries/splunk/`](queries/splunk/) and paste the whole file into Search & Reporting. The first line is a comment.
+2. Add your own index and source type at the front, for example `index=aws sourcetype=aws:cloudtrail`. The searches leave them out because every Splunk set-up names them differently.
+3. Check the field names. They follow each log's own format, so if your add-on renames a field, change the search to match.
+4. When the results look right, choose **Save As → Alert** and set a schedule.
+
+### Microsoft Sentinel
+
+1. Open **Logs** in Sentinel, paste a query from [`queries/sentinel-kql/`](queries/sentinel-kql/) and run it.
+2. Each query starts with the table it reads: `AWSCloudTrail`, `SigninLogs`, `AADServicePrincipalSignInLogs` or `W3CIISLog`. If Sentinel says the table doesn't exist, turn on the matching data connector.
+3. To alert on it, go to **Analytics**, create a **scheduled query rule** and paste the query in.
+
+### Google Cloud
+
+1. Open **Logs Explorer** in the project you want to check, or in a log scope that covers several, and paste [the query](queries/google-cloud-logging/gcp_service_account_key_unexpected_source.txt). Lines starting `--` are comments.
+2. The query reads Cloud Audit Logs. Admin Activity logs are always on, but Data Access logs are off by default for most services. Turn them on for the services that hold your data, or the search will only see configuration changes.
+3. To alert on it, choose **Actions → Create log alert**.
+
+### Other SIEMs
+
+The rules in [`sigma/`](sigma/) convert to most other query languages with [sigma-cli](https://github.com/SigmaHQ/sigma-cli). For Elasticsearch, for example:
+
+```
+pip install "sigma-cli<4"
+sigma plugin install elasticsearch
+sigma convert -t lucene --without-pipeline sigma/web_request_claims_authorised_test.yml
+```
+
+`sigma plugin list` shows the plugins for other SIEMs. The version pin is there because sigma-cli 4.0 couldn't load backend plugins when these steps were tested (26 November 2026). Where a processing pipeline exists for your log source, use it with `-p` in place of `--without-pipeline`, and it will map the field names for you. The failed sign-in rule uses a Sigma correlation, which only some backends can convert.
+
+### The indicators list
+
+[`indicators.csv`](indicators.csv) has one row per indicator, and its `use_for` column says what each is for: user agents for searching past web and API logs, console ports, paths and favicon hashes for scanning your own estate. Load it as a lookup table in Splunk or a watchlist in Sentinel, or search for the values by hand. Read the `caveat` column first, because most of the names only match older builds.
+
+### Scanning with YARA
+
+Install [YARA](https://virustotal.github.io/yara/) and scan a folder:
+
+```
+yara -r yara/artex.yar /path/to/scan
+```
+
+Each match prints the rule name and the file. A match means a copy of ARTEX is on that system. It doesn't mean you've been attacked (see below).
+
 ## The four alerts
 
 | Alert | Rules | Notes |
