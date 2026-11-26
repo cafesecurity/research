@@ -1,0 +1,2 @@
+``` Generated from sigma/aws_long_term_key_unexpected_source.yml by scripts/convert_sigma.py. A starting point: tune before use. ```
+userIdentity.accessKeyId="AKIA*" NOT (sourceIPAddress="10.0.0.0/8" OR sourceIPAddress="192.0.2.0/24" OR sourceIPAddress="*.amazonaws.com")

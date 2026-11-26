@@ -199,7 +199,7 @@ Around one in ten exposed consoles also hosted other attack tooling, such as Cob
 - Some activity is detectable even when the agent fails its goal [10].
 - Tool names in web requests, in older builds only. Requests from earlier versions could carry `norma/0.4` (the engine's web fetch) or `artex-enrich/1.0` [13][15]. From v0.3.30 ARTEX sends ordinary browser user agents and its agents are told to copy the target's own headers (`internal/httpidentity/useragent.go`, `agent/prompt.go:24`), so use these names to search old logs, not as live signatures.
 
-Detection engineers' consistent advice is to watch behaviour, because the model writes different commands each run [7][9].
+Detection engineers' consistent advice is to watch behaviour, because the model writes different commands each run [7][9]. Rules and indicators you can load, all starting points, are in [`indicators/`](../indicators/README.md).
 
 ## What public reporting says, checked against the code
 
@@ -276,7 +276,8 @@ Each finding maps to one or more claims in [`claims.yaml`](../claims.yaml), whic
 | No hard-coded C2 in ARTEX; no phoning home in the engine | C107, C022 |
 | Findings still hold in v0.3.30 | C110 |
 | Public reporting checked against the code | C120-C131, C211, C212, C213 |
-| Tool names in web traffic, and their replacement in v0.3.30 | C208, C209, C210 |
+| Tool names in web traffic, and their replacement in v0.3.30; names chosen at run time | C208, C209, C210, C218 |
+| Bitrise's account | C219 |
 | Escaped commands; the agent control endpoint | C214, C215 |
 | Size and language of the code | C216, C217 |
 | The Rule of Two, and ARTEX holding all three properties | C140, C141 |
@@ -305,4 +306,5 @@ Each finding maps to one or more claims in [`claims.yaml`](../claims.yaml), whic
 - 22 Nov 2026: first version (published in cafesecurity/ai-tools as a draft).
 - 22 Nov 2026: added the engine review (norma v0.4.3, hash-verified); secrets in the agents' environment; the workers' instructions on blocks; updated the open question on prompt injection.
 - 22 Nov 2026: v1.0, moved to the research repository; findings mapped to claim IDs; sources 11 and 12 added.
+- 26 Nov 2026: v1.5. Linked the new indicators and detections.
 - 26 Nov 2026: v1.4. v0.3.30's browser user agents (the first stealth feature found) and what that means for tool names in logs; Bitrise, WorkOS and Abdelgawad checked against the code; escaped-command fix and the new agent control endpoint; size and language of the code. Sources 13-16 added.

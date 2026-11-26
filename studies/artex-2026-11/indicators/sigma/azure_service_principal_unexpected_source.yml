@@ -1,0 +1,30 @@
+title: Azure service principal sign-in from outside your own networks
+id: 4b8d2f61-0c7e-4a35-9d1b-8e2a6c0f9b33
+status: experimental
+description: |
+  A service principal (an app's machine credential) signs in from an address outside the
+  networks and cloud ranges you list.
+  STARTING POINT: replace the placeholder ranges with your own; workload identities and
+  managed identities reduce what this rule has to watch.
+references:
+  - https://research.cafesecurity.com/artex/readiness/
+author: Café Security Research
+date: 2026-11-26
+tags:
+  - attack.initial-access
+  - attack.t1078.004
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    ServicePrincipalId|re: '.+'
+    ResultType: '0'
+  filter_own_ranges:
+    IPAddress|cidr:
+      - '10.0.0.0/8'          # placeholder: your networks
+      - '192.0.2.0/24'        # placeholder: your egress addresses
+  condition: selection and not filter_own_ranges
+falsepositives:
+  - Apps legitimately run from partners or regions you haven't listed
+level: high

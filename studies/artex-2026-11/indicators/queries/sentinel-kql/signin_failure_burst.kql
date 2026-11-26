@@ -1,0 +1,15 @@
+// Hand-written from sigma/signin_failure_burst.yml for the SigninLogs table: ten or more failed
+// sign-ins for one account in five minutes, followed by a success within 30 minutes.
+// A starting point: tune the threshold and window to your own baseline.
+let failures = SigninLogs
+    | where ResultType != "0"
+    | summarize Failures = count(), FailureIPs = make_set(IPAddress, 20) by UserPrincipalName, Window = bin(TimeGenerated, 5m)
+    | where Failures >= 10;
+failures
+| join kind=inner (
+    SigninLogs
+    | where ResultType == "0"
+    | project SuccessTime = TimeGenerated, UserPrincipalName, SuccessIP = IPAddress
+  ) on UserPrincipalName
+| where SuccessTime between (Window .. (Window + 30m))
+| project UserPrincipalName, Window, Failures, FailureIPs, SuccessTime, SuccessIP

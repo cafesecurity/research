@@ -1,0 +1,3 @@
+``` Generated from sigma/azure_service_principal_unexpected_source.yml by scripts/convert_sigma.py. A starting point: tune before use. ```
+ResultType="0" NOT (IPAddress="10.0.0.0/8" OR IPAddress="192.0.2.0/24")
+| regex ServicePrincipalId=".+"

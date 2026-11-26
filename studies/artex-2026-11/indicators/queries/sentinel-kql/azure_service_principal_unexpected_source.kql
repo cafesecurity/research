@@ -1,0 +1,3 @@
+// Generated from sigma/azure_service_principal_unexpected_source.yml (pySigma Kusto backend, azure_monitor pipeline). A starting point: replace the placeholder ranges.
+AADServicePrincipalSignInLogs
+| where (ServicePrincipalId matches regex ".+" and ResultType =~ "0") and (not((ipv4_is_in_range(IPAddress, "10.0.0.0/8") or ipv4_is_in_range(IPAddress, "192.0.2.0/24"))))

@@ -58,6 +58,7 @@ extra_css:
   - assets/stylesheets/extra.css
 extra_javascript:
   - assets/javascripts/claims.js
+  - assets/javascripts/readiness.js
 
 plugins:
   - search
@@ -91,10 +92,12 @@ nav:
           - Security teams: artex/for-security-teams.md
           - Red teams & vendors: artex/for-red-teams.md
           - Policy & government: artex/for-policy.md
+          - Readiness planner: artex/readiness.md
       - Reference:
           - Study summary: artex/study.md
           - Teardown report: artex/teardown.md
           - Prompt design: artex/prompt-design.md
+          - Detection rules and indicators: artex/indicators/index.md
           - Questions and answers: artex/faq.md
           - Claims explorer: claims.md
           - Methodology: artex/methodology.md

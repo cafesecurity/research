@@ -1,0 +1,2 @@
+``` Generated from sigma/web_request_claims_authorised_test.yml by scripts/convert_sigma.py. A starting point: tune before use. ```
+"cs-user-agent" IN ("*pentest*", "*authorized*", "*authorised*") OR "cs-user-agent" IN ("*norma/*", "*artex*", "*infra-hunt/*", "*verify-911-probe/*")

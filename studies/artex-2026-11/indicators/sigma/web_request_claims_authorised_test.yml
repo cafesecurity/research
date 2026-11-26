@@ -1,0 +1,36 @@
+title: Web request that calls itself an authorised test, or names ARTEX's engine
+id: 5d2b9f37-8e1a-4c6d-b0f4-3a7e2c9d1b66
+status: experimental
+description: |
+  A web request whose user agent says it is a penetration test, or carries a tool name seen in
+  ARTEX incidents. Bitrise: traffic that "calls itself an authorized test, when you ordered
+  none, is an attacker introducing itself". From ARTEX v0.3.30 (14 Nov 2026) its own requests
+  use ordinary browser user agents, so the tool names mainly find older copies and past visits
+  (study artex-2026-11, C208-C211). STARTING POINT: check every hit against the tests you booked.
+references:
+  - https://research.cafesecurity.com/artex/readiness/
+  - https://bitrise.io/artex-incident-report
+  - https://workos.com/security/bulletins/update-for-october-30th-2026-data-security-incident
+author: Café Security Research
+date: 2026-11-26
+tags:
+  - attack.reconnaissance
+  - attack.t1595
+logsource:
+  category: webserver
+detection:
+  selection_test_label:
+    cs-user-agent|contains:
+      - 'pentest'
+      - 'authorized'
+      - 'authorised'
+  selection_tool_names:
+    cs-user-agent|contains:
+      - 'norma/'
+      - 'artex'
+      - 'infra-hunt/'
+      - 'verify-911-probe/'
+  condition: 1 of selection_*
+falsepositives:
+  - Penetration tests you booked; security scanners that label themselves
+level: medium

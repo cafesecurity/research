@@ -150,6 +150,14 @@ def page_map(study_ids):
         m[f"{d}/CORRECTIONS.md"] = f"{p}/corrections.md"
         m[f"{d}/claims.yaml"] = "claims.md"
         m[f"{d}/faq.yaml"] = f"{p}/faq.md"
+        # Indicators: the README becomes /<study>/indicators/, and every other file is
+        # published as-is next to it so it can be downloaded from the site.
+        ind = os.path.join(ROOT, d, "indicators")
+        if os.path.isdir(ind):
+            for base, _, files in os.walk(ind):
+                for name in sorted(files):
+                    rel = os.path.relpath(os.path.join(base, name), os.path.join(ROOT, d)).replace(os.sep, "/")
+                    m[f"{d}/{rel}"] = f"{p}/" + (rel[: -len("README.md")] + "index.md" if name == "README.md" else rel)
         reports = os.path.join(ROOT, d, "reports")
         if os.path.isdir(reports):
             for name in sorted(os.listdir(reports)):
@@ -625,6 +633,13 @@ def main():
         study = src_rel.split("/")[1] if src_rel.startswith("studies/") else None
         known = {c["id"] for c in all_data[study]["claims"]} if study else ()
         write(dst_rel, convert_markdown(read(src_rel), src_rel, dst_rel, pages, study, known))
+
+    # Indicator files, published unchanged for download.
+    for src_rel, dst_rel in pages.items():
+        if "/indicators/" in src_rel and not src_rel.endswith(".md"):
+            dst = os.path.join(OUT, dst_rel)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copyfile(os.path.join(ROOT, src_rel), dst)
 
     # Generated pages and data.
     write("claims.md", claims_page(all_data))

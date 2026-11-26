@@ -1,0 +1,33 @@
+title: AWS long-term access key used from outside your own networks
+id: 7c1e9d44-3b8a-4f0b-9a2e-5d6f1c3b8e22
+status: experimental
+description: |
+  A long-term IAM access key (AKIA...) is used from an address outside the networks and cloud
+  ranges you list. Datadog saw ARTEX use compromised long-lived keys to search cloud logs for
+  more secrets.
+  STARTING POINT: replace the placeholder ranges with your own; better still, retire long-term
+  keys so this rule has little left to watch.
+references:
+  - https://research.cafesecurity.com/artex/readiness/
+  - https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/
+author: Café Security Research
+date: 2026-11-26
+tags:
+  - attack.initial-access
+  - attack.t1078.004
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    userIdentity.accessKeyId|startswith: 'AKIA'
+  filter_own_ranges:
+    sourceIPAddress|cidr:
+      - '10.0.0.0/8'          # placeholder: your networks
+      - '192.0.2.0/24'        # placeholder: your egress addresses
+  filter_aws_services:
+    sourceIPAddress|endswith: '.amazonaws.com'
+  condition: selection and not 1 of filter_*
+falsepositives:
+  - Keys used by partners, CI providers or staff travelling, if you haven't listed them
+level: high

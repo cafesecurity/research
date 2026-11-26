@@ -1,0 +1,7 @@
+// Hand-written from sigma/aws_long_term_key_unexpected_source.yml for the AWSCloudTrail table.
+// A starting point: replace the placeholder ranges with your own networks and egress addresses.
+AWSCloudTrail
+| where UserIdentityAccessKeyId startswith "AKIA"
+| where not(ipv4_is_in_any_range(SourceIpAddress, dynamic(["10.0.0.0/8", "192.0.2.0/24"])))
+| where not(SourceIpAddress endswith ".amazonaws.com")
+| project TimeGenerated, UserIdentityAccessKeyId, UserIdentityArn, SourceIpAddress, EventName, EventSource

@@ -8,7 +8,7 @@ abstract: >-
 authors:
   - name: "Café Security Research"
     website: "https://research.cafesecurity.com/"
-version: "1.4"
+version: "1.5"
 date-released: "2026-11-26"
 license: CC-BY-4.0
 repository: "https://github.com/cafesecurity/research"

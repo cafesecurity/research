@@ -1,0 +1,6 @@
+// Hand-written from sigma/web_request_claims_authorised_test.yml for IIS logs (W3CIISLog).
+// Use the equivalent user-agent field for other web logs. Check every hit against the tests you booked.
+// Tool names mainly find older ARTEX copies and past visits: from v0.3.30 it sends browser user agents.
+W3CIISLog
+| where csUserAgent matches regex @"(?i)pentest|authori[sz]ed|norma/|artex|infra-hunt/|verify-911-probe/"
+| summarize Requests = count(), FirstSeen = min(TimeGenerated), LastSeen = max(TimeGenerated), Paths = make_set(csUriStem, 20) by cIP, csUserAgent

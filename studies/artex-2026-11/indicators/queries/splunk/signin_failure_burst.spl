@@ -1,0 +1,7 @@
+``` Generated from sigma/signin_failure_burst.yml by scripts/convert_sigma.py. A starting point: tune before use. ```
+NOT ResultType="0"
+
+| bin _time span=5m
+| stats count as event_count by _time UserPrincipalName
+
+| search event_count >= 10

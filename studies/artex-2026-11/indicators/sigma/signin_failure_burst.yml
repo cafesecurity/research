@@ -1,0 +1,41 @@
+title: Burst of failed sign-ins for one account
+id: 9e3a7c12-6d4f-4b8e-a1c5-2f7b9d0e4c44
+name: signin_failure
+status: experimental
+description: |
+  Base rule: a failed sign-in. The correlation below raises an alert when one account fails
+  ten times in five minutes. Then look for a success for that account soon after: Bitrise saw
+  failed sign-ins on three bots two minutes before the one that got in, and 14 password resets
+  in two minutes. STARTING POINT: tune the threshold to your own baseline.
+references:
+  - https://research.cafesecurity.com/artex/readiness/
+  - https://bitrise.io/artex-incident-report
+author: Café Security Research
+date: 2026-11-26
+tags:
+  - attack.credential-access
+  - attack.t1110
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    ResultType: '0'
+  condition: not selection
+falsepositives:
+  - Users who mistype passwords; misconfigured services retrying old credentials
+level: low
+---
+title: Ten or more failed sign-ins for one account in five minutes
+id: 1c5e8a90-2b4d-4f6a-8c3e-7d9f0a1b5e55
+status: experimental
+correlation:
+  type: event_count
+  rules:
+    - signin_failure
+  group-by:
+    - UserPrincipalName
+  timespan: 5m
+  condition:
+    gte: 10
+level: medium
