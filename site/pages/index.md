@@ -22,6 +22,8 @@ Open, reproducible research and practical guides on AI and cybersecurity<!--if-n
 
 [**MCP Security Guide**<br>How to build a Model Context Protocol server that won't become someone's case study, from the decision to build one to the day you switch it off. Written for developers who work with coding agents, with one page for the security lead who approves the server.<br><span class="track-meta">Guide · {{MCP_GUIDE_DATE}}</span>](mcp/index.md){ .track-card }
 
+[**AI security glossary for CISOs**<br>Plain-English definitions of the AI and agent terms security leaders now hear every week, each with why it matters to security and the question to ask your vendor. With commonly confused terms, common misconceptions and a vendor-speak decoder.<br><span class="track-meta">Reference · 27 November 2026</span>](glossary/index.md){ .track-card }
+
 </div>
 
 ## How we work

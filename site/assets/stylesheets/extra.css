@@ -287,3 +287,17 @@
 [data-md-color-scheme="slate"] .cs-planner .md-button--primary { color: #0B1F3A; background: #5FC4C4; border-color: #5FC4C4; }
 [data-md-color-scheme="slate"] .pl-progress { border: 1px solid #8FB8E8; }
 [data-md-color-scheme="slate"] .pl-tool-group strong { color: #E8F0FA; }
+
+/* Glossary (glossary/): filter box and one block per term. */
+.cs-gloss-filter { margin: 1rem 0 1.2rem; padding: .8rem 1rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: .4rem; }
+.cs-gloss-filter label { display: block; font-size: .75rem; font-weight: 600; margin-bottom: .3rem; }
+.cs-gloss-filter input[type="search"] {
+  width: 100%; max-width: 28rem; box-sizing: border-box; font: inherit; font-size: .85rem; padding: .45rem .6rem;
+  color: var(--md-default-fg-color); background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lighter); border-radius: .25rem; }
+.md-typeset .cs-gloss-count { margin: .4rem 0 0; font-size: .75rem; color: var(--md-default-fg-color--light); min-height: 1em; }
+.md-typeset .cs-term { margin: 0 0 1.2rem; padding: .1rem 1rem .2rem; border-left: 4px solid var(--cs-teal); background: var(--md-code-bg-color); border-radius: .25rem; }
+.md-typeset .cs-term h3 { margin-top: .8rem; }
+.md-typeset .cs-term ul { margin-top: .4rem; }
+.md-typeset .cs-term[hidden], .md-typeset h2[hidden] { display: none; }
+.md-typeset .cs-term:target, .md-typeset .cs-term:has(h3:target) { border-left-color: var(--cs-amber); }

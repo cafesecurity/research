@@ -59,6 +59,7 @@ extra_css:
 extra_javascript:
   - assets/javascripts/claims.js
   - assets/javascripts/readiness.js
+  - assets/javascripts/glossary.js
 
 plugins:
   - search
@@ -138,6 +139,7 @@ nav:
           - For security leads: mcp/reference/for-security-leads.md
           - Sources: mcp/reference/sources.md
           - Changelog: mcp/changelog.md
+  - Glossary: glossary/index.md
   - About:
       - about/index.md
       - Publication policy: about/publication-policy.md
