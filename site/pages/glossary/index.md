@@ -33,6 +33,7 @@ Plain-English definitions of the AI terms you now hear every week. Each entry ha
 <a class="cs-topic" href="#the-basics"><strong>The basics</strong><span>Models, agents, tokens, context</span><span class="cs-topic-n" data-count="the-basics"></span></a>
 <a class="cs-topic" href="#how-agents-connect-to-things"><strong>How agents connect to things</strong><span>MCP, connectors, RAG, computer use</span><span class="cs-topic-n" data-count="how-agents-connect-to-things"></span></a>
 <a class="cs-topic" href="#attacks"><strong>Attacks</strong><span>Prompt injection, jailbreaks, the lethal trifecta</span><span class="cs-topic-n" data-count="attacks"></span></a>
+<a class="cs-topic" href="#ai-used-for-attack"><strong>AI used for attack</strong><span>Offensive agents, ARTEX, dual use, uplift</span><span class="cs-topic-n" data-count="ai-used-for-attack"></span></a>
 <a class="cs-topic" href="#defences-and-controls"><strong>Defences and controls</strong><span>Guardrails, approvals, gateways, sandboxes</span><span class="cs-topic-n" data-count="defences-and-controls"></span></a>
 <a class="cs-topic" href="#governance"><strong>Governance</strong><span>Shadow AI, roles, retention, open weights</span><span class="cs-topic-n" data-count="governance"></span></a>
 <a class="cs-topic" href="#building-software-with-ai"><strong>Building software with AI</strong><span>Vibe coding, coding agents, pipelines</span><span class="cs-topic-n" data-count="building-software-with-ai"></span></a>
@@ -315,6 +316,82 @@ See also: [Prompt injection](#prompt-injection) · [Toxic agent flow](#toxic-age
 - **Ask your vendor:** Can permissions be scoped per task, and is the default least privilege?
 
 See also: [Tool calling](#tool-calling) · [Non-human identity](#non-human-identity) · [Auto-approve mode](#auto-approve)
+
+</div>
+
+## AI used for attack
+
+The entries above are attacks *on* AI systems. These are about AI doing the attacking, against any system. Our [ARTEX study](../artex/index.md) covers one such tool in detail.
+
+<div class="cs-term" markdown="1" data-aud="start leaders security researchers">
+
+### Offensive AI agent { #offensive-agent }
+
+- **What it is:** Software that puts an AI model in charge of an attack. The model plans, runs ordinary security tools through a shell or a browser, reads the results and chooses the next step. Also called an AI pentest agent or AI hacking tool. It is an [agent](#agent) with a [harness](#harness) built for intrusion.
+- **Why it matters:** The capability comes from the model more than from the tool's own code, so blocking one named tool achieves little. One census counted roughly 70 open-source offensive agents by March 2026, against fewer than five before GPT-4 ([ARTEX study](#src-artex-study), claim C166).
+- **Ask your teams:** Do our detections watch what an intruder does, or only the names of known tools? Would we notice an attack that works through its steps in minutes?
+
+See also: [ARTEX](#artex) · [Autonomous penetration testing](#autonomous-pentest) · [Dual use](#dual-use)
+
+</div>
+
+<div class="cs-term" markdown="1" data-aud="leaders security risk">
+
+### Autonomous penetration testing { #autonomous-pentest }
+
+- **What it is:** The same capability used with permission: an AI agent tests your systems with little human direction, as a product, a service or an in-house tool.
+- **Why it matters:** It is an established commercial market ([ARTEX study](#src-artex-study), claim C190). OWASP has started a governance standard for these platforms, APTS, which covers scope enforcement, levels of autonomy and audit trails; it is at version 0.1.0 ([OWASP APTS](#src-apts)). An agent that decides for itself what is in scope can test the wrong system.
+- **Ask your vendor:** Which APTS tier do you meet? What enforces the test scope outside the model, and what record do we get of every action?
+
+See also: [Offensive AI agent](#offensive-agent) · [AI red teaming](#red-teaming) · [Sandbox](#sandbox)
+
+</div>
+
+<div class="cs-term" markdown="1" data-aud="leaders security researchers">
+
+### ARTEX { #artex }
+
+- **What it is:** An open-source [offensive AI agent](#offensive-agent). The FBI issued a FLASH alert about it on 13 November 2026. A planner and, by default, three workers attack with a shell, a browser and standard tools; it ships no exploit library ([ARTEX study](#src-artex-study), claims C120, C031, C042).
+- **Why it matters:** It is one example among many. We read its source code: the approval step is switched off for every agent by default, and the operator's scope limits are text given to the model, with nothing in the code enforcing them (claims C033, C081). Read [what the code says](../artex/overview.md).
+- **Ask your teams:** Have we checked the [indicators and detections](../artex/for-security-teams.md)? Would we still catch the behaviour if the tool changed its name?
+
+See also: [Dual use](#dual-use) · [Auto-approve](#auto-approve) · [Guardrails](#guardrails)
+
+</div>
+
+<div class="cs-term" markdown="1" data-aud="leaders security risk researchers">
+
+### Dual use { #dual-use }
+
+- **What it is:** A tool or capability that serves defenders and attackers alike. The agent that runs an authorised test can run an unauthorised one.
+- **Why it matters:** "It is a legitimate security tool" says nothing about who is running it. In ARTEX, every agent's instructions describe the work as an authorised penetration test, and nothing in the code checks that an authorisation exists ([ARTEX study](#src-artex-study), claim C184). The same holds for models: skill at finding flaws helps fix them and helps exploit them.
+- **Ask yourself:** Which offensive AI tools are approved here, who may run them, against which systems, and where is that recorded?
+
+See also: [Uplift](#uplift) · [Autonomous penetration testing](#autonomous-pentest)
+
+</div>
+
+<div class="cs-term" markdown="1" data-aud="researchers leaders risk">
+
+### Uplift { #uplift }
+
+- **What it is:** How much an AI system adds to what a person could already do. In safety work it usually means added ability to cause harm: the gain a user gets from a frontier model beyond what conventional tools give them ([Vaccaro et al.](#src-uplift)). *Cyber uplift* is the same idea applied to attacks on computer systems.
+- **Why it matters:** It changes the question from "can the model produce something dangerous?" to "does the model make an attacker more capable than before?" ([Vaccaro et al.](#src-uplift)). Uplift runs both ways: defenders gain from the same models.
+- **Ask your vendor:** What testing for cyber uplift did you do before release, and is it in the [model card](#model-card)?
+
+See also: [Evals](#evals) · [Dual use](#dual-use)
+
+</div>
+
+<div class="cs-term" markdown="1" data-aud="leaders security researchers">
+
+### AI-orchestrated attack { #ai-orchestrated-attack }
+
+- **What it is:** An attack in which the AI carries out most of the steps itself, while people choose the targets and review at a few points. In an *AI-assisted* attack a person directs each step and uses AI as a helper; Anthropic used the label "vibe hacking" for operations of that kind in 2025 ([Anthropic](#src-ai-espionage)).
+- **Why it matters:** Anthropic reported the first documented case in November 2025. Attackers manipulated its coding agent into attempting to break into roughly 30 organisations, and a small number of attempts succeeded. They got past the model's rules by splitting the work into small tasks that looked harmless and by claiming it was defensive testing. The model also invented some results, which the report calls an obstacle to fully autonomous attacks ([Anthropic](#src-ai-espionage)). This is the lab's own account of misuse of its own product.
+- **Ask your teams:** Are our detections and response times set for an intruder that can run many steps at once, around the clock?
+
+See also: [Jailbreak](#jailbreak) · [Offensive AI agent](#offensive-agent) · [Kill switch](#kill-switch)
 
 </div>
 
@@ -1213,6 +1290,8 @@ Sources for this table: [NIST AI 100-2](#src-nist-aml), [NIST AI 600-1](#src-nis
 | **MCP vs API vs A2A** | An API is any software interface. MCP is a standard way for agents to use tools and data, usually through APIs. A2A is for agents handing work to other agents. |
 | **Acting as the user vs acting as itself** | An agent using your sign-in has all your access and appears in logs as you. An agent with its own identity can be scoped, tracked and switched off on its own. |
 | **Evals vs red teaming vs penetration test** | Evals measure behaviour against a test set. Red teaming hunts for ways to make the AI misbehave. A penetration test looks for weaknesses in the systems around it. You need all three. |
+| **AI red teaming vs offensive AI agent** | AI red teaming attacks an AI system to find its weaknesses. An offensive AI agent is an AI doing the attacking, against any system. |
+| **AI-assisted vs AI-orchestrated attack** | Assisted: a person directs each step and the AI helps. Orchestrated: the AI runs most of the steps and people review at a few points. |
 | **Vibe coding vs AI-assisted development** | Vibe coding means accepting AI-written code without reading it. AI-assisted development means a developer uses AI but still reviews, tests and owns the code. The tools are the same; the discipline isn't. |
 | **Specification gaming vs goal misgeneralisation** | Specification gaming exploits a flawed objective. Goal misgeneralisation happens even with a correct objective: the model learned the wrong goal from its training. |
 | **Supervised vs unsupervised vs reinforcement learning** | Supervised learns from labelled answers, unsupervised finds patterns without labels, and reinforcement learning learns from rewards for actions. Language models use all three at different stages. |
@@ -1387,9 +1466,14 @@ Checked on 27 November 2026.
 102. <span id="src-rsi-axios"></span>Axios, [Models that improve on their own are AI's next big thing](https://axios.com/2026/01/27/models-improve-ai), 27 January 2026.
 103. <span id="src-rsi-survey"></span>Chen, Wang and Qu, [Recursive self-improvement in AI: from bounded self-refinement to autonomous research loops](https://arxiv.org/abs/2607.07663), 2026.
 104. <span id="src-rsi-ieee"></span>IEEE Spectrum, [Recursive self-improvement](https://spectrum.ieee.org/recursive-self-improvement-2676580377), 2026.
+105. <span id="src-artex-study"></span>Café Security Research, [ARTEX: what the code says](../artex/index.md), November 2026. Each claim number (C031, C033, C042, C081, C120, C166, C184, C190) can be looked up, with its evidence, in the [claims explorer](../claims.md). C166 and C190 rest on secondary sources named there.
+106. <span id="src-apts"></span>OWASP, [Autonomous Penetration Testing Standard (APTS)](https://owasp.org/www-project-autonomous-penetration-testing-standard), incubator project, version 0.1.0 ([standard on GitHub](https://github.com/OWASP/APTS)).
+107. <span id="src-uplift"></span>Vaccaro, Song, Almaatouq and Bakker (MIT), [Evaluating human-AI safety: a framework for measuring harmful capability uplift](https://arxiv.org/abs/2603.26676), 2026.
+108. <span id="src-ai-espionage"></span>Anthropic, [Disrupting the first reported AI-orchestrated cyber espionage campaign](https://www.anthropic.com/news/disrupting-AI-espionage), November 2025.
 
 ## Changes
 
+- **27 November 2026:** added "AI used for attack" (offensive AI agent, autonomous penetration testing, ARTEX, dual use, uplift, AI-orchestrated attack), with two matching confused pairs.
 - **27 November 2026:** renamed "AI glossary, with a security lens"; new navigation with topic cards and filters by reader (start here, leaders, security teams, developers, researchers, risk and compliance); cross-references between entries with hover definitions.
 - **27 November 2026:** added "How models are trained" (pretraining, learning types, post-training, RL, RLHF, RLVR, constitutional AI, synthetic data, world models, JEPA, System 1 and 2) and "AI safety and alignment" (alignment, reward hacking, goal misgeneralisation, emergent misalignment, sycophancy, scheming, agentic misalignment, interpretability, chain-of-thought monitoring, AI control, corrigibility, recursive self-improvement), with three new confused pairs.
 - **27 November 2026:** added "Personal agents: the 2026 products" (always-on agents; Claude Duet, dots, Gemini agent, Gemini Spark, Grok Bot, Muse, OpenClaw).

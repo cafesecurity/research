@@ -38,6 +38,7 @@ The guides above sit on top of a full, checkable evidence base:
 - **[How the prompts are designed](prompt-design.md)** — where the attack behaviour actually comes from.
 - **[The claims explorer](../claims.md)** — every finding as a numbered claim with its evidence. Search and filter.
 - **[Questions and answers](faq.md)** and the **[methodology](methodology.md)**.
+- **[The glossary](../glossary/index.md#ai-used-for-attack)** — plain-English definitions of the terms used here, such as offensive AI agent, dual use and uplift.
 
 !!! info "Which code we read, and why you can trust it"
     This review is **not** based on the original author's repository — they withdrew it in October 2026 — and the one dangerous version of ARTEX was a backdoor planted in a **Docker image, not in the public source code**. So we read the public source at a pinned commit that predates that image, and cross-checked it against **FailSafe**, a supply-chain-clean rebuild that keeps the tool's full capability rather than defanging it. Every finding is pinned to an exact commit that anyone can re-check. The [methodology](methodology.md) sets this out in full.
