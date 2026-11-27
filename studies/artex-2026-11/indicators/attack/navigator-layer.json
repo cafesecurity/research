@@ -85,7 +85,7 @@
       "techniqueID": "T1526",
       "tactic": "discovery",
       "score": 1,
-      "comment": "Stolen keys used to search cloud logs and map the account; planner/worker/verification agents share a knowledge graph (C127). Claims C126, C127.",
+      "comment": "Uses stolen keys to search cloud logs and map the account; Amazon describes planner/worker/verification agents sharing a knowledge graph (C127), but neither version reviewed has a separate verification agent (C030). Claims C030, C126, C127.",
       "enabled": true
     },
     {
@@ -134,21 +134,21 @@
       "techniqueID": "T1036",
       "tactic": "defense-evasion",
       "score": 1,
-      "comment": "v0.3.30 rotates 20 desktop user agents and reuses the target's own headers; agents told not to send CLI default headers (one stealth feature, C209). Old builds named the tool in UA (norma/0.4, artex-enrich/1.0) - historical-log search only (C208, C210). Prompts assert an unchecked 'authorised test' (C184). Detect: sigma/web_request_claims_authorised_test.yml; lean on behaviour + model-API boundary, not UA.",
+      "comment": "v0.3.30 rotates 20 desktop user agents and reuses the target's own headers; agents told not to send CLI default headers (one stealth feature, C209). Old builds named the tool in UA (norma/0.4, artex-enrich/1.0) - historical-log search only (C208, C210). Prompts call every engagement an authorised test (C184); Bitrise logged 'authorized-pentest/bitrise-readonly' in a real intrusion (C211). Detect: sigma/web_request_claims_authorised_test.yml; lean on behaviour + model-API boundary, not UA.",
       "enabled": true
     },
     {
       "techniqueID": "T1550.001",
       "tactic": "lateral-movement",
       "score": 1,
-      "comment": "Public reporting, not ARTEX's reviewed code: stolen long-lived keys and already-issued tokens reused to reach further services. Bitrise - disabling a key didn't recall tokens minted from it (C219); AWS - stolen keys searched cloud logs for more secrets (C126, C127). Detect: sigma/*_unexpected_source.yml (key/principal used from outside own ranges).",
+      "comment": "Public reporting of an ARTEX intrusion: already-issued tokens kept working after the key was disabled, so revocation lagged the attacker (Bitrise, C219). Detect: sigma/*_unexpected_source.yml (key/principal used from outside own ranges). Fix: revocation that recalls issued tokens.",
       "enabled": true
     },
     {
       "techniqueID": "T1021",
       "tactic": "lateral-movement",
       "score": 1,
-      "comment": "Model-improvised, not a shipped module: valid accounts + shell reach further hosts/services. Amazon describes planner/worker/verification agents sharing a knowledge graph, stolen keys funding further hunting (C127). Claims C126, C127. Detect: one identity reaching systems it doesn't normally touch at machine tempo (C203); internal apps must log requests (C213).",
+      "comment": "Wider class, not ARTEX's code or any public ARTEX report: JADEPUFFER's agent carried an intrusion end to end, lateral movement included (C199). Assume the same reach from a shell plus found accounts. Detect: one identity reaching systems it doesn't normally touch at machine tempo (C203); internal apps must log requests (C213).",
       "enabled": true
     }
   ],
