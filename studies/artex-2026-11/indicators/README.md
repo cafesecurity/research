@@ -20,6 +20,7 @@ Part of the study [ARTEX: what the code says](../README.md). These files turn th
 | [`queries/google-cloud-logging/`](queries/google-cloud-logging/) | A Google Cloud Logging query for the service-account rule. |
 | [`indicators.csv`](indicators.csv) | Names seen in incidents and console fingerprints, each with its source, the claims behind it and a caveat. |
 | [`yara/artex.yar`](yara/artex.yar) | YARA rules for finding a copy of ARTEX on systems you manage. |
+| [`attack/navigator-layer.json`](attack/navigator-layer.json) | The study's behaviours as a MITRE ATT&CK Navigator layer. See the [mapping report](../reports/attack-mapping.md) for the reasoning and detections. |
 
 ## How to use them
 

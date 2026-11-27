@@ -98,6 +98,7 @@ nav:
           - Teardown report: artex/teardown.md
           - Prompt design: artex/prompt-design.md
           - Indicators and detections: artex/indicators.md
+          - ATT&CK mapping: artex/attack-mapping.md
           - Questions and answers: artex/faq.md
           - Claims explorer: claims.md
           - Methodology: artex/methodology.md
