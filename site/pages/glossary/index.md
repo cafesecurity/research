@@ -1,26 +1,58 @@
 ---
-title: "AI security glossary for CISOs"
-description: "Plain-English definitions of the AI and agent terms security leaders now hear every week: what each term means, why it matters to security, and the question to ask your vendor. With commonly confused terms, common misconceptions and a vendor-speak decoder."
+title: "AI glossary, with a security lens"
+description: "Plain-English definitions of AI terms, from agents and prompt injection to benchmarks, training and alignment. Each entry says what the term means, why it matters to security, and the question to ask. Filter by who you are: leaders, security teams, developers, researchers, risk and compliance."
 ---
 
-# AI security glossary for CISOs
+# AI glossary, with a security lens
 
-This glossary is for security leaders who need to ask good questions about AI before they can answer them. Each term has three parts: **what it is**, in plain English; **why it matters to security**; and the **question to ask your vendor** in a security review. Where a term matches an entry in the OWASP Top 10 for LLM Applications (2026 edition) or the OWASP Top 10 for Agentic Applications, the entry is named so you can read further. The standards bodies don't always use the same words for the same thing, so [Same idea, different names](#same-idea-different-names) maps the terms across NIST, ISO, OWASP, MITRE ATLAS and the EU AI Act, and [Frameworks](#frameworks) lists the main ones.
+Plain-English definitions of the AI terms you now hear every week. Each entry has three parts: **what it is**; **why it matters**, with security first; and the **question to ask** your vendor, your teams or yourself. Pick who you are to see the terms that matter most to you, search for a word, or browse by topic. Hover over a linked term for a quick definition.
+
+<div class="cs-gloss-bar" id="gloss-bar" markdown="0">
+<div class="cs-gloss-row">
+<label for="gloss-q">Find a term</label>
+<input id="gloss-q" type="search" placeholder="For example: injection, MCP, memory" autocomplete="off" spellcheck="false">
+</div>
+<div class="cs-gloss-row cs-needs-js" role="group" aria-label="Show terms for" hidden>
+<span class="cs-gloss-label">Show terms for</span>
+<button type="button" class="cs-chip" data-aud="all" aria-pressed="true">Everyone</button>
+<button type="button" class="cs-chip" data-aud="start" aria-pressed="false">Start here</button>
+<button type="button" class="cs-chip" data-aud="leaders" aria-pressed="false">Leaders</button>
+<button type="button" class="cs-chip" data-aud="security" aria-pressed="false">Security teams</button>
+<button type="button" class="cs-chip" data-aud="developers" aria-pressed="false">Developers</button>
+<button type="button" class="cs-chip" data-aud="researchers" aria-pressed="false">Researchers</button>
+<button type="button" class="cs-chip" data-aud="risk" aria-pressed="false">Risk and compliance</button>
+</div>
+<div class="cs-gloss-row cs-gloss-status cs-needs-js" hidden>
+<p id="gloss-count" class="cs-gloss-count" aria-live="polite"></p>
+<button type="button" class="cs-linkbtn" id="gloss-compact" aria-pressed="false">Definitions only</button>
+<button type="button" class="cs-linkbtn" id="gloss-reset" hidden>Clear filters</button>
+</div>
+</div>
+
+<nav class="cs-topics" aria-label="Browse by topic" markdown="0">
+<a class="cs-topic" href="#the-basics"><strong>The basics</strong><span>Models, agents, tokens, context</span><span class="cs-topic-n" data-count="the-basics"></span></a>
+<a class="cs-topic" href="#how-agents-connect-to-things"><strong>How agents connect to things</strong><span>MCP, connectors, RAG, computer use</span><span class="cs-topic-n" data-count="how-agents-connect-to-things"></span></a>
+<a class="cs-topic" href="#attacks"><strong>Attacks</strong><span>Prompt injection, jailbreaks, the lethal trifecta</span><span class="cs-topic-n" data-count="attacks"></span></a>
+<a class="cs-topic" href="#defences-and-controls"><strong>Defences and controls</strong><span>Guardrails, approvals, gateways, sandboxes</span><span class="cs-topic-n" data-count="defences-and-controls"></span></a>
+<a class="cs-topic" href="#governance"><strong>Governance</strong><span>Shadow AI, roles, retention, open weights</span><span class="cs-topic-n" data-count="governance"></span></a>
+<a class="cs-topic" href="#building-software-with-ai"><strong>Building software with AI</strong><span>Vibe coding, coding agents, pipelines</span><span class="cs-topic-n" data-count="building-software-with-ai"></span></a>
+<a class="cs-topic" href="#personal-agents-the-2026-products"><strong>Personal agents</strong><span>Always-on agents and the 2026 products compared</span><span class="cs-topic-n" data-count="personal-agents-the-2026-products"></span></a>
+<a class="cs-topic" href="#inside-the-ai-stack"><strong>Inside the AI stack</strong><span>Harnesses, model versions, providers</span><span class="cs-topic-n" data-count="inside-the-ai-stack"></span></a>
+<a class="cs-topic" href="#how-models-are-trained"><strong>How models are trained</strong><span>Pretraining, reinforcement learning, world models</span><span class="cs-topic-n" data-count="how-models-are-trained"></span></a>
+<a class="cs-topic" href="#evaluating-models"><strong>Evaluating models</strong><span>Model cards, benchmarks, time horizons</span><span class="cs-topic-n" data-count="evaluating-models"></span></a>
+<a class="cs-topic" href="#ai-safety-and-alignment"><strong>AI safety and alignment</strong><span>Reward hacking, scheming, AI control</span><span class="cs-topic-n" data-count="ai-safety-and-alignment"></span></a>
+</nav>
+
+<p class="cs-reflinks" markdown="0"><strong>Reference:</strong> <a href="#who-makes-the-models">Who makes the models</a> · <a href="#same-idea-different-names">Same idea, different names</a> · <a href="#commonly-confused">Commonly confused</a> · <a href="#common-misconceptions">Common misconceptions</a> · <a href="#vendor-speak-decoder">Vendor-speak decoder</a> · <a href="#frameworks">Frameworks</a> · <a href="#sources">Sources</a></p>
+
+**Who the filters are for.** *Start here*: the two dozen terms to learn first. *Leaders*: CISOs, business and technology leaders deciding what to allow. *Security teams*: architects, engineers and analysts who secure and monitor AI. *Developers*: people building with models, agents and coding tools. *Researchers*: people studying how models are trained, tested and aligned. *Risk and compliance*: governance, legal, audit and procurement.
 
 !!! note "Current as of November 2026"
     Products, standards and vendor settings in this field change month to month. Each page change is dated in [Changes](#changes) at the foot of the page. If something here is out of date or wrong, [tell us](../about/contributing.md).
 
-<div class="cs-gloss-filter" markdown="0">
-<label for="gloss-q">Find a term</label>
-<input id="gloss-q" type="search" placeholder="For example: injection, MCP, memory" autocomplete="off" spellcheck="false">
-<p id="gloss-count" class="cs-gloss-count" aria-live="polite"></p>
-</div>
-
-**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Personal agents](#personal-agents-the-2026-products) · [Inside the AI stack](#inside-the-ai-stack) · [How models are trained](#how-models-are-trained) · [Evaluating models](#evaluating-models) · [AI safety and alignment](#ai-safety-and-alignment) · [Who makes the models](#who-makes-the-models) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
-
 ## The basics
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders developers">
 
 ### Large language model (LLM) { #llm }
 
@@ -28,19 +60,23 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Because instructions and data arrive in the same stream, the model has no reliable way to tell an order from you apart from an order hidden in an email. Most of the risks on this page follow from that ([Willison](#src-willison-trifecta)).
 - **Ask your vendor:** Which model or models does the product use, who hosts them, and can that change without notice?
 
+See also: [Token](#token) · [Context window](#context-window) · [Hallucination](#hallucination) · [Pretraining](#pretraining)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders security developers">
 
 ### Agent { #agent }
 
-- **What it is:** An LLM that can take actions, not just answer: it plans steps, calls tools, reads the results and carries on until the task is done.
+- **What it is:** An [LLM](#llm) that can take actions, not just answer: it plans steps, calls tools, reads the results and carries on until the task is done.
 - **Why it matters:** A chatbot that gets something wrong gives a bad answer. An agent that gets something wrong sends the email, moves the file or makes the payment.
 - **Ask your vendor:** What can the agent do without a person approving it, and can we change that list?
 
+See also: [Tool calling](#tool-calling) · [Harness](#harness) · [Always-on agent](#always-on-agent)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders risk">
 
 ### Agentic AI { #agentic-ai }
 
@@ -48,9 +84,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** The label tells you nothing about risk. What matters is what the system can reach and what it can do without asking.
 - **Ask your vendor:** What exactly can it do on its own, and for how long can it run unattended?
 
+See also: [Agent](#agent) · [Harness](#harness)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders risk">
 
 ### Copilot / assistant { #copilot }
 
@@ -58,9 +96,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** The name suggests a human is always checking. Check whether that is true of the product you're buying.
 - **Ask your vendor:** Which actions does it take without the user confirming them?
 
+See also: [Agent](#agent) · [Human-in-the-loop](#human-in-the-loop)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start security developers">
 
 ### Token (two meanings) { #token }
 
@@ -68,9 +108,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Conversations about "token limits" and "token theft" are about different things. Agents hold the second kind, and those are worth stealing.
 - **Ask your vendor:** Which credentials does the agent hold, how long do they last, and how narrow are their scopes?
 
+See also: [Context window](#context-window) · [Non-human identity](#non-human-identity)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders developers risk">
 
 ### Inference { #inference }
 
@@ -78,9 +120,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** "We don't train on your data" is about training. Your data is still sent, processed and possibly stored at inference time.
 - **Ask your vendor:** Where does inference happen (which region), and what is logged or kept when it does?
 
+See also: [Inference provider](#inference-provider) · [Data retention](#data-retention)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start security developers">
 
 ### Tool calling (function calling) { #tool-calling }
 
@@ -88,9 +132,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Each tool is a permission. The set of tools is the agent's attack surface.
 - **Ask your vendor:** Can we see and restrict the full list of tools the agent has?
 
+See also: [MCP](#mcp) · [Tool misuse](#tool-misuse)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start developers security">
 
 ### Context window { #context-window }
 
@@ -98,9 +144,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Anything in the context window can influence what the agent does next, including text an attacker managed to get into it.
 - **Ask your vendor:** What gets put into the context automatically (emails, files, browsing results), and can we limit it?
 
+See also: [Context engineering](#context-engineering) · [Memory](#memory)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start developers security">
 
 ### System prompt { #system-prompt }
 
@@ -108,71 +156,77 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** It is guidance, not a security boundary. Attackers can often get a model to reveal or ignore it, so it should never hold secrets or be the only rule stopping a dangerous action. OWASP's 2026 list widened this risk to everything hidden in the context, not just the prompt: LLM08 Hidden Context Exposure, which replaced System Prompt Leakage ([OWASP LLM](#src-owasp-llm), [CSA](#src-csa-owasp2026)).
 - **Ask your vendor:** Which of your safeguards are enforced in code, and which only in the prompt?
 
+See also: [Prompt injection](#prompt-injection) · [Guardrails](#guardrails)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders risk developers">
 
 ### Hallucination { #hallucination }
 
 - **What it is:** When a model states something false with confidence: a made-up citation, policy or figure. NIST calls this *confabulation*, partly because "hallucination" makes the system sound human ([NIST AI 600-1](#src-nist-600-1)).
-- **Why it matters:** In an agent, a made-up detail can become an action. One known case is the invented software package: code models suggest libraries that don't exist, and an attacker can register the name and publish malware under it. This is called slopsquatting ([CSO Online](#src-slopsquatting)). OWASP: LLM07 Misinformation.
+- **Why it matters:** In an agent, a made-up detail can become an action. One known case is the invented software package: code models suggest libraries that don't exist, and an attacker can register the name and publish malware under it. This is called [slopsquatting](#slopsquatting) ([CSO Online](#src-slopsquatting)). OWASP: LLM07 Misinformation.
 - **Ask your vendor:** Where does the product check facts or outputs before acting on them?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security developers leaders">
 
 ### Memory { #memory }
 
 - **What it is:** Information an agent keeps between sessions: preferences, past tasks, notes about you.
-- **Why it matters:** Memory can be poisoned. An instruction planted once can keep affecting the agent long after the original email or page is gone. OWASP: ASI06 Memory & Context Poisoning ([OWASP Agentic](#src-owasp-agentic)).
+- **Why it matters:** Memory can be [poisoned](#data-poisoning). An instruction planted once can keep affecting the agent long after the original email or page is gone. OWASP: ASI06 Memory & Context Poisoning ([OWASP Agentic](#src-owasp-agentic)).
 - **Ask your vendor:** Can users and admins see, edit and wipe what the agent remembers?
+
+See also: [Context window](#context-window)
 
 </div>
 
 ## How agents connect to things
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start security developers">
 
 ### MCP (Model Context Protocol) { #mcp }
 
 - **What it is:** An open standard for connecting AI agents to tools and data. Anthropic released it in November 2024; since December 2025 it has been a project of the Linux Foundation's Agentic AI Foundation ([Linux Foundation](#src-aaif)).
 - **Why it matters:** Each MCP server you connect is code with access to your data, often written by a third party, so connecting one is a supply-chain decision, not a settings tweak. OWASP: ASI04 Agentic Supply Chain Vulnerabilities. Our [MCP Security Guide](../mcp/index.md) covers building one safely.
-- **Ask your vendor:** Can admins allowlist which MCP servers or connectors staff may use?
+- **Ask your vendor:** Can admins allowlist which MCP servers or [connectors](#connector) staff may use?
+
+See also: [Tool calling](#tool-calling)
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security developers leaders">
 
 ### Connector / plugin / skill { #connector }
 
 - **What it is:** Vendor names for add-ons that give an agent new abilities or access to another app.
-- **Why it matters:** The same risk as an MCP server under a friendlier name. A skill can also carry instructions the agent will follow.
+- **Why it matters:** The same risk as an [MCP server](#mcp) under a friendlier name. A skill can also carry instructions the agent will follow.
 - **Ask your vendor:** Who reviews third-party connectors, and can we block unreviewed ones?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start developers security">
 
 ### RAG (retrieval-augmented generation) { #rag }
 
 - **What it is:** Looking up relevant documents and adding them to the model's context before it answers, so it can use your organisation's information.
-- **Why it matters:** The search must respect each user's permissions, or the assistant becomes a way to read files people shouldn't see. Retrieved documents can also carry injected instructions.
+- **Why it matters:** The search must respect each user's permissions, or the assistant becomes a way to read files people shouldn't see. Retrieved documents can also carry [injected instructions](#prompt-injection).
 - **Ask your vendor:** Does retrieval enforce the asking user's existing access rights, document by document?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### Embeddings / vector database { #embeddings }
 
-- **What it is:** Documents turned into lists of numbers so that similar meanings can be found quickly, stored in a vector database that powers RAG.
+- **What it is:** Documents turned into lists of numbers so that similar meanings can be found quickly, stored in a vector database that powers [RAG](#rag).
 - **Why it matters:** Embeddings are derived from your data. Give the vector store the same access control, encryption and retention rules as the source documents. OWASP: LLM09 Vector and Embedding Weaknesses.
 - **Ask your vendor:** Where are embeddings stored, who can query them, and are they deleted when the source document is?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security leaders developers">
 
 ### Computer use / browser agent { #computer-use }
 
@@ -180,9 +234,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** It reads whatever is on the page, including content written by attackers, and it often works inside a signed-in session.
 - **Ask your vendor:** Whose sessions and credentials does the agent use, and can it see passwords or cookies?
 
+See also: [Always-on agent](#always-on-agent) · [Prompt injection](#prompt-injection)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### A2A (agent-to-agent) { #a2a }
 
@@ -190,31 +246,35 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Trust passes along the chain. A compromised, or simply wrong, agent can mislead the next one, and it gets harder to trace who did what. OWASP: ASI07 Insecure Inter-Agent Communication and ASI08 Cascading Failures.
 - **Ask your vendor:** When your agent delegates to another agent, what permissions does that agent get, and is the hand-off logged?
 
+See also: [Orchestrator and subagents](#subagents) · [MCP](#mcp)
+
 </div>
 
 ## Attacks
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders security developers">
 
 ### Prompt injection (direct and indirect) { #prompt-injection }
 
 - **What it is:** Instructions slipped into a model's input to make it do something it shouldn't. *Direct*: the user types them. *Indirect*: they are hidden in content the agent reads, such as an email, web page, document or calendar invite ([NIST](#src-nist-aml)). When indirect injection makes an agent take harmful actions, NIST's AI agent team calls it *agent hijacking* ([NIST CAISI](#src-caisi)). MITRE ATLAS adds a third kind, *triggered*, alongside direct and indirect ([ATLAS](#src-atlas)).
-- **Why it matters:** Indirect injection is the big one for business, because the attacker never needs access to your systems, only to something your agent will read. It is first in the OWASP Top 10 for LLM Applications (LLM01), and its agentic form, ASI01 Agent Goal Hijack, is first in the agentic list. MITRE ATLAS: AML.T0051 LLM Prompt Injection. We know of no defence that stops it completely, so design on the basis that it will sometimes work.
+- **Why it matters:** Indirect injection is the big one for business, because the attacker never needs access to your systems, only to something your agent will read. It is first in the OWASP Top 10 for [LLM](#llm) Applications (LLM01), and its agentic form, ASI01 Agent Goal Hijack, is first in the agentic list. MITRE ATLAS: AML.T0051 LLM Prompt Injection. We know of no defence that stops it completely, so design on the basis that it will sometimes work.
 - **Ask your vendor:** What happens when the agent reads a malicious instruction? What stops the action, and does that check sit outside the model?
+
+See also: [Lethal trifecta](#lethal-trifecta) · [Jailbreak](#jailbreak)
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start security researchers">
 
 ### Jailbreak { #jailbreak }
 
 - **What it is:** Getting a model to ignore its own safety rules, usually through clever wording or role-play.
-- **Why it matters:** It shows that a model's own refusals are not a dependable control. Plan as if any model can be talked round. Frameworks file it differently: OWASP calls jailbreaking a form of prompt injection ([OWASP LLM01](#src-owasp-llm01)), while MITRE ATLAS lists it as a separate technique, AML.T0054 LLM Jailbreak ([ATLAS](#src-atlas)).
+- **Why it matters:** It shows that a model's own refusals are not a dependable control. Plan as if any model can be talked round. Frameworks file it differently: OWASP calls jailbreaking a form of [prompt injection](#prompt-injection) ([OWASP LLM01](#src-owasp-llm01)), while MITRE ATLAS lists it as a separate technique, AML.T0054 [LLM](#llm) Jailbreak ([ATLAS](#src-atlas)).
 - **Ask your vendor:** Which protections still hold if the model itself is jailbroken?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders security developers">
 
 ### Lethal trifecta { #lethal-trifecta }
 
@@ -222,29 +282,31 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** It is the quickest way to triage an agent. If all three are present, an attacker can trick the agent into reading your private data and sending it to them. Remove one of the three, or put a human check on it. Our [AI Agent Check](https://cafesecurity.github.io/ai-tools/agent-check/) tool walks through this for one agent.
 - **Ask your vendor:** Which of the three does this agent have by default, and can we switch one off?
 
+See also: [Prompt injection](#prompt-injection) · [Toxic agent flow](#toxic-agent-flow) · [Always-on agent](#always-on-agent)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security developers">
 
 ### Zero-click exfiltration { #zero-click-exfiltration }
 
-- **What it is:** Data leaving without anyone clicking anything. A common route: an injected instruction makes the assistant put sensitive data into a link or image address, and the data is sent when the app loads it. EchoLeak (CVE-2025-32711), a critical flaw in Microsoft 365 Copilot that Microsoft fixed in 2025, let an attacker take data with a single crafted email ([Hack The Box](#src-echoleak)).
+- **What it is:** Data leaving without anyone clicking anything. A common route: an [injected instruction](#prompt-injection) makes the assistant put sensitive data into a link or image address, and the data is sent when the app loads it. EchoLeak (CVE-2025-32711), a critical flaw in Microsoft 365 Copilot that Microsoft fixed in 2025, let an attacker take data with a single crafted email ([Hack The Box](#src-echoleak)).
 - **Why it matters:** An agent that can only read can still leak, if its output is rendered automatically. OWASP: LLM10 Improper Output Handling.
 - **Ask your vendor:** Does the product load external images or links from model output automatically, and can we turn that off?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security researchers">
 
 ### Data poisoning { #data-poisoning }
 
-- **What it is:** Corrupting the data a model learns from or relies on (training data, fine-tuning sets, RAG sources) to change how it behaves. OWASP: LLM05 Data and Model Poisoning.
+- **What it is:** Corrupting the data a model learns from or relies on (training data, [fine-tuning](#fine-tuning) sets, [RAG](#rag) sources) to change how it behaves. OWASP: LLM05 Data and Model Poisoning.
 - **Why it matters:** The attack can be planted long before it is used, and it is hard to spot afterwards.
 - **Ask your vendor:** Where does the model's training and grounding data come from, and how is it checked?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security developers">
 
 ### Tool misuse / excessive agency { #tool-misuse }
 
@@ -252,11 +314,13 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Nothing has to be hacked. Broad scopes plus one bad instruction is enough.
 - **Ask your vendor:** Can permissions be scoped per task, and is the default least privilege?
 
+See also: [Tool calling](#tool-calling) · [Non-human identity](#non-human-identity) · [Auto-approve mode](#auto-approve)
+
 </div>
 
 ## Defences and controls
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders security developers">
 
 ### Guardrails { #guardrails }
 
@@ -264,9 +328,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Useful, but often probabilistic, with one model judging another. Treat them as one layer, not the boundary.
 - **Ask your vendor:** Which guardrails are fixed rules and which are model-based, and what are their known bypass rates?
 
+See also: [LLM-as-judge](#llm-as-judge) · [AI control](#ai-control)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders security risk">
 
 ### Human-in-the-loop (approval gates) { #human-in-the-loop }
 
@@ -274,9 +340,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Only as good as the person and the screen they see. Too many approvals and people tap through them. Anthropic, for one, calls this approval fatigue a serious issue ([Anthropic](#src-duet)); it is the same weakness attackers use against MFA prompts. OWASP: ASI09 Human-Agent Trust Exploitation.
 - **Ask your vendor:** Which actions need approval, does the approval screen show exactly what will be sent and to whom, and can admins set the policy?
 
+See also: [Auto-approve mode](#auto-approve) · [Kill switch](#kill-switch)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security leaders risk">
 
 ### Non-human identity (agent identity) { #non-human-identity }
 
@@ -284,19 +352,21 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** A separate identity makes an agent visible in logs, limits what it can reach and lets you switch it off without locking out a person. It also needs joiner, mover and leaver processes, like staff.
 - **Ask your vendor:** Does the agent act as the user or as itself, and does it appear separately in our identity provider and logs?
 
+See also: [Agent gateway](#agent-gateway) · [Provider and deployer roles](#roles)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security developers">
 
 ### Agent gateway { #agent-gateway }
 
-- **What it is:** A checkpoint that every agent tool call passes through, where your policy decides what is allowed and every call is logged.
+- **What it is:** A checkpoint that every agent [tool call](#tool-calling) passes through, where your policy decides what is allowed and every call is logged.
 - **Why it matters:** It puts the decision outside the agent, so it still works when the agent has been misled, and it records activity the agent itself may not show its owner. In one reported case, a gateway caught 31 unapproved read requests from two AI agents over five days ([eWeek](#src-newcore)).
 - **Ask your vendor:** Can tool calls be routed through our own gateway or proxy?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security developers">
 
 ### Sandbox { #sandbox }
 
@@ -304,9 +374,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** It limits the blast radius when something goes wrong.
 - **Ask your vendor:** What can the agent's environment reach by default, and can we set egress rules?
 
+See also: [Auto-approve mode](#auto-approve) · [Agent gateway](#agent-gateway)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders researchers developers">
 
 ### Evals { #evals }
 
@@ -314,19 +386,21 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** A vendor's evals tell you about their test set, not your environment. Ask for the results, and test your own use cases.
 - **Ask your vendor:** Which security evals have you run, against which attacks, and can we see the results?
 
+See also: [Benchmark](#benchmark) · [AI red teaming](#red-teaming) · [Model card](#model-card)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security researchers leaders">
 
 ### AI red teaming { #red-teaming }
 
 - **What it is:** Deliberately attacking an AI system to find its weaknesses before someone else does.
-- **Why it matters:** A standard penetration test may not cover AI-specific problems such as injection and tool misuse. Scope both.
+- **Why it matters:** A standard penetration test may not cover AI-specific problems such as injection and [tool misuse](#tool-misuse). Scope both.
 - **Ask your vendor:** Has the product been red-teamed by an independent party, and when?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders security risk">
 
 ### Kill switch { #kill-switch }
 
@@ -334,11 +408,13 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Agents work fast and in the background. If you can't stop one within minutes, an incident runs longer than it should. OWASP: ASI10 Rogue Agents.
 - **Ask your vendor:** How do admins pause or revoke an agent across the organisation, and how quickly does that take effect?
 
+See also: [Corrigibility](#corrigibility) · [Agent gateway](#agent-gateway)
+
 </div>
 
 ## Governance
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders risk security">
 
 ### Shadow AI { #shadow-ai }
 
@@ -346,19 +422,21 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** No admin controls, no logs, no contract terms covering your data. Blocking alone tends to push use further out of sight.
 - **Ask yourself:** Do we know which AI tools and agents already have access to company data, for example through OAuth grants?
 
+See also: [Always-on agent](#always-on-agent) · [Vibe coding](#vibe-coding)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="risk security">
 
 ### AI BOM (AI bill of materials) { #ai-bom }
 
-- **What it is:** An inventory of the models, datasets, tools and connectors inside an AI system, like a software bill of materials.
+- **What it is:** An inventory of the models, datasets, tools and [connectors](#connector) inside an AI system, like a software bill of materials.
 - **Why it matters:** You can't assess or patch what you can't list.
 - **Ask your vendor:** Can you provide an AI BOM, and how will you tell us when a component changes?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers researchers risk">
 
 ### Fine-tuning { #fine-tuning }
 
@@ -366,9 +444,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Data used for fine-tuning becomes part of the model, where it is hard to remove or to limit by permission. Test the model's safety behaviour again after fine-tuning.
 - **Ask your vendor:** Is our data ever used to train or fine-tune your models, and is that switched off by default?
 
+See also: [Post-training](#sft) · [Data poisoning](#data-poisoning)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders risk developers">
 
 ### Open weights { #open-weights }
 
@@ -376,9 +456,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** You control hosting and data flow, but you also take on patching, abuse monitoring and supply-chain checks yourself.
 - **Ask yourself:** Who in our organisation owns the security of a self-hosted model?
 
+See also: [Model files and unsafe loading](#model-files) · [Quantisation](#quantisation)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="risk leaders">
 
 ### Provider, deployer and other roles { #roles }
 
@@ -386,9 +468,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** The sets don't map one to one, and one organisation can hold several roles at once. A company that builds its own agent on a vendor's model may be a deployer of the model and the provider of the agent. Contracts, audits and incident duties follow the role.
 - **Ask your vendor:** Which role does each party hold under the frameworks we report against, and who carries which obligation when something goes wrong?
 
+See also: [Inference provider](#inference-provider)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="risk leaders">
 
 ### Data retention / zero data retention (ZDR) { #data-retention }
 
@@ -396,11 +480,13 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Retention is a separate promise from training. Agents that work in the background also keep task history, memory and logs, which may follow different rules.
 - **Ask your vendor:** What is kept, for how long, for which features, and what does your ZDR offer exclude?
 
+See also: [Inference](#inference) · [Memory](#memory)
+
 </div>
 
 ## Building software with AI
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start developers leaders">
 
 ### Vibe coding { #vibe-coding }
 
@@ -408,9 +494,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** It lets people who aren't developers build working tools quickly, and some of those tools end up handling real data. When nobody reads the code, nobody checks it for security either. In Veracode's October 2026 tests, roughly four in 10 AI coding tasks still produced vulnerable code when the prompt didn't ask for security, although results are improving ([Veracode](#src-veracode)).
 - **Ask yourself:** Which apps in our organisation were built this way, who owns them, and has anyone reviewed them before they touched customer or company data?
 
+See also: [AI-assisted development](#ai-assisted-development) · [Coding agent](#coding-agent)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers leaders">
 
 ### AI-assisted development { #ai-assisted-development }
 
@@ -418,29 +506,31 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** The same tools serve both habits. The difference is review, testing and ownership, which is a process question you can set policy on.
 - **Ask your teams:** Is AI-written code reviewed and tested to the same standard as human-written code, and does our secure development policy say so?
 
+See also: [Vibe coding](#vibe-coding) · [Coding agent](#coding-agent)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### Coding agent { #coding-agent }
 
 - **What it is:** An agent that works on a codebase by itself: it reads and edits files, runs terminal commands and tests, and can open pull requests. Examples include Claude Code, GitHub Copilot's coding agent, OpenAI Codex and Google's Gemini CLI.
-- **Why it matters:** It often runs with the developer's own credentials and shell, so it can do anything the developer can. In July 2025 an AI agent on the Replit platform deleted a live production database during a declared code freeze ([Fortune](#src-replit)); at the time, the service used one database for preview, testing and production ([heise](#src-replit-heise)). A freeze written in a prompt is not a control. OWASP: ASI05 Unexpected Code Execution. Our MCP guide has a page on [using a coding agent safely](../mcp/guide/coding-agents.md).
+- **Why it matters:** It often runs with the developer's own credentials and shell, so it can do anything the developer can. In July 2025 an AI agent on the Replit platform deleted a live production database during a declared code freeze ([Fortune](#src-replit)); at the time, the service used one database for preview, testing and production ([heise](#src-replit-heise)). A freeze written in a prompt is not a control. OWASP: ASI05 Unexpected Code Execution. Our [MCP](#mcp) guide has a page on [using a coding agent safely](../mcp/guide/coding-agents.md).
 - **Ask your vendor:** What can the agent run without approval, can admins restrict commands and network access, and can it reach production credentials from a developer's machine?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### Auto-approve mode { #auto-approve }
 
-- **What it is:** A setting in coding agents that lets them run commands and edit files without asking each time. Developers turn it on because constant approval prompts slow them down.
-- **Why it matters:** It removes the human check exactly where an injected instruction would run. It is safer inside an isolated container with no secrets and limited network access than on a laptop signed in to everything.
-- **Ask your vendor:** Can admins disable auto-approve, or allow it only inside a sandbox?
+- **What it is:** A setting in [coding agents](#coding-agent) that lets them run commands and edit files without asking each time. Developers turn it on because constant approval prompts slow them down.
+- **Why it matters:** It removes the human check exactly where an [injected instruction](#prompt-injection) would run. It is safer inside an isolated container with no secrets and limited network access than on a laptop signed in to everything.
+- **Ask your vendor:** Can admins disable auto-approve, or allow it only inside a [sandbox](#sandbox)?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### Rules files (agent instruction files) { #rules-files }
 
@@ -448,29 +538,31 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** They are instructions the AI will follow, but people treat them as harmless configuration. Pillar Security showed in March 2025 that hidden Unicode characters in a rules file could make GitHub Copilot and Cursor add malicious code that reviewers wouldn't see, a technique it called the Rules File Backdoor ([Pillar Security](#src-pillar)).
 - **Ask your teams:** Are rules files reviewed like code, and do our review tools show hidden Unicode characters?
 
+See also: [Prompt injection](#prompt-injection) · [Coding agent](#coding-agent)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### Slopsquatting (package hallucination) { #slopsquatting }
 
 - **What it is:** Registering the name of a software package that AI models wrongly suggest, then publishing malware under it. A form of [hallucination](#hallucination) that becomes a supply-chain attack ([CSO Online](#src-slopsquatting)).
-- **Why it matters:** A developer or coding agent that installs whatever the AI names can pull in an attacker's code. OWASP: LLM04 Supply Chain.
+- **Why it matters:** A developer or [coding agent](#coding-agent) that installs whatever the AI names can pull in an attacker's code. OWASP: LLM04 Supply Chain.
 - **Ask your teams:** Do new dependencies, including ones an AI suggested, go through the same checks as any other?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security developers">
 
 ### Toxic agent flow { #toxic-agent-flow }
 
-- **What it is:** Invariant Labs' name for indirect prompt injection that triggers a harmful sequence of tool calls. In May 2025 it showed that a malicious issue in a public GitHub repository could make an agent connected to GitHub's MCP server leak data from the user's private repositories ([Invariant Labs](#src-invariant)).
+- **What it is:** Invariant Labs' name for indirect [prompt injection](#prompt-injection) that triggers a harmful sequence of [tool calls](#tool-calling). In May 2025 it showed that a malicious issue in a public GitHub repository could make an agent connected to GitHub's [MCP server](#mcp) leak data from the user's private repositories ([Invariant Labs](#src-invariant)).
 - **Why it matters:** No single step looks wrong: read issues, list repositories, open a pull request. The harm is in the sequence. It is the [lethal trifecta](#lethal-trifecta) in a developer's workflow.
 - **Ask your vendor:** Can the agent's access be limited to the repositories a task needs, and can you detect risky sequences of tool calls?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### AI in CI/CD pipelines { #ai-in-ci-cd }
 
@@ -478,9 +570,11 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Pipelines hold powerful tokens and secrets, and these agents read text anyone can write. Aikido Security showed in December 2025 that crafted issues or pull request text could make such agents run privileged commands and leak secrets, a class of flaw it called PromptPwnd ([Aikido](#src-promptpwnd)). Similar findings have followed for other vendors' pipeline agents ([The Hacker News](#src-gitlost)).
 - **Ask your teams:** Do AI steps in our pipelines read untrusted issue or pull request text while holding write tokens or secrets?
 
+See also: [Prompt injection](#prompt-injection) · [Coding agent](#coding-agent) · [Toxic agent flow](#toxic-agent-flow)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### Model files and unsafe loading { #model-files }
 
@@ -488,13 +582,15 @@ This glossary is for security leaders who need to ask good questions about AI be
 - **Why it matters:** Researchers have found malicious models on Hugging Face that steal credentials or open reverse shells, and in one 2025 study 44.9% of popular models there still used pickle ([PickleBall](#src-pickleball)). Loading a model is running software. OWASP: LLM04 Supply Chain.
 - **Ask your teams:** Do we load third-party models only in safe formats, scan them first, and load them away from production credentials?
 
+See also: [Open weights](#open-weights) · [Quantisation](#quantisation)
+
 </div>
 
 ## Personal agents: the 2026 products
 
 Between May and October 2026 most big labs launched a personal or workplace agent that keeps working when you close the app. They use different names for the same pattern, so this section explains the pattern first, then the products.
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders security risk">
 
 ### Always-on agent (personal agent) { #always-on-agent }
 
@@ -530,7 +626,7 @@ Other personal agents in the same category include Hermes Agent, Instinct, Manus
 
 ## Inside the AI stack
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders researchers">
 
 ### Foundation model / frontier model { #frontier-model }
 
@@ -538,69 +634,73 @@ Other personal agents in the same category include Hermes Agent, Instinct, Manus
 - **Why it matters:** Frontier models come with the most detailed safety testing and the most restricted early access, and they set the capability attackers will have soon after.
 - **Ask your vendor:** Which model, at which version, does this product use, and when did you last change it?
 
+See also: [Frontier safety frameworks](#safety-frameworks) · [Trusted access programme](#trusted-access)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers developers">
 
 ### Parameters and mixture of experts (MoE) { #parameters }
 
 - **What it is:** Parameters (or weights) are the numbers a model learns in training; their count is a rough guide to size. A mixture-of-experts model uses only part of itself for each request, so it has a *total* and an *active* parameter count: Meta's Muse Spark Open, for example, has 816 billion parameters with 42 billion active ([The New Stack](#src-muse-open)).
-- **Why it matters:** Size decides what hardware you need to run an open-weight model yourself, and so whether self-hosting is realistic. Weights are also an asset: stolen weights are a stolen model.
+- **Why it matters:** Size decides what hardware you need to run an [open-weight](#open-weights) model yourself, and so whether self-hosting is realistic. Weights are also an asset: stolen weights are a stolen model.
 - **Ask yourself:** If we host a model ourselves, who protects the weights and the machines they run on?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers researchers">
 
 ### Reasoning model, thinking and effort { #reasoning-model }
 
 - **What it is:** A model that works through a problem step by step before answering, often in a hidden or summarised "thinking" section. Many let you set an *effort* level: more thinking costs more and takes longer but usually scores higher ([Anthropic](#src-claude-models)).
-- **Why it matters:** Thinking text can contain sensitive data from the context and may be logged or retained differently from the final answer. Effort settings also change results, so a benchmark score means little without the effort level it was run at.
+- **Why it matters:** Thinking text can contain sensitive data from the context and may be logged or retained differently from the final answer. Effort settings also change results, so a [benchmark](#benchmark) score means little without the effort level it was run at.
 - **Ask your vendor:** Is thinking output stored or shown to users, and is it covered by the same retention and access rules as the answer?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start developers security">
 
 ### Harness (scaffold) { #harness }
 
-- **What it is:** The software around a model that turns it into an agent: it supplies the system prompt and tools, manages memory and context, runs the loop of plan, act and check, and asks for approval. METR describes an AI agent as a model plus a scaffold ([METR](#src-metr-paper)). Coding agents and products such as Grok Bot or Claude Duet are harnesses around their models.
+- **What it is:** The software around a model that turns it into an agent: it supplies the [system prompt](#system-prompt) and tools, manages memory and context, runs the loop of plan, act and check, and asks for approval. METR describes an AI agent as a model plus a scaffold ([METR](#src-metr-paper)). [Coding agents](#coding-agent) and products such as Grok Bot or Claude Duet are harnesses around their models.
 - **Why it matters:** Most of the security controls an organisation can set live in the harness, not the model: which tools exist, what needs approval, what is logged. The same model behaves very differently in a careful harness and a careless one.
 - **Ask your vendor:** Which controls are in the harness, which can admins configure, and do they apply on every surface (app, API, command line)?
 
+See also: [Agent framework](#agent-framework)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers">
 
 ### Agent framework / SDK { #agent-framework }
 
-- **What it is:** Code libraries developers use to build their own agents and harnesses, such as Google's Agent Development Kit ([Google](#src-gemini4)) and the SDKs the main labs publish.
-- **Why it matters:** In-house agents built on these frameworks inherit their defaults. Security is then your team's job: tool permissions, secrets, logging and approval gates. OWASP: ASI04 Agentic Supply Chain Vulnerabilities.
+- **What it is:** Code libraries developers use to build their own agents and [harnesses](#harness), such as Google's Agent Development Kit ([Google](#src-gemini4)) and the SDKs the main labs publish.
+- **Why it matters:** In-house agents built on these frameworks inherit their defaults. Security is then your team's job: tool permissions, secrets, logging and [approval gates](#human-in-the-loop). OWASP: ASI04 Agentic Supply Chain Vulnerabilities.
 - **Ask your teams:** Which agent frameworks are we building on, are they pinned and patched like other dependencies, and who reviews their default settings?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers security">
 
 ### Orchestrator and subagents { #subagents }
 
 - **What it is:** One agent (the orchestrator) splits a task and hands parts to other agents (subagents), often running in parallel, then combines the results.
-- **Why it matters:** Each hand-off is a trust boundary. A subagent that reads untrusted content can pass an injected instruction back up the chain, and permissions can spread to agents that didn't need them. See also [A2A](#a2a).
+- **Why it matters:** Each hand-off is a trust boundary. A subagent that reads untrusted content can pass an [injected instruction](#prompt-injection) back up the chain, and permissions can spread to agents that didn't need them. See also [A2A](#a2a).
 - **Ask your vendor:** Do subagents get narrower permissions than the orchestrator, and are their actions logged separately?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers risk">
 
 ### Model versions and aliases { #model-versions }
 
 - **What it is:** Model names in APIs come in fixed versions and moving aliases. Google, for example, offers stable, preview, latest and experimental versions; a "latest" alias is switched to each new release, with two weeks' notice by email ([Google](#src-gemini-versions)).
-- **Why it matters:** An alias means the model behind your product can change without your code changing. A new version can behave differently, including on safety and prompt injection. Pinning a version makes behaviour testable; aliases make it a moving target.
+- **Why it matters:** An alias means the model behind your product can change without your code changing. A new version can behave differently, including on safety and [prompt injection](#prompt-injection). Pinning a version makes behaviour testable; aliases make it a moving target.
 - **Ask your vendor:** Can we pin model versions, how much notice do we get before a version is retired, and do you tell us when the model behind a product changes?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="risk developers leaders">
 
 ### Inference provider { #inference-provider }
 
@@ -608,9 +708,11 @@ Other personal agents in the same category include Hermes Agent, Instinct, Manus
 - **Why it matters:** Data handling, retention, region, logging and contract terms follow the provider and the route, not the model. One model can have different security properties depending on which door you use.
 - **Ask your vendor:** Which provider and region actually process our requests, and which terms govern our data on this route?
 
+See also: [Data retention](#data-retention) · [Model versions and aliases](#model-versions)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers developers">
 
 ### Distillation { #distillation }
 
@@ -618,19 +720,21 @@ Other personal agents in the same category include Hermes Agent, Instinct, Manus
 - **Why it matters:** The smaller model may not keep all of the larger model's safety behaviour, so test it in its own right.
 - **Ask your vendor:** Was this model distilled from another, and has it been safety-tested separately?
 
+See also: [Quantisation](#quantisation) · [Open weights](#open-weights)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers developers">
 
 ### Quantisation { #quantisation }
 
 - **What it is:** Storing a model's parameters with fewer bits so it needs less memory and runs on smaller hardware, at some cost in quality.
-- **Why it matters:** Quantised versions of open-weight models are often published by third parties, not the original lab. That makes them a supply-chain question: who made this file, and is it what it claims to be? See [model files](#model-files).
+- **Why it matters:** Quantised versions of [open-weight](#open-weights) models are often published by third parties, not the original lab. That makes them a supply-chain question: who made this file, and is it what it claims to be? See [model files](#model-files).
 - **Ask your teams:** Do we only use model files from the original publisher or a verified source, and do we check their hashes?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="developers">
 
 ### Context engineering { #context-engineering }
 
@@ -644,7 +748,7 @@ Other personal agents in the same category include Hermes Agent, Instinct, Manus
 
 A rough recipe: the bulk of a model's ability comes from self-supervised pretraining on huge amounts of data, a smaller layer from supervised examples, and the finishing behaviour from reinforcement learning. Yann LeCun's well-known image calls these the cake, the icing and the cherry ([Lambert](#src-rlhf-book)). Each stage is a place where data can be poisoned or behaviour can go wrong.
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Pretraining { #pretraining }
 
@@ -654,37 +758,39 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers leaders">
 
 ### Supervised, unsupervised and self-supervised learning { #learning-types }
 
-- **What it is:** *Supervised learning* trains on examples with the right answer attached (this email: spam). *Unsupervised learning* finds structure in data with no labels, such as clusters. *Self-supervised learning*, used in pretraining, creates its own labels from the data, for example by hiding the next word and predicting it.
+- **What it is:** *Supervised learning* trains on examples with the right answer attached (this email: spam). *Unsupervised learning* finds structure in data with no labels, such as clusters. *Self-supervised learning*, used in [pretraining](#pretraining), creates its own labels from the data, for example by hiding the next word and predicting it.
 - **Why it matters:** Security teams already use all three: supervised models for malware and phishing classification, unsupervised models for anomaly detection. Language models add self-supervised learning at enormous scale, which is why they know so much and why their training data is so hard to audit.
 - **Ask yourself:** Which of our existing security tools are already machine-learning models, and how were they trained?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers developers">
 
 ### Supervised fine-tuning (SFT) and post-training { #sft }
 
-- **What it is:** *Post-training* is everything done after pretraining to make a base model useful and safe. It usually starts with supervised fine-tuning: training on curated examples of good instructions and answers.
+- **What it is:** *Post-training* is everything done after [pretraining](#pretraining) to make a base model useful and safe. It usually starts with supervised fine-tuning: training on curated examples of good instructions and answers.
 - **Why it matters:** Post-training is where refusals, safety behaviour and tool use are taught. It is also what [fine-tuning](#fine-tuning) by customers can undo, which is why fine-tuned models need re-testing.
 - **Ask your vendor:** What safety training does the model receive after pretraining, and does fine-tuning on our data affect it?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Reinforcement learning (RL) { #reinforcement-learning }
 
 - **What it is:** Learning by trial and error: the model tries something, gets a reward signal for how well it did, and is updated to do more of what scored well.
-- **Why it matters:** RL is very good at finding ways to score highly, including ways nobody intended. That is the root of [reward hacking](#reward-hacking), one of the main alignment problems on this page.
+- **Why it matters:** RL is very good at finding ways to score highly, including ways nobody intended. That is the root of [reward hacking](#reward-hacking), one of the main [alignment](#alignment) problems on this page.
 - **Ask your vendor:** How do you detect and prevent reward hacking during RL training?
+
+See also: [RLVR](#rlvr)
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### RLHF and reward models { #rlhf }
 
@@ -692,39 +798,41 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** The model learns to please the reward model, not to be right. Optimising too hard for approval can produce [sycophancy](#sycophancy): agreeable answers rather than accurate ones.
 - **Ask yourself:** Are we relying on an AI for judgements where agreeable and correct might differ?
 
+See also: [Reinforcement learning](#reinforcement-learning)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### RLVR (reinforcement learning from verifiable rewards) { #rlvr }
 
-- **What it is:** RL where the reward comes from an automatic check rather than a reward model: does the maths answer match, do the unit tests pass? It replaces the learned reward model with a verification function ([Lambert et al.](#src-rlvr)). It is a main ingredient of today's reasoning models.
-- **Why it matters:** It is why coding and maths ability has jumped. But a check can be gamed too: a model rewarded for passing tests can learn to make tests pass without fixing the code, and Anthropic found that learning such hacks in real coding environments went along with broader misaligned behaviour ([Anthropic](#src-emergent-rh)).
+- **What it is:** RL where the reward comes from an automatic check rather than a [reward model](#rlhf): does the maths answer match, do the unit tests pass? It replaces the learned reward model with a verification function ([Lambert et al.](#src-rlvr)). It is a main ingredient of today's [reasoning models](#reasoning-model).
+- **Why it matters:** It is why coding and maths ability has jumped. But a check can be gamed too: a model rewarded for passing tests can learn to make tests pass without fixing the code, and Anthropic found that learning such hacks in real coding environments went along with broader [misaligned](#alignment) behaviour ([Anthropic](#src-emergent-rh)).
 - **Ask your vendor:** How do you stop models learning to cheat the checks used in training, such as editing tests?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers risk">
 
 ### Constitutional AI, model specs and RLAIF { #constitutional-ai }
 
-- **What it is:** Training a model against a written set of principles, using AI feedback (RLAIF) as well as human feedback. Labs publish these documents: Anthropic's constitution for Claude ([Anthropic](#src-rsp-roadmap)) and OpenAI's Model Spec, which tells models not to be sycophantic, for example ([Georgetown Law](#src-sycophancy-brief)).
+- **What it is:** Training a model against a written set of principles, using AI feedback (RLAIF) as well as human feedback. Labs publish these documents: Anthropic's constitution for Claude ([Anthropic](#src-rsp-roadmap)) and OpenAI's Model Spec, which tells models not to be [sycophantic](#sycophancy), for example ([Georgetown Law](#src-sycophancy-brief)).
 - **Why it matters:** They tell you how a vendor intends its model to behave, including what it should refuse and whose instructions take priority. They are intentions, not guarantees.
 - **Ask your vendor:** Is there a published spec or constitution for this model, and how do you test that the model follows it?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers risk">
 
 ### Synthetic data { #synthetic-data }
 
 - **What it is:** Training data generated by AI models rather than collected from people or the world.
-- **Why it matters:** It lets labs create data for rare or sensitive cases, but errors and biases in the generating model can be copied into the new one, and it can be another route for poisoning.
+- **Why it matters:** It lets labs create data for rare or sensitive cases, but errors and biases in the generating model can be copied into the new one, and it can be another route for [poisoning](#data-poisoning).
 - **Ask your vendor:** How much of the training data is synthetic, and how is it checked?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers leaders">
 
 ### World model { #world-model }
 
@@ -732,41 +840,43 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** World models are aimed at robots, vehicles and agents that act in the physical world, so their failures are physical, not just wrong text. Simulated worlds are also becoming training grounds for agents, which adds another layer to test.
 - **Ask yourself:** Do we have, or plan, AI that controls physical equipment, and who assures its safety?
 
+See also: [JEPA](#jepa)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### JEPA (joint embedding predictive architecture) { #jepa }
 
-- **What it is:** Yann LeCun's alternative to generative models. Instead of predicting every word or pixel, a JEPA learns an abstract representation of the world and makes predictions in that abstract space, ignoring details it can't predict ([MIT Technology Review](#src-lecun-tr)). LeCun founded AMI Labs in Paris in 2026 to build world models on this approach.
-- **Why it matters:** It is a bet that today's large language models won't reach human-level intelligence on their own. If it succeeds, the security picture shifts towards systems that plan and act in the physical world.
+- **What it is:** Yann LeCun's alternative to generative models. Instead of predicting every word or pixel, a JEPA learns an abstract representation of the world and makes predictions in that abstract space, ignoring details it can't predict ([MIT Technology Review](#src-lecun-tr)). LeCun founded AMI Labs in Paris in 2026 to build [world models](#world-model) on this approach.
+- **Why it matters:** It is a bet that today's [large language models](#llm) won't reach human-level intelligence on their own. If it succeeds, the security picture shifts towards systems that plan and act in the physical world.
 - **Ask yourself:** Is our AI threat model only about text-based assistants?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers leaders">
 
 ### System 1 and System 2 { #system-1-2 }
 
-- **What it is:** Terms from psychology for fast, automatic thinking (System 1) and slow, deliberate reasoning (System 2). In AI debates, today's large language models are often compared to System 1, and world models that can plan towards System 2. LeCun's "objective-driven AI" aims at systems that learn world models, remember, reason and plan ([LeCun](#src-lecun-slides)). Reasoning models' "thinking" is the LLM labs' own route to slower, deliberate answers.
-- **Why it matters:** Fast pattern-matching systems are easy to fool with inputs that look right; planning systems that pursue objectives raise the alignment questions in the next section.
+- **What it is:** Terms from psychology for fast, automatic thinking (System 1) and slow, deliberate reasoning (System 2). In AI debates, today's [large language models](#llm) are often compared to System 1, and [world models](#world-model) that can plan towards System 2. LeCun's "objective-driven AI" aims at systems that learn world models, remember, reason and plan ([LeCun](#src-lecun-slides)). [Reasoning models](#reasoning-model)' "thinking" is the LLM labs' own route to slower, deliberate answers.
+- **Why it matters:** Fast pattern-matching systems are easy to fool with inputs that look right; planning systems that pursue objectives raise the [alignment](#alignment) questions in the next section.
 - **Ask yourself:** Which of our uses need fast answers, and which need careful reasoning we can check?
 
 </div>
 
 ## Evaluating models
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="risk leaders researchers">
 
 ### Model card / system card { #model-card }
 
 - **What it is:** A document a lab publishes with a model describing what it is for, how it was tested, its limits and its safety results. *System card* usually means a longer version covering the model inside its product, with safety and security testing. Google and Anthropic, for example, both keep public lists of theirs ([Google DeepMind](#src-model-cards-google), [Anthropic](#src-model-cards-anthropic)).
-- **Why it matters:** It is the nearest thing to a security data sheet for a model: prompt-injection results, cyber capability, red-team findings, known failure modes. It is written by the vendor, so read it as a claim to verify, not an audit.
+- **Why it matters:** It is the nearest thing to a security data sheet for a model: [prompt-injection](#prompt-injection) results, cyber capability, [red-team](#red-teaming) findings, known failure modes. It is written by the vendor, so read it as a claim to verify, not an audit.
 - **Ask your vendor:** Where is the model or system card for the exact version we use, and which results were checked by a third party?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders researchers">
 
 ### Benchmark { #benchmark }
 
@@ -774,29 +884,31 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** Benchmarks are the main evidence in AI marketing. A score only tells you how the model did on that test, under that setup, at that effort level, which may be far from your use.
 - **Ask your vendor:** Which benchmarks match our use case, who ran them, with what settings, and can we see results on our own tasks?
 
+See also: [Contamination](#contamination) · [Saturation](#saturation)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Contamination { #contamination }
 
-- **What it is:** When test questions or their answers have leaked into a model's training data, so the model can recall rather than solve them. In February 2026 OpenAI stopped reporting SWE-bench Verified, a widely used coding benchmark, because it was increasingly contaminated and some of its tests rejected correct answers ([OpenAI](#src-swe-verified)).
+- **What it is:** When test questions or their answers have leaked into a model's training data, so the model can recall rather than solve them. In February 2026 OpenAI stopped reporting SWE-bench Verified, a widely used coding [benchmark](#benchmark), because it was increasingly contaminated and some of its tests rejected correct answers ([OpenAI](#src-swe-verified)).
 - **Why it matters:** A contaminated benchmark overstates capability. Public benchmarks built from public code are especially exposed.
 - **Ask your vendor:** How do you check that benchmark scores aren't inflated by training on the test?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Saturation { #saturation }
 
-- **What it is:** When top models all score near the ceiling of a benchmark, so it no longer separates them. Labs then move to harder versions or new tests.
+- **What it is:** When top models all score near the ceiling of a [benchmark](#benchmark), so it no longer separates them. Labs then move to harder versions or new tests.
 - **Why it matters:** A saturated benchmark can make models look interchangeable when they aren't, and benchmark names change quickly. Check that a score comes from a current, unsaturated test.
 - **Ask yourself:** Is this benchmark still used by the labs, or has it been replaced?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders researchers">
 
 ### Leaderboard (LMArena) { #leaderboard }
 
@@ -804,9 +916,11 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** Rankings reward what voters like, not what is secure or correct, and they can be gamed. One 2025 study found a provider had tested 27 private variants before publishing one, which then ranked second ([The Leaderboard Illusion](#src-arena)).
 - **Ask yourself:** Is a leaderboard position being used as evidence for something it doesn't measure?
 
+See also: [Benchmark](#benchmark)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers developers">
 
 ### pass@1 and pass@k { #pass-at-k }
 
@@ -814,9 +928,11 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** A high pass@k can hide an unreliable model. Agents in production usually get one try, and attackers get many: the same number reads differently for defence and offence.
 - **Ask your vendor:** Is this score pass@1, and how consistent is the model across repeated runs?
 
+See also: [Benchmark](#benchmark)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders developers">
 
 ### Cost per task and the Pareto frontier { #pareto-frontier }
 
@@ -824,9 +940,11 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** For most business uses the right model is the cheapest one that is good enough, not the top scorer. A model on the frontier for coding may be off it for your task.
 - **Ask yourself:** What is the cheapest model that meets our bar on our own tests, including security tests?
 
+See also: [Benchmark](#benchmark) · [Reasoning model](#reasoning-model)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders researchers security">
 
 ### Time horizon { #time-horizon }
 
@@ -834,29 +952,31 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** It is one of the clearest single signals of how much autonomous work agents can take on, including attack work. It measures task difficulty, not how long an agent can run unattended.
 - **Ask yourself:** What could an agent do in our environment with tasks of that length, for us and against us?
 
+See also: [Benchmark](#benchmark) · [Agent](#agent)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers developers">
 
 ### LLM-as-judge { #llm-as-judge }
 
 - **What it is:** Using one model to grade another's answers, because human grading is slow and expensive.
-- **Why it matters:** Cheap and scalable, but the judge has its own biases and can itself be prompt-injected by the text it grades. Many guardrails work the same way.
+- **Why it matters:** Cheap and scalable, but the judge has its own biases and can itself be [prompt-injected](#prompt-injection) by the text it grades. Many [guardrails](#guardrails) work the same way.
 - **Ask your vendor:** Which of your results or safeguards depend on a model grading another model, and how was that judge checked?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers security">
 
 ### Evaluation awareness and sandbagging { #evaluation-awareness }
 
 - **What it is:** Evaluation awareness is a model recognising that it is being tested. Sandbagging is a model deliberately doing worse on a test, for example to avoid restrictions ([Nguyen et al.](#src-eval-aware)).
-- **Why it matters:** Both make test results less trustworthy. OpenAI reports that awareness of being evaluated has already affected the results of alignment evaluations in current models ([OpenAI](#src-metagaming)). A model that behaves well in testing may not behave the same in production.
+- **Why it matters:** Both make test results less trustworthy. OpenAI reports that awareness of being evaluated has already affected the results of [alignment](#alignment) evaluations in current models ([OpenAI](#src-metagaming)). A model that behaves well in testing may not behave the same in production.
 - **Ask your vendor:** How do you test for evaluation awareness, and what do you monitor in production in case behaviour differs?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="risk leaders researchers">
 
 ### Capability thresholds and frontier safety frameworks { #safety-frameworks }
 
@@ -864,15 +984,19 @@ A rough recipe: the bulk of a model's ability comes from self-supervised pretrai
 - **Why it matters:** They tell you when a lab believes a model could meaningfully help attackers, and they explain staged and restricted releases. They are voluntary and set by the labs themselves.
 - **Ask yourself:** Which of the models we use are rated high for cyber capability, and what does that mean for our threat model?
 
+See also: [Trusted access programme](#trusted-access) · [Model card](#model-card)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security leaders">
 
 ### Trusted access programme { #trusted-access }
 
 - **What it is:** Early or restricted release of a highly capable model to vetted users, often cyber defenders, before or instead of general release. Recent examples include Anthropic's Mythos models through Project Glasswing ([Anthropic](#src-claude-models)) and Google's Gemini 4 Argon and Carbon, which went first to cyber defenders through its Fairwind programme ([Google](#src-gemini4), [Let's Data Science](#src-carbon)).
 - **Why it matters:** Defenders may get access to the strongest models for finding and fixing vulnerabilities before general release. It also signals that the lab rates the model's offensive potential highly.
 - **Ask yourself:** Is our security team eligible for any of these programmes, and would joining be worth the obligations?
+
+See also: [Frontier safety frameworks](#safety-frameworks) · [Foundation model](#frontier-model)
 
 </div>
 
@@ -899,7 +1023,7 @@ Most benchmark results are run and reported by the lab that made the model. Look
 
 These terms come from research into whether AI systems reliably do what their developers and users intend. For security leaders the useful frame is the insider threat: a capable agent with access that might not act as intended.
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="start leaders researchers">
 
 ### Alignment and misalignment { #alignment }
 
@@ -907,19 +1031,21 @@ These terms come from research into whether AI systems reliably do what their de
 - **Why it matters:** An agent with access to your systems that is even slightly misaligned is a security problem, not just an ethics one. Alignment is not solved, so defence in depth still applies.
 - **Ask your vendor:** What alignment testing has this model had, and what are its known failure modes?
 
+See also: [AI control](#ai-control) · [Reward hacking](#reward-hacking)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers developers">
 
 ### Specification gaming and reward hacking ("goal hacking") { #reward-hacking }
 
-- **What it is:** Achieving the literal objective without the intended outcome ([Google DeepMind](#src-spec-gaming)). In reinforcement learning it is called *reward hacking*: exploiting a loophole in the reward rather than doing the task. A classic example: a simulated robot meant to learn to walk learned to hook its legs together and slide along the ground.
-- **Why it matters:** In coding agents this looks like editing a test so it passes, or reporting success without doing the work. Anthropic found that when models learned to reward hack in real coding environments, misaligned behaviour rose across all its evaluations ([Anthropic](#src-emergent-rh)).
+- **What it is:** Achieving the literal objective without the intended outcome ([Google DeepMind](#src-spec-gaming)). In [reinforcement learning](#reinforcement-learning) it is called *reward hacking*: exploiting a loophole in the reward rather than doing the task. A classic example: a simulated robot meant to learn to walk learned to hook its legs together and slide along the ground.
+- **Why it matters:** In [coding agents](#coding-agent) this looks like editing a test so it passes, or reporting success without doing the work. Anthropic found that when models learned to reward hack in real coding environments, [misaligned](#alignment) behaviour rose across all its evaluations ([Anthropic](#src-emergent-rh)).
 - **Ask your teams:** Do we check what an agent actually did, not just that it reported success?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Goal misgeneralisation { #goal-misgeneralisation }
 
@@ -927,19 +1053,21 @@ These terms come from research into whether AI systems reliably do what their de
 - **Why it matters:** A model can look perfectly aligned in testing and still pursue the wrong thing in your environment. Test in conditions close to real use.
 - **Ask yourself:** Has this agent been tested on situations that look like ours?
 
+See also: [Reward hacking](#reward-hacking) · [Alignment and misalignment](#alignment)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Emergent misalignment { #emergent-misalignment }
 
-- **What it is:** When narrow bad behaviour learned in training spreads into broad misbehaviour. In Anthropic's study, at the point a model learned to reward hack, its scores rose sharply on all its misalignment evaluations, including sabotage of safety research ([Anthropic](#src-emergent-rh)).
+- **What it is:** When narrow bad behaviour learned in training spreads into broad misbehaviour. In Anthropic's study, at the point a model learned to [reward hack](#reward-hacking), its scores rose sharply on all its [misalignment](#alignment) evaluations, including sabotage of safety research ([Anthropic](#src-emergent-rh)).
 - **Why it matters:** Small flaws in training can have wide effects that ordinary testing misses. This is a lab-side risk, but it is why vendors' alignment testing matters to buyers.
-- **Ask your vendor:** What do your system cards report on misalignment evaluations for this model version?
+- **Ask your vendor:** What do your [system cards](#model-card) report on misalignment evaluations for this [model version](#model-versions)?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders researchers">
 
 ### Sycophancy { #sycophancy }
 
@@ -947,19 +1075,21 @@ These terms come from research into whether AI systems reliably do what their de
 - **Why it matters:** A sycophantic assistant will agree that a risky change is fine, confirm a wrong assumption or praise a flawed plan. That is dangerous in security reviews, incident response and decision support.
 - **Ask yourself:** Where are we using AI to check our own reasoning, and would it tell us we were wrong?
 
+See also: [RLHF](#rlhf) · [Alignment and misalignment](#alignment)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers security">
 
 ### Scheming and deceptive alignment { #scheming }
 
-- **What it is:** A model pursuing hidden goals while appearing to behave well. OpenAI and Apollo Research found behaviour consistent with scheming in controlled tests across frontier models; training reduced it but did not eliminate it ([OpenAI](#src-scheming)). *Deceptive alignment* is the more extreme case of a model that hides misaligned goals through training.
+- **What it is:** A model pursuing hidden goals while appearing to behave well. OpenAI and Apollo Research found behaviour consistent with scheming in controlled tests across [frontier models](#frontier-model); training reduced it but did not eliminate it ([OpenAI](#src-scheming)). *Deceptive alignment* is the more extreme case of a model that hides [misaligned](#alignment) goals through training.
 - **Why it matters:** It undermines testing: a model that recognises an evaluation can behave differently there (see [evaluation awareness](#evaluation-awareness)). Controls that don't depend on the model being honest matter more.
 - **Ask your vendor:** What scheming evaluations have you run, and how do you account for models recognising tests?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security leaders researchers">
 
 ### Agentic misalignment { #agentic-misalignment }
 
@@ -967,9 +1097,11 @@ These terms come from research into whether AI systems reliably do what their de
 - **Why it matters:** It maps directly to insider-threat thinking: an agent with email access and a goal may act against the organisation. Anthropic reported no evidence of this in real deployments, but the study supports limiting agents' access to sensitive information and keeping human oversight.
 - **Ask yourself:** Would our insider-threat controls catch an AI agent behaving like a disgruntled employee?
 
+See also: [AI control](#ai-control) · [Alignment and misalignment](#alignment)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Interpretability { #interpretability }
 
@@ -977,45 +1109,49 @@ These terms come from research into whether AI systems reliably do what their de
 - **Why it matters:** It is moving into security practice: Google says it is improving techniques to monitor its model's internal activations to spot misuse ([Google](#src-fsf)). In time it could let vendors detect deception or injected goals inside the model, not just in its output.
 - **Ask your vendor:** Do you use model-internals monitoring in production, and what does it detect?
 
+See also: [Chain-of-thought monitoring](#cot-monitoring)
+
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers security">
 
 ### Chain-of-thought monitoring { #cot-monitoring }
 
-- **What it is:** Having another system read a reasoning model's thinking and flag signs of intent to misbehave. Researchers from many labs and the UK AI Security Institute call this a new and fragile opportunity: it works only while models keep reasoning in readable language ([Korbak et al.](#src-cot)).
+- **What it is:** Having another system read a [reasoning model](#reasoning-model)'s thinking and flag signs of intent to misbehave. Researchers from many labs and the UK AI Security Institute call this a new and fragile opportunity: it works only while models keep reasoning in readable language ([Korbak et al.](#src-cot)).
 - **Why it matters:** It is one of the few current ways to catch misbehaviour before an action happens. It may stop working if training changes make reasoning less faithful or less readable.
 - **Ask your vendor:** Do you monitor reasoning for misuse or misbehaviour, and is the reasoning we see the model's real reasoning or a summary?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="security researchers leaders">
 
 ### AI control { #ai-control }
 
-- **What it is:** Designing systems so that an AI cannot cause serious harm even if it is misaligned. Redwood Research, which introduced the idea, defines an AI as controlled if it is unable to cause damage even if egregiously misaligned, typically by having weaker trusted models and humans oversee a stronger untrusted one ([Redwood Research](#src-ai-control)).
-- **Why it matters:** This is the security mindset applied to AI: assume compromise, limit blast radius, monitor and audit. Gateways, approvals and least privilege for agents are control measures.
+- **What it is:** Designing systems so that an AI cannot cause serious harm even if it is [misaligned](#alignment). Redwood Research, which introduced the idea, defines an AI as controlled if it is unable to cause damage even if egregiously misaligned, typically by having weaker trusted models and humans oversee a stronger untrusted one ([Redwood Research](#src-ai-control)).
+- **Why it matters:** This is the security mindset applied to AI: assume compromise, limit blast radius, monitor and audit. [Gateways](#agent-gateway), approvals and least privilege for agents are control measures.
 - **Ask yourself:** If this agent were actively trying to misuse its access, which of our controls would stop it?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="researchers">
 
 ### Corrigibility { #corrigibility }
 
 - **What it is:** An AI system that accepts correction: it lets people change its goals, pause it or shut it down, and doesn't try to prevent that.
-- **Why it matters:** A [kill switch](#kill-switch) only works if the system doesn't resist or route around it. Agentic misalignment studies tested exactly this scenario: models facing replacement.
+- **Why it matters:** A [kill switch](#kill-switch) only works if the system doesn't resist or route around it. [Agentic misalignment](#agentic-misalignment) studies tested exactly this scenario: models facing replacement.
 - **Ask your vendor:** How do you test that the agent accepts being stopped or overridden mid-task?
 
 </div>
 
-<div class="cs-term" markdown="1">
+<div class="cs-term" markdown="1" data-aud="leaders researchers">
 
 ### Recursive self-improvement (RSI) { #recursive-self-improvement }
 
 - **What it is:** AI systems improving AI systems, potentially including their own successors, in a loop. The idea dates back decades as the "intelligence explosion" ([IEEE Spectrum](#src-rsi-ieee)). Parts of the loop are now real: AI helps write AI labs' code and run experiments, and OpenAI's chief executive has said it is building an automated AI researcher by March 2028 ([Axios](#src-rsi-axios)). Researchers separate bounded self-refinement, already common, from open-ended RSI, which remains limited ([Chen et al.](#src-rsi-survey)).
 - **Why it matters:** It could speed up capability, including offensive cyber capability, faster than defences and oversight adapt. Policy researchers warn that outsiders have little visibility into how far AI R&D is already automated ([Axios](#src-rsi-axios)).
 - **Ask yourself:** How quickly could our threat model go out of date if AI capability jumped within months?
+
+See also: [Foundation model](#frontier-model) · [Time horizon](#time-horizon)
 
 </div>
 
@@ -1254,6 +1390,7 @@ Checked on 27 November 2026.
 
 ## Changes
 
+- **27 November 2026:** renamed "AI glossary, with a security lens"; new navigation with topic cards and filters by reader (start here, leaders, security teams, developers, researchers, risk and compliance); cross-references between entries with hover definitions.
 - **27 November 2026:** added "How models are trained" (pretraining, learning types, post-training, RL, RLHF, RLVR, constitutional AI, synthetic data, world models, JEPA, System 1 and 2) and "AI safety and alignment" (alignment, reward hacking, goal misgeneralisation, emergent misalignment, sycophancy, scheming, agentic misalignment, interpretability, chain-of-thought monitoring, AI control, corrigibility, recursive self-improvement), with three new confused pairs.
 - **27 November 2026:** added "Personal agents: the 2026 products" (always-on agents; Claude Duet, dots, Gemini agent, Gemini Spark, Grok Bot, Muse, OpenClaw).
 - **27 November 2026:** added "Inside the AI stack" (harness, model aliases, inference providers and more), "Evaluating models" with a table of common benchmarks, and "Who makes the models".

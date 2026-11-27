@@ -288,16 +288,47 @@
 [data-md-color-scheme="slate"] .pl-progress { border: 1px solid #8FB8E8; }
 [data-md-color-scheme="slate"] .pl-tool-group strong { color: #E8F0FA; }
 
-/* Glossary (glossary/): filter box and one block per term. */
-.cs-gloss-filter { margin: 1rem 0 1.2rem; padding: .8rem 1rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: .4rem; }
-.cs-gloss-filter label { display: block; font-size: .75rem; font-weight: 600; margin-bottom: .3rem; }
-.cs-gloss-filter input[type="search"] {
-  width: 100%; max-width: 28rem; box-sizing: border-box; font: inherit; font-size: .85rem; padding: .45rem .6rem;
+/* Glossary (glossary/): filter bar, topic cards, term blocks, hover definitions. */
+.cs-gloss-bar { margin: 1rem 0 1.2rem; padding: .7rem 1rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: .4rem; background: var(--md-default-bg-color); }
+.cs-gloss-row { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .5rem; margin: .25rem 0; }
+.cs-gloss-row[hidden] { display: none; }
+.cs-gloss-row label, .cs-gloss-label { font-size: .75rem; font-weight: 600; margin-right: .2rem; }
+.cs-gloss-row input[type="search"] {
+  flex: 1 1 14rem; max-width: 26rem; box-sizing: border-box; font: inherit; font-size: .8rem; padding: .4rem .6rem;
   color: var(--md-default-fg-color); background: var(--md-default-bg-color);
   border: 1px solid var(--md-default-fg-color--lighter); border-radius: .25rem; }
-.md-typeset .cs-gloss-count { margin: .4rem 0 0; font-size: .75rem; color: var(--md-default-fg-color--light); min-height: 1em; }
+.cs-chip { font: inherit; font-size: .72rem; padding: .3rem .7rem; border-radius: 1rem; cursor: pointer;
+  color: var(--md-default-fg-color); background: transparent; border: 1px solid var(--md-default-fg-color--lighter); }
+.cs-chip:hover { border-color: var(--cs-teal); }
+.cs-chip[aria-pressed="true"] { background: var(--cs-navy, #0E2A4E); color: #fff; border-color: var(--cs-navy, #0E2A4E); }
+[data-md-color-scheme="slate"] .cs-chip[aria-pressed="true"] { background: var(--cs-teal); border-color: var(--cs-teal); color: #06202b; }
+.cs-chip:focus-visible, .cs-linkbtn:focus-visible, .cs-topic:focus-visible { outline: 2px solid var(--cs-amber); outline-offset: 2px; }
+.md-typeset .cs-gloss-count { margin: 0 .6rem 0 0; font-size: .75rem; color: var(--md-default-fg-color--light); }
+.cs-linkbtn { font: inherit; font-size: .72rem; padding: .2rem .1rem; border: 0; background: none; cursor: pointer; color: var(--md-typeset-a-color); text-decoration: underline; }
+.cs-linkbtn[hidden] { display: none; }
+.cs-topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr)); gap: .6rem; margin: 1rem 0 .8rem; }
+.md-typeset .cs-topic { display: flex; flex-direction: column; gap: .15rem; padding: .65rem .8rem; border: 1px solid var(--md-default-fg-color--lightest);
+  border-left: 4px solid var(--cs-teal); border-radius: .3rem; color: var(--md-default-fg-color); text-decoration: none; }
+.md-typeset .cs-topic:hover { border-color: var(--cs-teal); background: var(--md-code-bg-color); }
+.cs-topic strong { font-size: .8rem; }
+.cs-topic span { font-size: .7rem; color: var(--md-default-fg-color--light); }
+.cs-topic .cs-topic-n { font-size: .65rem; font-weight: 600; color: var(--cs-teal); min-height: 1em; }
+.md-typeset .cs-topic.cs-topic-empty { opacity: .45; border-left-color: var(--md-default-fg-color--lighter); }
+.md-typeset .cs-reflinks { font-size: .75rem; }
 .md-typeset .cs-term { margin: 0 0 1.2rem; padding: .1rem 1rem .2rem; border-left: 4px solid var(--cs-teal); background: var(--md-code-bg-color); border-radius: .25rem; }
-.md-typeset .cs-term h3 { margin-top: .8rem; }
+.md-typeset .cs-term h3 { margin-top: .8rem; margin-bottom: .2rem; }
 .md-typeset .cs-term ul { margin-top: .4rem; }
-.md-typeset .cs-term[hidden], .md-typeset h2[hidden] { display: none; }
-.md-typeset .cs-term:target, .md-typeset .cs-term:has(h3:target) { border-left-color: var(--cs-amber); }
+.md-typeset .cs-term-for { margin: 0; font-size: .68rem; font-weight: 600; color: var(--md-default-fg-color--light); }
+.md-typeset .cs-term > p:last-child { font-size: .75rem; }
+.md-typeset [hidden] { display: none !important; }
+.md-typeset .cs-term:has(h3:target) { border-left-color: var(--cs-amber); }
+.cs-compact .cs-term li:nth-child(n+2), .cs-compact .cs-term > p:last-child:not(.cs-term-for) { display: none; }
+.md-typeset a.cs-termlink { text-decoration: underline dotted; text-underline-offset: .15em; }
+.cs-tip { position: absolute; z-index: 10; max-width: 22rem; padding: .55rem .7rem; border-radius: .3rem; font-size: .72rem; line-height: 1.45;
+  color: #fff; background: #0E2A4E; border: 1px solid rgba(255,255,255,.25); box-shadow: 0 .3rem .8rem rgba(0,0,0,.3); pointer-events: none; }
+.cs-tip[hidden] { display: none; }
+.cs-tip strong { display: block; margin-bottom: .15rem; font-size: .75rem; }
+/* The glossary's right-hand contents list shows sections only, not every term. */
+body:has(#gloss-bar) .md-nav--secondary .md-nav__item > .md-nav { display: none; }
+body:has(#gloss-bar) .md-nav--secondary .md-nav__item { margin-top: .3em; }
+body:has(#gloss-bar) .md-nav--secondary .md-nav__link { margin-top: 0; }
