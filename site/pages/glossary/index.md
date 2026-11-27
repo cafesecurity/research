@@ -16,7 +16,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 <p id="gloss-count" class="cs-gloss-count" aria-live="polite"></p>
 </div>
 
-**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
+**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Inside the AI stack](#inside-the-ai-stack) · [Evaluating models](#evaluating-models) · [Who makes the models](#who-makes-the-models) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
 
 ## The basics
 
@@ -490,6 +490,284 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 </div>
 
+## Inside the AI stack
+
+<div class="cs-term" markdown="1">
+
+### Foundation model / frontier model { #frontier-model }
+
+- **What it is:** A foundation model is a large model trained on broad data and then adapted to many tasks. *Frontier model* usually means the most capable models available at a given time.
+- **Why it matters:** Frontier models come with the most detailed safety testing and the most restricted early access, and they set the capability attackers will have soon after.
+- **Ask your vendor:** Which model, at which version, does this product use, and when did you last change it?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Parameters and mixture of experts (MoE) { #parameters }
+
+- **What it is:** Parameters (or weights) are the numbers a model learns in training; their count is a rough guide to size. A mixture-of-experts model uses only part of itself for each request, so it has a *total* and an *active* parameter count: Meta's Muse Spark Open, for example, has 816 billion parameters with 42 billion active ([The New Stack](#src-muse-open)).
+- **Why it matters:** Size decides what hardware you need to run an open-weight model yourself, and so whether self-hosting is realistic. Weights are also an asset: stolen weights are a stolen model.
+- **Ask yourself:** If we host a model ourselves, who protects the weights and the machines they run on?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Reasoning model, thinking and effort { #reasoning-model }
+
+- **What it is:** A model that works through a problem step by step before answering, often in a hidden or summarised "thinking" section. Many let you set an *effort* level: more thinking costs more and takes longer but usually scores higher ([Anthropic](#src-claude-models)).
+- **Why it matters:** Thinking text can contain sensitive data from the context and may be logged or retained differently from the final answer. Effort settings also change results, so a benchmark score means little without the effort level it was run at.
+- **Ask your vendor:** Is thinking output stored or shown to users, and is it covered by the same retention and access rules as the answer?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Harness (scaffold) { #harness }
+
+- **What it is:** The software around a model that turns it into an agent: it supplies the system prompt and tools, manages memory and context, runs the loop of plan, act and check, and asks for approval. METR describes an AI agent as a model plus a scaffold ([METR](#src-metr-paper)). Coding agents and products such as Grok Bot or Claude Duet are harnesses around their models.
+- **Why it matters:** Most of the security controls an organisation can set live in the harness, not the model: which tools exist, what needs approval, what is logged. The same model behaves very differently in a careful harness and a careless one.
+- **Ask your vendor:** Which controls are in the harness, which can admins configure, and do they apply on every surface (app, API, command line)?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Agent framework / SDK { #agent-framework }
+
+- **What it is:** Code libraries developers use to build their own agents and harnesses, such as Google's Agent Development Kit ([Google](#src-gemini4)) and the SDKs the main labs publish.
+- **Why it matters:** In-house agents built on these frameworks inherit their defaults. Security is then your team's job: tool permissions, secrets, logging and approval gates. OWASP: ASI04 Agentic Supply Chain Vulnerabilities.
+- **Ask your teams:** Which agent frameworks are we building on, are they pinned and patched like other dependencies, and who reviews their default settings?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Orchestrator and subagents { #subagents }
+
+- **What it is:** One agent (the orchestrator) splits a task and hands parts to other agents (subagents), often running in parallel, then combines the results.
+- **Why it matters:** Each hand-off is a trust boundary. A subagent that reads untrusted content can pass an injected instruction back up the chain, and permissions can spread to agents that didn't need them. See also [A2A](#a2a).
+- **Ask your vendor:** Do subagents get narrower permissions than the orchestrator, and are their actions logged separately?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Model versions and aliases { #model-versions }
+
+- **What it is:** Model names in APIs come in fixed versions and moving aliases. Google, for example, offers stable, preview, latest and experimental versions; a "latest" alias is switched to each new release, with two weeks' notice by email ([Google](#src-gemini-versions)).
+- **Why it matters:** An alias means the model behind your product can change without your code changing. A new version can behave differently, including on safety and prompt injection. Pinning a version makes behaviour testable; aliases make it a moving target.
+- **Ask your vendor:** Can we pin model versions, how much notice do we get before a version is retired, and do you tell us when the model behind a product changes?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Inference provider { #inference-provider }
+
+- **What it is:** Whoever actually runs the model for you. The same model is often available from the lab directly and through cloud platforms: OpenAI's GPT-6 Astra, for example, through OpenAI's API, Microsoft Azure and AWS Bedrock ([OpenAI](#src-astra-availability)).
+- **Why it matters:** Data handling, retention, region, logging and contract terms follow the provider and the route, not the model. One model can have different security properties depending on which door you use.
+- **Ask your vendor:** Which provider and region actually process our requests, and which terms govern our data on this route?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Distillation { #distillation }
+
+- **What it is:** Training a smaller, cheaper model to imitate a larger one, usually by learning from the larger model's outputs.
+- **Why it matters:** The smaller model may not keep all of the larger model's safety behaviour, so test it in its own right.
+- **Ask your vendor:** Was this model distilled from another, and has it been safety-tested separately?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Quantisation { #quantisation }
+
+- **What it is:** Storing a model's parameters with fewer bits so it needs less memory and runs on smaller hardware, at some cost in quality.
+- **Why it matters:** Quantised versions of open-weight models are often published by third parties, not the original lab. That makes them a supply-chain question: who made this file, and is it what it claims to be? See [model files](#model-files).
+- **Ask your teams:** Do we only use model files from the original publisher or a verified source, and do we check their hashes?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Context engineering { #context-engineering }
+
+- **What it is:** Deciding what goes into a model's [context window](#context-window) for each step: which instructions, documents, tool results and memories, and in what order.
+- **Why it matters:** It is where data minimisation happens for AI. Everything put into context can be leaked, logged or turned against you by injected text, so include only what the step needs. OWASP: LLM08 Hidden Context Exposure.
+- **Ask your vendor:** What does the product put into context automatically, and can we exclude sensitive sources?
+
+</div>
+
+## Evaluating models
+
+<div class="cs-term" markdown="1">
+
+### Model card / system card { #model-card }
+
+- **What it is:** A document a lab publishes with a model describing what it is for, how it was tested, its limits and its safety results. *System card* usually means a longer version covering the model inside its product, with safety and security testing. Google and Anthropic, for example, both keep public lists of theirs ([Google DeepMind](#src-model-cards-google), [Anthropic](#src-model-cards-anthropic)).
+- **Why it matters:** It is the nearest thing to a security data sheet for a model: prompt-injection results, cyber capability, red-team findings, known failure modes. It is written by the vendor, so read it as a claim to verify, not an audit.
+- **Ask your vendor:** Where is the model or system card for the exact version we use, and which results were checked by a third party?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Benchmark { #benchmark }
+
+- **What it is:** A fixed set of tasks with a scoring method, used to compare models: coding problems, exam questions, hacking challenges. See [Common benchmarks](#common-benchmarks) below.
+- **Why it matters:** Benchmarks are the main evidence in AI marketing. A score only tells you how the model did on that test, under that setup, at that effort level, which may be far from your use.
+- **Ask your vendor:** Which benchmarks match our use case, who ran them, with what settings, and can we see results on our own tasks?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Contamination { #contamination }
+
+- **What it is:** When test questions or their answers have leaked into a model's training data, so the model can recall rather than solve them. In February 2026 OpenAI stopped reporting SWE-bench Verified, a widely used coding benchmark, because it was increasingly contaminated and some of its tests rejected correct answers ([OpenAI](#src-swe-verified)).
+- **Why it matters:** A contaminated benchmark overstates capability. Public benchmarks built from public code are especially exposed.
+- **Ask your vendor:** How do you check that benchmark scores aren't inflated by training on the test?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Saturation { #saturation }
+
+- **What it is:** When top models all score near the ceiling of a benchmark, so it no longer separates them. Labs then move to harder versions or new tests.
+- **Why it matters:** A saturated benchmark can make models look interchangeable when they aren't, and benchmark names change quickly. Check that a score comes from a current, unsaturated test.
+- **Ask yourself:** Is this benchmark still used by the labs, or has it been replaced?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Leaderboard (LMArena) { #leaderboard }
+
+- **What it is:** A public ranking of models. LMArena (formerly Chatbot Arena) ranks them by people's votes between two anonymous answers, using an Elo-style score like chess ratings.
+- **Why it matters:** Rankings reward what voters like, not what is secure or correct, and they can be gamed. One 2025 study found a provider had tested 27 private variants before publishing one, which then ranked second ([The Leaderboard Illusion](#src-arena)).
+- **Ask yourself:** Is a leaderboard position being used as evidence for something it doesn't measure?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### pass@1 and pass@k { #pass-at-k }
+
+- **What it is:** Scoring that counts a task as solved if any of *k* attempts succeeds. pass@1 means one try; pass@10 allows ten.
+- **Why it matters:** A high pass@k can hide an unreliable model. Agents in production usually get one try, and attackers get many: the same number reads differently for defence and offence.
+- **Ask your vendor:** Is this score pass@1, and how consistent is the model across repeated runs?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Cost per task and the Pareto frontier { #pareto-frontier }
+
+- **What it is:** Labs now often report a score together with what it cost to get it. The Pareto frontier is the set of models where you can't get a better score without paying more (or more slowly). Google, for example, describes its Flash models as pushing this frontier on quality, cost and speed ([Google](#src-pareto)).
+- **Why it matters:** For most business uses the right model is the cheapest one that is good enough, not the top scorer. A model on the frontier for coding may be off it for your task.
+- **Ask yourself:** What is the cheapest model that meets our bar on our own tests, including security tests?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Time horizon { #time-horizon }
+
+- **What it is:** METR's measure of how long a task, timed for a skilled human, an AI agent can complete with a given reliability: the 50% time horizon is the task length at which the agent succeeds half the time ([METR](#src-metr)). METR has found it doubling roughly every seven months since 2019 ([METR](#src-metr-paper)).
+- **Why it matters:** It is one of the clearest single signals of how much autonomous work agents can take on, including attack work. It measures task difficulty, not how long an agent can run unattended.
+- **Ask yourself:** What could an agent do in our environment with tasks of that length, for us and against us?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### LLM-as-judge { #llm-as-judge }
+
+- **What it is:** Using one model to grade another's answers, because human grading is slow and expensive.
+- **Why it matters:** Cheap and scalable, but the judge has its own biases and can itself be prompt-injected by the text it grades. Many guardrails work the same way.
+- **Ask your vendor:** Which of your results or safeguards depend on a model grading another model, and how was that judge checked?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Evaluation awareness and sandbagging { #evaluation-awareness }
+
+- **What it is:** Evaluation awareness is a model recognising that it is being tested. Sandbagging is a model deliberately doing worse on a test, for example to avoid restrictions ([Nguyen et al.](#src-eval-aware)).
+- **Why it matters:** Both make test results less trustworthy. OpenAI reports that awareness of being evaluated has already affected the results of alignment evaluations in current models ([OpenAI](#src-metagaming)). A model that behaves well in testing may not behave the same in production.
+- **Ask your vendor:** How do you test for evaluation awareness, and what do you monitor in production in case behaviour differs?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Capability thresholds and frontier safety frameworks { #safety-frameworks }
+
+- **What it is:** Labs' own policies that define dangerous capability levels (for example in cybersecurity or biology) and the safeguards required at each. Examples include Anthropic's Responsible Scaling Policy with its AI Safety Levels ([Anthropic](#src-rsp)), Google DeepMind's Frontier Safety Framework ([Google](#src-fsf)) and OpenAI's Preparedness Framework, under which OpenAI rated GPT-6 Astra as meeting its Critical threshold for cybersecurity ([9to5Mac](#src-astra)).
+- **Why it matters:** They tell you when a lab believes a model could meaningfully help attackers, and they explain staged and restricted releases. They are voluntary and set by the labs themselves.
+- **Ask yourself:** Which of the models we use are rated high for cyber capability, and what does that mean for our threat model?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Trusted access programme { #trusted-access }
+
+- **What it is:** Early or restricted release of a highly capable model to vetted users, often cyber defenders, before or instead of general release. Recent examples include Anthropic's Mythos models through Project Glasswing ([Anthropic](#src-claude-models)) and Google's Gemini 4 Argon and Carbon, which went first to cyber defenders through its Fairwind programme ([Google](#src-gemini4), [Let's Data Science](#src-carbon)).
+- **Why it matters:** Defenders may get access to the strongest models for finding and fixing vulnerabilities before general release. It also signals that the lab rates the model's offensive potential highly.
+- **Ask yourself:** Is our security team eligible for any of these programmes, and would joining be worth the obligations?
+
+</div>
+
+### Common benchmarks { #common-benchmarks }
+
+| Benchmark | What it measures | Note |
+| --- | --- | --- |
+| SWE-bench Verified | Fixing 500 real issues from open-source Python projects | OpenAI stopped reporting it in February 2026 as contaminated and partly flawed ([OpenAI](#src-swe-verified)) |
+| SWE-Bench Pro | Harder, longer software engineering tasks: 1,865 problems from 41 repositories | Built to resist contamination ([Scale AI](#src-swe-pro)); a later verified version found some reported scores were too high ([SWE-Bench Pro Verified](#src-swe-pro-verified)) |
+| GPQA Diamond | Graduate-level science questions | Close to saturation: Google reported 90.4% for Gemini 3 Flash ([Google](#src-pareto)) |
+| Humanity's Last Exam | Very hard expert questions across many fields | Used to separate the strongest models |
+| MMMU Pro | Reasoning over images and text together | Multimodal |
+| METR time horizon | Length of tasks agents complete reliably | See [Time horizon](#time-horizon) ([METR](#src-metr)) |
+| Cybench | 40 professional capture-the-flag (CTF) hacking tasks | CTFs are idealised compared with real systems ([Cybench](#src-cybench)) |
+| CyberGym | Reproducing 1,507 real vulnerabilities across 188 open-source projects | Led to the discovery of 35 zero-day vulnerabilities ([CyberGym](#src-cybergym)) |
+| CWE-bench | Fixing security weaknesses in code | Reported by Google for Gemini 4 Argon ([Google](#src-gemini4-ja)) |
+| AgentDojo | Whether agents can be hijacked by injected instructions | Used by NIST CAISI for agent hijacking tests ([NIST CAISI](#src-caisi)) |
+| Gray Swan Indirect Prompt Injection | Robustness to indirect prompt injection | Cited by Google for Gemini 4 Argon ([Google](#src-grayswan)) |
+| LMArena | Human preference between anonymous answers | See [Leaderboard](#leaderboard) |
+
+Most benchmark results are run and reported by the lab that made the model. Look for independent results from organisations such as METR, Epoch AI or government AI security institutes before relying on a number.
+
+## Who makes the models
+
+The main AI labs and their current model families, in alphabetical order. Status as of 27 November 2026; line-ups change every few weeks, so check the lab's own model page before relying on a detail.
+
+| Lab | Model families | In one line |
+| --- | --- | --- |
+| **Alibaba** (China) | Qwen (Qwen3.8; Max through Alibaba Cloud) | Large open-weight family; the licence is a modified MIT licence with revenue and display clauses ([PromptsRush](#src-open-weights)). |
+| **Anthropic** (US) | Claude: Fable, Opus, Sonnet, Haiku; Mythos | Fable 5.2 is its most capable widely released model; Opus 5.5, Sonnet 5.5 and Haiku 5.5 trade capability for speed and cost; Mythos 5.2 is the same model as Fable with restricted access ([Anthropic](#src-claude-models), [nhimg](#src-claude-lineup)). Closed weights. |
+| **DeepSeek** (China) | DeepSeek V4 (Pro, Flash), V4.1 Flash | Open weights under the MIT licence with a low-cost API ([daily.dev](#src-deepseek), [PromptsRush](#src-open-weights)). |
+| **Google DeepMind** (UK/US) | Gemini 4 (Carbon, Argon); Gemini 3.x Flash, Flash-Lite and Flash Cyber; Gemma; Nano Banana | Carbon is its strongest model, generally available since 10 November 2026; Flash models are faster and cheaper; Gemma models are open weights; Nano Banana makes images ([Let's Data Science](#src-carbon), [Google DeepMind](#src-model-cards-google)). |
+| **Meta** (US) | Muse Spark, Muse Spark Open; Llama (earlier) | Muse Spark (April 2026) is proprietary ([Axios](#src-muse)); Muse Spark Open (October 2026) is an open-weight model under Meta's own licence ([The New Stack](#src-muse-open)). Llama was its earlier open-weight family. |
+| **Mistral AI** (France) | Mistral Large 4; Mistral 3 family | European lab publishing open weights; Large 4's weights were released on 29 October 2026 ([Tech Insider](#src-open-licences)). |
+| **Moonshot AI** (China) | Kimi (K3.1) | Ranked the most capable downloadable open-weight model in one November 2026 comparison ([PromptsRush](#src-open-weights)). |
+| **OpenAI** (US) | GPT-6: Astra, Sol, Luna; gpt-oss | Astra (September 2026) is its flagship; Sol and Luna are cheaper tiers ([TechCrunch](#src-gpt6)); gpt-oss models are its only open weights, under Apache 2.0 ([nhimg](#src-openai-lineup)). Codex is its coding agent. |
+| **SpaceXAI** (US; formerly xAI) | Grok 4.6; Grok Build | Grok 4.6 (August 2026) is its flagship ([SiliconANGLE](#src-grok46)); Grok Build is its coding model; Grok Bot is its workplace agent ([SpaceXAI](#src-xai-news)). |
+
+Others to know: Xiaomi (MiMo), Zhipu (GLM) and Thinking Machines Lab (Inkling) publish notable open-weight models ([Tech Insider](#src-open-licences), [daily.dev](#src-deepseek)).
+
+**Why this matters to security:**
+
+- **Brand isn't model.** "Gemini", "Claude" or "Grok" names an app, an API and several models at once. Controls and data terms belong to a specific product, plan, model version and provider. See [Model vs app vs platform](#commonly-confused).
+- **The strongest cyber capability is released in stages.** Several labs now give their most capable models to vetted defenders first. See [Trusted access programme](#trusted-access).
+- **Open weights from many countries.** Some of the most capable downloadable models now come from Chinese labs ([daily.dev](#src-deepseek)). If you host one yourself, check its licence, provenance and behaviour; procurement rules or regulators may also ask where it came from. See [Open weights](#open-weights) and [Model files](#model-files).
+- **Line-ups change monthly.** Pin versions and re-test when you change. See [Model versions and aliases](#model-versions).
+
 ## Same idea, different names
 
 Standards bodies and threat catalogues often name the same thing differently, or draw its edges in different places. This table maps the terms on this page to what each one calls them. A dash means we didn't find a separate term for it in that framework, not that the framework ignores the topic. The table is wide: scroll it sideways to see every column.
@@ -624,9 +902,43 @@ Checked on 27 November 2026.
 32. <span id="src-promptpwnd"></span>Aikido Security, [PromptPwnd: prompt injection vulnerabilities in GitHub Actions using AI agents](https://aikido.dev/blog/promptpwnd-github-actions-ai-agents), December 2025.
 33. <span id="src-gitlost"></span>The Hacker News, [Public GitHub issue could trick GitHub Agentic Workflows into leaking private repositories](https://thehackernews.com/2026/07/public-github-issue-could-trick-github.html), July 2026 (Noma Security's GitLost research).
 34. <span id="src-pickleball"></span>Kellas et al., [PickleBall: secure deserialization of pickle-based machine learning models](https://arxiv.org/abs/2508.15987), ACM CCS 2025.
+35. <span id="src-claude-models"></span>Anthropic, [Models overview](https://platform.claude.com/docs/en/about-claude/models/whats-new-sonnet-4-5) and [Introducing Claude Fable 5 and Claude Mythos 5](https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5), Claude Platform Docs, November 2026.
+36. <span id="src-claude-lineup"></span>nhimg, [Anthropic LLM models guide](https://nhimg.org/anthropic-llm-models-guide), November 2026.
+37. <span id="src-gpt6"></span>TechCrunch, [OpenAI launches GPT-6 Sol and Luna](https://techcrunch.com/2026/09/22/openai-launches-gpt-6-sol-and-luna/), 22 September 2026.
+38. <span id="src-astra"></span>9to5Mac, [OpenAI releasing major upgrade to ChatGPT and Codex with GPT-6 Astra](https://9to5mac.com/2026/09/04/openai-releasing-major-upgrade-to-chatgpt-and-codex-with-gpt-6-astra-details-here/), 4 September 2026. Critical cybersecurity threshold under the Preparedness Framework.
+39. <span id="src-astra-availability"></span>OpenAI, [GPT-6 Astra: a new generation of intelligence](https://openai.com/lv-LV/index/gpt-6-astra/), September 2026. Availability through the OpenAI API, Microsoft Azure and AWS Bedrock.
+40. <span id="src-openai-lineup"></span>nhimg, [OpenAI LLM models guide](https://nhimg.org/openai-llm-models-guide), as of 15 November 2026.
+41. <span id="src-gemini4"></span>Google, [Gemini 4 Argon: our next era of frontier intelligence](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/), 30 September 2026.
+42. <span id="src-gemini4-ja"></span>Google Japan blog, [Gemini 4 Argon](https://blog.google/intl/ja-jp/company-news/technology/gemini4argon/) (Japanese), 1 October 2026. CWE-bench results.
+43. <span id="src-grayswan"></span>Google MENA blog, [Gemini 4 Argon: our next era of frontier intelligence](https://blog.google/intl/en-mena/company-news/technology/gemini-4-argon-our-next-era-of-frontier-intelligence/), 1 October 2026. Gray Swan indirect prompt injection benchmark.
+44. <span id="src-carbon"></span>Let's Data Science, [Google rolls out Gemini 4 Carbon to general public](https://letsdatascience.com/news/google-rolls-out-gemini-4-carbon-to-general-public-9b41bcb4), November 2026.
+45. <span id="src-model-cards-google"></span>Google DeepMind, [Model cards](https://deepmind.google/models/model-cards/), list as of November 2026.
+46. <span id="src-model-cards-anthropic"></span>Anthropic, [Model cards](https://platform.claude.com/docs/resources/overview), list as of November 2026.
+47. <span id="src-gemini-versions"></span>Google, [Gemini API models: model version name patterns](https://ai.google.dev/gemini-api/docs/models), November 2026.
+48. <span id="src-muse"></span>Axios, [Meta debuts Muse Spark, first AI model under Alexandr Wang](https://www.axios.com/2026/04/08/meta-muse-alexandr-wang), 8 April 2026.
+49. <span id="src-muse-open"></span>The New Stack, [Meta ships Muse Spark Open](https://thenewstack.io/meta-muse-spark-open/), 15 October 2026.
+50. <span id="src-grok46"></span>SiliconANGLE, [SpaceXAI releases flagship Grok 4.6 model](https://siliconangle.com/2026/08/12/spacexai-releases-flagship-grok-4-6-model-advanced-reasoning-capabilities/), 12 August 2026.
+51. <span id="src-xai-news"></span>SpaceXAI, [News](https://x.ai/news), November 2026.
+52. <span id="src-open-weights"></span>PromptsRush, [Best open-weight models, November 2026](https://promptsrush.com/blog/best-open-weight-models), checked 12 November 2026.
+53. <span id="src-open-licences"></span>Tech Insider, [IA open source : licences de Mistral Large 4, MiMo, DeepSeek, Qwen et Inkling](https://tech-insider.org/fr/ia-open-source-licences-mistral-large-4-mimo-deepseek-qwen-inkling-2026/) (French), November 2026.
+54. <span id="src-deepseek"></span>daily.dev, [Open-weight models](https://daily.dev/agentic-ai-hub/open-weight-models/), July 2026.
+55. <span id="src-metr"></span>METR, [Task-completion time horizons of frontier AI models](https://metr.org/time-horizons/), Time Horizon 1.1.
+56. <span id="src-metr-paper"></span>Kwa et al. (METR), [Measuring AI ability to complete long tasks](https://arxiv.org/html/2503.14499v3), 2025.
+57. <span id="src-swe-verified"></span>OpenAI, [Why SWE-bench Verified no longer measures frontier coding capabilities](https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/), 23 February 2026.
+58. <span id="src-swe-pro"></span>Deng et al. (Scale AI), [SWE-Bench Pro](https://arxiv.org/html/2509.16941v2), 2025.
+59. <span id="src-swe-pro-verified"></span>[SWE-Bench Pro Verified: a reliable benchmark for software engineering agents](https://arxiv.org/html/2609.08149), 2026.
+60. <span id="src-pareto"></span>Google Japan blog, [Gemini 3 Flash](https://blog.google/intl/ja-jp/company-news/technology/gemini3-flash/) (Japanese), December 2025. Pareto frontier and GPQA Diamond score.
+61. <span id="src-arena"></span>Singh et al., [The Leaderboard Illusion](https://arxiv.org/html/2504.20879v2), NeurIPS 2025.
+62. <span id="src-cybench"></span>Zhang et al., [Cybench: a framework for evaluating cybersecurity capabilities and risks of language models](https://arxiv.org/html/2408.08926v2), 2024.
+63. <span id="src-cybergym"></span>Wang et al., [CyberGym: evaluating AI agents' real-world cybersecurity capabilities at scale](https://arxiv.org/abs/2506.02548), 2025.
+64. <span id="src-eval-aware"></span>Nguyen et al., [Probing and steering evaluation awareness of language models](https://arxiv.org/html/2507.01786v2), 2025.
+65. <span id="src-metagaming"></span>OpenAI Alignment, [Metagaming](https://alignment.openai.com/metagaming/), 2026.
+66. <span id="src-rsp"></span>Anthropic, [Responsible Scaling Policy](https://www.anthropic.com/responsible-scaling-policy), version 3.4 effective 8 July 2026; [AI Safety Levels explained](https://www.anthropic.com/research/responsible-scaling-policy-v3).
+67. <span id="src-fsf"></span>Google, [Gemini 4 Argon](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/?hl=en), safety section referring to the Frontier Safety Framework, September 2026.
 
 ## Changes
 
+- **27 November 2026:** added "Inside the AI stack" (harness, model aliases, inference providers and more), "Evaluating models" with a table of common benchmarks, and "Who makes the models".
 - **27 November 2026:** added "Building software with AI" (vibe coding, AI-assisted development, coding agents, auto-approve, rules files, slopsquatting, toxic agent flows, AI in CI/CD, model files), with a matching confused pair and misconception.
 - **27 November 2026:** added "Same idea, different names", Frameworks, and an entry on roles; moved OWASP LLM IDs to the 2026 edition; noted NIST's "confabulation" and "agent hijacking" and how OWASP and ATLAS file jailbreaks.
 - **27 November 2026:** first version: 36 terms, 13 commonly confused pairs, 12 misconceptions and the vendor-speak decoder.
