@@ -332,3 +332,7 @@
 body:has(#gloss-bar) .md-nav--secondary .md-nav__item > .md-nav { display: none; }
 body:has(#gloss-bar) .md-nav--secondary .md-nav__item { margin-top: .3em; }
 body:has(#gloss-bar) .md-nav--secondary .md-nav__link { margin-top: 0; }
+/* Glossary is one page: put its section list on the left and drop the empty site-navigation column.
+   Below 76.25em the primary sidebar is the menu drawer, so it is left alone there. */
+@media screen and (min-width: 76.25em) { body:has(#gloss-bar) .md-sidebar--primary { display: none; } }
+@media screen and (min-width: 60em) { body:has(#gloss-bar) .md-sidebar--secondary { order: 0; margin-left: 0; } body:has(#gloss-bar) .md-content { order: 1; } }
