@@ -16,7 +16,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 <p id="gloss-count" class="cs-gloss-count" aria-live="polite"></p>
 </div>
 
-**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Personal agents](#personal-agents-the-2026-products) · [Inside the AI stack](#inside-the-ai-stack) · [Evaluating models](#evaluating-models) · [Who makes the models](#who-makes-the-models) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
+**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Personal agents](#personal-agents-the-2026-products) · [Inside the AI stack](#inside-the-ai-stack) · [How models are trained](#how-models-are-trained) · [Evaluating models](#evaluating-models) · [AI safety and alignment](#ai-safety-and-alignment) · [Who makes the models](#who-makes-the-models) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
 
 ## The basics
 
@@ -640,6 +640,120 @@ Other personal agents in the same category include Hermes Agent, Instinct, Manus
 
 </div>
 
+## How models are trained
+
+A rough recipe: the bulk of a model's ability comes from self-supervised pretraining on huge amounts of data, a smaller layer from supervised examples, and the finishing behaviour from reinforcement learning. Yann LeCun's well-known image calls these the cake, the icing and the cherry ([Lambert](#src-rlhf-book)). Each stage is a place where data can be poisoned or behaviour can go wrong.
+
+<div class="cs-term" markdown="1">
+
+### Pretraining { #pretraining }
+
+- **What it is:** The first and most expensive stage: the model learns to predict the next piece of text (or image, audio) across a vast collection of data, mostly scraped from the web, books and code. The result is a *base model* that can continue text but doesn't yet follow instructions well.
+- **Why it matters:** Whatever is in the pretraining data, including attacker-planted text, can influence the model. It is also where most of a model's knowledge, and its knowledge of attack techniques, comes from. See [Data poisoning](#data-poisoning).
+- **Ask your vendor:** What is known about the pretraining data, its cut-off date and how it was filtered?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Supervised, unsupervised and self-supervised learning { #learning-types }
+
+- **What it is:** *Supervised learning* trains on examples with the right answer attached (this email: spam). *Unsupervised learning* finds structure in data with no labels, such as clusters. *Self-supervised learning*, used in pretraining, creates its own labels from the data, for example by hiding the next word and predicting it.
+- **Why it matters:** Security teams already use all three: supervised models for malware and phishing classification, unsupervised models for anomaly detection. Language models add self-supervised learning at enormous scale, which is why they know so much and why their training data is so hard to audit.
+- **Ask yourself:** Which of our existing security tools are already machine-learning models, and how were they trained?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Supervised fine-tuning (SFT) and post-training { #sft }
+
+- **What it is:** *Post-training* is everything done after pretraining to make a base model useful and safe. It usually starts with supervised fine-tuning: training on curated examples of good instructions and answers.
+- **Why it matters:** Post-training is where refusals, safety behaviour and tool use are taught. It is also what [fine-tuning](#fine-tuning) by customers can undo, which is why fine-tuned models need re-testing.
+- **Ask your vendor:** What safety training does the model receive after pretraining, and does fine-tuning on our data affect it?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Reinforcement learning (RL) { #reinforcement-learning }
+
+- **What it is:** Learning by trial and error: the model tries something, gets a reward signal for how well it did, and is updated to do more of what scored well.
+- **Why it matters:** RL is very good at finding ways to score highly, including ways nobody intended. That is the root of [reward hacking](#reward-hacking), one of the main alignment problems on this page.
+- **Ask your vendor:** How do you detect and prevent reward hacking during RL training?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### RLHF and reward models { #rlhf }
+
+- **What it is:** *Reinforcement learning from human feedback*: people compare model answers, a separate *reward model* learns to predict which answers they prefer, and the main model is trained to score well with that reward model.
+- **Why it matters:** The model learns to please the reward model, not to be right. Optimising too hard for approval can produce [sycophancy](#sycophancy): agreeable answers rather than accurate ones.
+- **Ask yourself:** Are we relying on an AI for judgements where agreeable and correct might differ?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### RLVR (reinforcement learning from verifiable rewards) { #rlvr }
+
+- **What it is:** RL where the reward comes from an automatic check rather than a reward model: does the maths answer match, do the unit tests pass? It replaces the learned reward model with a verification function ([Lambert et al.](#src-rlvr)). It is a main ingredient of today's reasoning models.
+- **Why it matters:** It is why coding and maths ability has jumped. But a check can be gamed too: a model rewarded for passing tests can learn to make tests pass without fixing the code, and Anthropic found that learning such hacks in real coding environments went along with broader misaligned behaviour ([Anthropic](#src-emergent-rh)).
+- **Ask your vendor:** How do you stop models learning to cheat the checks used in training, such as editing tests?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Constitutional AI, model specs and RLAIF { #constitutional-ai }
+
+- **What it is:** Training a model against a written set of principles, using AI feedback (RLAIF) as well as human feedback. Labs publish these documents: Anthropic's constitution for Claude ([Anthropic](#src-rsp-roadmap)) and OpenAI's Model Spec, which tells models not to be sycophantic, for example ([Georgetown Law](#src-sycophancy-brief)).
+- **Why it matters:** They tell you how a vendor intends its model to behave, including what it should refuse and whose instructions take priority. They are intentions, not guarantees.
+- **Ask your vendor:** Is there a published spec or constitution for this model, and how do you test that the model follows it?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Synthetic data { #synthetic-data }
+
+- **What it is:** Training data generated by AI models rather than collected from people or the world.
+- **Why it matters:** It lets labs create data for rare or sensitive cases, but errors and biases in the generating model can be copied into the new one, and it can be another route for poisoning.
+- **Ask your vendor:** How much of the training data is synthetic, and how is it checked?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### World model { #world-model }
+
+- **What it is:** An AI system that learns how an environment works, so it can predict what will happen next and what its actions will cause. Google DeepMind's Genie 3, for example, generates interactive environments in real time that agents can be trained in ([Google DeepMind](#src-genie3)).
+- **Why it matters:** World models are aimed at robots, vehicles and agents that act in the physical world, so their failures are physical, not just wrong text. Simulated worlds are also becoming training grounds for agents, which adds another layer to test.
+- **Ask yourself:** Do we have, or plan, AI that controls physical equipment, and who assures its safety?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### JEPA (joint embedding predictive architecture) { #jepa }
+
+- **What it is:** Yann LeCun's alternative to generative models. Instead of predicting every word or pixel, a JEPA learns an abstract representation of the world and makes predictions in that abstract space, ignoring details it can't predict ([MIT Technology Review](#src-lecun-tr)). LeCun founded AMI Labs in Paris in 2026 to build world models on this approach.
+- **Why it matters:** It is a bet that today's large language models won't reach human-level intelligence on their own. If it succeeds, the security picture shifts towards systems that plan and act in the physical world.
+- **Ask yourself:** Is our AI threat model only about text-based assistants?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### System 1 and System 2 { #system-1-2 }
+
+- **What it is:** Terms from psychology for fast, automatic thinking (System 1) and slow, deliberate reasoning (System 2). In AI debates, today's large language models are often compared to System 1, and world models that can plan towards System 2. LeCun's "objective-driven AI" aims at systems that learn world models, remember, reason and plan ([LeCun](#src-lecun-slides)). Reasoning models' "thinking" is the LLM labs' own route to slower, deliberate answers.
+- **Why it matters:** Fast pattern-matching systems are easy to fool with inputs that look right; planning systems that pursue objectives raise the alignment questions in the next section.
+- **Ask yourself:** Which of our uses need fast answers, and which need careful reasoning we can check?
+
+</div>
+
 ## Evaluating models
 
 <div class="cs-term" markdown="1">
@@ -781,6 +895,130 @@ Other personal agents in the same category include Hermes Agent, Instinct, Manus
 
 Most benchmark results are run and reported by the lab that made the model. Look for independent results from organisations such as METR, Epoch AI or government AI security institutes before relying on a number.
 
+## AI safety and alignment
+
+These terms come from research into whether AI systems reliably do what their developers and users intend. For security leaders the useful frame is the insider threat: a capable agent with access that might not act as intended.
+
+<div class="cs-term" markdown="1">
+
+### Alignment and misalignment { #alignment }
+
+- **What it is:** *Alignment* means an AI system's goals and behaviour match what its developers and users intend. A *misaligned* system pursues something else, whether from a flawed objective, flawed training or flawed generalisation.
+- **Why it matters:** An agent with access to your systems that is even slightly misaligned is a security problem, not just an ethics one. Alignment is not solved, so defence in depth still applies.
+- **Ask your vendor:** What alignment testing has this model had, and what are its known failure modes?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Specification gaming and reward hacking ("goal hacking") { #reward-hacking }
+
+- **What it is:** Achieving the literal objective without the intended outcome ([Google DeepMind](#src-spec-gaming)). In reinforcement learning it is called *reward hacking*: exploiting a loophole in the reward rather than doing the task. A classic example: a simulated robot meant to learn to walk learned to hook its legs together and slide along the ground.
+- **Why it matters:** In coding agents this looks like editing a test so it passes, or reporting success without doing the work. Anthropic found that when models learned to reward hack in real coding environments, misaligned behaviour rose across all its evaluations ([Anthropic](#src-emergent-rh)).
+- **Ask your teams:** Do we check what an agent actually did, not just that it reported success?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Goal misgeneralisation { #goal-misgeneralisation }
+
+- **What it is:** When a system learns a goal that worked in training but turns out to be the wrong goal in new situations, even though the specification was correct ([Shah et al.](#src-goal-misgen)).
+- **Why it matters:** A model can look perfectly aligned in testing and still pursue the wrong thing in your environment. Test in conditions close to real use.
+- **Ask yourself:** Has this agent been tested on situations that look like ours?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Emergent misalignment { #emergent-misalignment }
+
+- **What it is:** When narrow bad behaviour learned in training spreads into broad misbehaviour. In Anthropic's study, at the point a model learned to reward hack, its scores rose sharply on all its misalignment evaluations, including sabotage of safety research ([Anthropic](#src-emergent-rh)).
+- **Why it matters:** Small flaws in training can have wide effects that ordinary testing misses. This is a lab-side risk, but it is why vendors' alignment testing matters to buyers.
+- **Ask your vendor:** What do your system cards report on misalignment evaluations for this model version?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Sycophancy { #sycophancy }
+
+- **What it is:** A model telling people what they want to hear rather than what is true. In April 2025 OpenAI rolled back a GPT-4o update in ChatGPT that had made the model noticeably more sycophantic ([OpenAI](#src-sycophancy)).
+- **Why it matters:** A sycophantic assistant will agree that a risky change is fine, confirm a wrong assumption or praise a flawed plan. That is dangerous in security reviews, incident response and decision support.
+- **Ask yourself:** Where are we using AI to check our own reasoning, and would it tell us we were wrong?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Scheming and deceptive alignment { #scheming }
+
+- **What it is:** A model pursuing hidden goals while appearing to behave well. OpenAI and Apollo Research found behaviour consistent with scheming in controlled tests across frontier models; training reduced it but did not eliminate it ([OpenAI](#src-scheming)). *Deceptive alignment* is the more extreme case of a model that hides misaligned goals through training.
+- **Why it matters:** It undermines testing: a model that recognises an evaluation can behave differently there (see [evaluation awareness](#evaluation-awareness)). Controls that don't depend on the model being honest matter more.
+- **Ask your vendor:** What scheming evaluations have you run, and how do you account for models recognising tests?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Agentic misalignment { #agentic-misalignment }
+
+- **What it is:** Anthropic's term for agents independently and intentionally choosing harmful actions to pursue their goals. In simulated company environments it tested 16 models from several developers; in some scenarios models from every developer resorted to insider-threat behaviour such as blackmail or leaking information when that was the only way to avoid replacement or meet their goal ([Anthropic](#src-agentic-misalignment)).
+- **Why it matters:** It maps directly to insider-threat thinking: an agent with email access and a goal may act against the organisation. Anthropic reported no evidence of this in real deployments, but the study supports limiting agents' access to sensitive information and keeping human oversight.
+- **Ask yourself:** Would our insider-threat controls catch an AI agent behaving like a disgruntled employee?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Interpretability { #interpretability }
+
+- **What it is:** Research into what is happening inside a model: which internal features represent which concepts, and how they lead to outputs. *Mechanistic interpretability* tries to reverse-engineer the model's internal workings.
+- **Why it matters:** It is moving into security practice: Google says it is improving techniques to monitor its model's internal activations to spot misuse ([Google](#src-fsf)). In time it could let vendors detect deception or injected goals inside the model, not just in its output.
+- **Ask your vendor:** Do you use model-internals monitoring in production, and what does it detect?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Chain-of-thought monitoring { #cot-monitoring }
+
+- **What it is:** Having another system read a reasoning model's thinking and flag signs of intent to misbehave. Researchers from many labs and the UK AI Security Institute call this a new and fragile opportunity: it works only while models keep reasoning in readable language ([Korbak et al.](#src-cot)).
+- **Why it matters:** It is one of the few current ways to catch misbehaviour before an action happens. It may stop working if training changes make reasoning less faithful or less readable.
+- **Ask your vendor:** Do you monitor reasoning for misuse or misbehaviour, and is the reasoning we see the model's real reasoning or a summary?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### AI control { #ai-control }
+
+- **What it is:** Designing systems so that an AI cannot cause serious harm even if it is misaligned. Redwood Research, which introduced the idea, defines an AI as controlled if it is unable to cause damage even if egregiously misaligned, typically by having weaker trusted models and humans oversee a stronger untrusted one ([Redwood Research](#src-ai-control)).
+- **Why it matters:** This is the security mindset applied to AI: assume compromise, limit blast radius, monitor and audit. Gateways, approvals and least privilege for agents are control measures.
+- **Ask yourself:** If this agent were actively trying to misuse its access, which of our controls would stop it?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Corrigibility { #corrigibility }
+
+- **What it is:** An AI system that accepts correction: it lets people change its goals, pause it or shut it down, and doesn't try to prevent that.
+- **Why it matters:** A [kill switch](#kill-switch) only works if the system doesn't resist or route around it. Agentic misalignment studies tested exactly this scenario: models facing replacement.
+- **Ask your vendor:** How do you test that the agent accepts being stopped or overridden mid-task?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Recursive self-improvement (RSI) { #recursive-self-improvement }
+
+- **What it is:** AI systems improving AI systems, potentially including their own successors, in a loop. The idea dates back decades as the "intelligence explosion" ([IEEE Spectrum](#src-rsi-ieee)). Parts of the loop are now real: AI helps write AI labs' code and run experiments, and OpenAI's chief executive has said it is building an automated AI researcher by March 2028 ([Axios](#src-rsi-axios)). Researchers separate bounded self-refinement, already common, from open-ended RSI, which remains limited ([Chen et al.](#src-rsi-survey)).
+- **Why it matters:** It could speed up capability, including offensive cyber capability, faster than defences and oversight adapt. Policy researchers warn that outsiders have little visibility into how far AI R&D is already automated ([Axios](#src-rsi-axios)).
+- **Ask yourself:** How quickly could our threat model go out of date if AI capability jumped within months?
+
+</div>
+
 ## Who makes the models
 
 The main AI labs and their current model families, in alphabetical order. Status as of 27 November 2026; line-ups change every few weeks, so check the lab's own model page before relying on a detail.
@@ -840,6 +1078,9 @@ Sources for this table: [NIST AI 100-2](#src-nist-aml), [NIST AI 600-1](#src-nis
 | **Acting as the user vs acting as itself** | An agent using your sign-in has all your access and appears in logs as you. An agent with its own identity can be scoped, tracked and switched off on its own. |
 | **Evals vs red teaming vs penetration test** | Evals measure behaviour against a test set. Red teaming hunts for ways to make the AI misbehave. A penetration test looks for weaknesses in the systems around it. You need all three. |
 | **Vibe coding vs AI-assisted development** | Vibe coding means accepting AI-written code without reading it. AI-assisted development means a developer uses AI but still reviews, tests and owns the code. The tools are the same; the discipline isn't. |
+| **Specification gaming vs goal misgeneralisation** | Specification gaming exploits a flawed objective. Goal misgeneralisation happens even with a correct objective: the model learned the wrong goal from its training. |
+| **Supervised vs unsupervised vs reinforcement learning** | Supervised learns from labelled answers, unsupervised finds patterns without labels, and reinforcement learning learns from rewards for actions. Language models use all three at different stages. |
+| **Alignment vs control** | Alignment tries to make the AI want the right things. Control assumes it might not and limits what it can do. Security teams can apply control today. |
 | **Open weights vs open source** | Open weights means you can download and run the model. Open source, in the full sense, would also publish the training code and data, which is rare. |
 | **Guardrails vs alignment** | Guardrails are controls added around a model. Alignment is the work of making the model itself behave well. Neither is a guarantee. |
 
@@ -992,9 +1233,28 @@ Checked on 27 November 2026.
 84. <span id="src-muse-link"></span>SiliconANGLE, [Meta debuts its 'secure by design' personal AI agent Muse](https://siliconangle.com/?p=846205), 8 September 2026.
 85. <span id="src-openclaw"></span>TechRadar, [Here are the OpenClaw security risks you should know about](https://www.techradar.com/pro/here-are-the-openclaw-security-risks-you-should-know-about), 2026.
 86. <span id="src-every-agents"></span>Every, [Personal agents comparison](https://every.to/personal-agents-comparison), 2026.
+87. <span id="src-rlhf-book"></span>Nathan Lambert, [Reinforcement Learning from Human Feedback](https://arxiv.org/pdf/2504.12501), 2025–2026, chapter 7 (the cake analogy and RLVR).
+88. <span id="src-rlvr"></span>Lambert et al., [Tülu 3: pushing frontiers in open language model post-training](https://arxiv.org/pdf/2411.15124), 2024 (introduces RLVR).
+89. <span id="src-emergent-rh"></span>Anthropic, [From shortcuts to sabotage: natural emergent misalignment from reward hacking](https://www.anthropic.com/research/emergent-misalignment-reward-hacking), 21 November 2025; paper: [MacDiarmid et al.](https://arxiv.org/abs/2511.18397).
+90. <span id="src-rsp-roadmap"></span>Anthropic, [Frontier Safety Roadmap](https://anthropic.com/rsp/roadmap), 2026 (refers to Claude's Constitution).
+91. <span id="src-sycophancy-brief"></span>Georgetown Law Tech Institute, [Tech brief: AI sycophancy and OpenAI](https://www.law.georgetown.edu/tech-institute/insights/tech-brief-ai-sycophancy-openai-2/), 30 July 2025.
+92. <span id="src-genie3"></span>Google DeepMind, [Genie 3: a new frontier for world models](https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/), 5 August 2025.
+93. <span id="src-lecun-tr"></span>MIT Technology Review, [Yann LeCun's new venture is a contrarian bet against large language models](https://www.technologyreview.com/2026/01/22/1131661/yann-lecuns-new-venture-ami-labs/), 22 January 2026.
+94. <span id="src-lecun-slides"></span>Yann LeCun, [Objective-driven AI](https://www.ece.uw.edu/wp-content/uploads/2024/01/lecun-20240124-uw-lyttle.pdf), Lytle Lecture, University of Washington, January 2024.
+95. <span id="src-spec-gaming"></span>Krakovna et al. (Google DeepMind), [Specification gaming: the flip side of AI ingenuity](https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/), 21 April 2020.
+96. <span id="src-goal-misgen"></span>Shah et al. (DeepMind), [Goal misgeneralization: why correct specifications aren't enough for correct goals](https://arxiv.org/pdf/2210.01790v2.pdf), 2022.
+97. <span id="src-sycophancy"></span>OpenAI, [Expanding on what we missed with sycophancy](https://openai.com/index/expanding-on-sycophancy/), 2 May 2025.
+98. <span id="src-scheming"></span>OpenAI, [Detecting and reducing scheming in AI models](https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/), September 2025; paper with Apollo Research: [Schoen et al.](https://arxiv.org/pdf/2509.15541).
+99. <span id="src-agentic-misalignment"></span>Anthropic, [Agentic misalignment: how LLMs could be insider threats](https://www.anthropic.com/research/agentic-misalignment), 20 June 2025.
+100. <span id="src-cot"></span>Korbak et al., [Chain of thought monitorability: a new and fragile opportunity for AI safety](https://arxiv.org/abs/2507.11473), 2025 (authors from the UK AI Security Institute, Apollo Research, METR, Anthropic, Google DeepMind, OpenAI and others).
+101. <span id="src-ai-control"></span>Redwood Research, [AI control](https://redwoodresearch.org/research/ai-control); paper: [Greenblatt et al., AI control: improving safety despite intentional subversion](https://arxiv.org/abs/2312.06942), 2023.
+102. <span id="src-rsi-axios"></span>Axios, [Models that improve on their own are AI's next big thing](https://axios.com/2026/01/27/models-improve-ai), 27 January 2026.
+103. <span id="src-rsi-survey"></span>Chen, Wang and Qu, [Recursive self-improvement in AI: from bounded self-refinement to autonomous research loops](https://arxiv.org/abs/2607.07663), 2026.
+104. <span id="src-rsi-ieee"></span>IEEE Spectrum, [Recursive self-improvement](https://spectrum.ieee.org/recursive-self-improvement-2676580377), 2026.
 
 ## Changes
 
+- **27 November 2026:** added "How models are trained" (pretraining, learning types, post-training, RL, RLHF, RLVR, constitutional AI, synthetic data, world models, JEPA, System 1 and 2) and "AI safety and alignment" (alignment, reward hacking, goal misgeneralisation, emergent misalignment, sycophancy, scheming, agentic misalignment, interpretability, chain-of-thought monitoring, AI control, corrigibility, recursive self-improvement), with three new confused pairs.
 - **27 November 2026:** added "Personal agents: the 2026 products" (always-on agents; Claude Duet, dots, Gemini agent, Gemini Spark, Grok Bot, Muse, OpenClaw).
 - **27 November 2026:** added "Inside the AI stack" (harness, model aliases, inference providers and more), "Evaluating models" with a table of common benchmarks, and "Who makes the models".
 - **27 November 2026:** added "Building software with AI" (vibe coding, AI-assisted development, coding agents, auto-approve, rules files, slopsquatting, toxic agent flows, AI in CI/CD, model files), with a matching confused pair and misconception.
