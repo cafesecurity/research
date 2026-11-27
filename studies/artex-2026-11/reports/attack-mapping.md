@@ -25,6 +25,54 @@ These recur, so they're stated once here rather than in every row. They don't de
 - **Alert on machine speed.** Many tool calls per minute from one identity is the tool's native tempo (C203). Baseline it and alert on it.
 - **Log internal apps.** A detection is only as good as the logs behind it; internal web apps and APIs often don't log requests at all (C213).
 
+## How to use this map
+
+The map is for checking your own coverage. For each behaviour, ask three things: would a control stop it, would an alert fire, and do you keep the logs that alert needs? None of this needs a copy of ARTEX, and the study didn't run one either.
+
+### 1. Load the layer
+
+1. Open the [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) and choose **Open Existing Layer**.
+2. Choose **Upload from local** and pick [`navigator-layer.json`](../indicators/attack/navigator-layer.json), or choose **Load from URL** and paste its raw address: `https://raw.githubusercontent.com/cafesecurity/research/main/studies/artex-2026-11/indicators/attack/navigator-layer.json`.
+3. The mapped techniques are highlighted. Hover over one to read its comment, which gives the claims behind it and the detection.
+
+The layer is written for ATT&CK version 16. If the Navigator offers to upgrade it to a newer version, accept, then check whether any mapped technique was changed or retired.
+
+### 2. Compare it with your coverage
+
+If you already keep an ATT&CK layer of what your detections cover, compare the two.
+
+1. Load both layers. The Navigator gives each open layer a letter, shown on its tab.
+2. Choose **Create New Layer**, then **Create Layer from other layers**.
+3. Set the score expression to subtract your layer from this one, for example `a - b` if this layer is `a` and yours is `b`. This works when both layers score a covered technique as 1; rescale yours first if it uses another range.
+4. Techniques left with a score of 1 are on ARTEX's map and missing from yours. Start there.
+
+If you don't keep a coverage layer, work straight from the tables below.
+
+### 3. Mark each row
+
+Give each technique one of three marks:
+
+- **Prevented:** a control stops the behaviour, such as egress allow-listing against T1567.
+- **Detected:** an alert fires and someone acts on it.
+- **Blind:** neither, or you can't tell because the logs don't exist.
+
+Be strict about "detected". An alert only counts if the logs it reads are switched on and kept, and someone looks at it. Internal apps that don't log requests leave you blind whatever rules you run (C213). To keep a record, copy the layer, give each technique a score (for example 0 for blind, 1 for detected, 2 for prevented) and export it as your own exposure map.
+
+### 4. Fix in order
+
+1. **The cross-cutting mitigations above.** Each one closes several rows at once and holds against the whole class of tools, not just ARTEX (C168, C207).
+2. **Blind rows that have a shipped detection.** Deploy it, using the [indicators' how-to steps](../indicators/README.md#how-to-use-them).
+3. **The remaining blind rows.** Prefer detections on tempo, sequence and the model-API boundary over single events or tool names, which change from run to run and between builds (C128, C210).
+4. **Rows marked as the wider class** (Impact, and T1021 under lateral movement). ARTEX's own code doesn't show them, but an agent with a shell can do them, so cover them in the same work.
+
+### 5. Test before you trust
+
+Check that a detection fires before you rely on it. Test one technique at a time, in your own environment, with a harmless test that the owners of the systems have agreed to: a canary credential used from an outside address, say, or a scan from a known test host. Open-source libraries such as [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) have small, single-technique tests for many of the rows. Don't use ARTEX for this. Its scope limits are only instructions to the model and a check on its own records, not on the commands its agents run (C081, C083).
+
+### 6. Keep it current
+
+The map cites claims, so a correction to a claim reaches it. Watch the study's [changes](../README.md#changes) and [corrections](../CORRECTIONS.md), and run the comparison again when a new version adds or removes a row. Mark the rows again after any change to your logging, network or credentials.
+
 ---
 
 ## Reconnaissance
