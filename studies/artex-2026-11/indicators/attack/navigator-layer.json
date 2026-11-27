@@ -1,0 +1,169 @@
+{
+  "name": "ARTEX (artex-2026-11)",
+  "versions": {
+    "layer": "4.5",
+    "navigator": "5.1.0",
+    "attack": "16"
+  },
+  "domain": "enterprise-attack",
+  "description": "Behaviours from the Cafe Security Research study 'ARTEX: what the code says' (artex-2026-11) mapped to MITRE ATT&CK. Companion to reports/attack-mapping.md. Each comment cites the claim IDs behind it. ARTEX is a harness around an AI model, so most technique use is model-improvised and varies per run (C128); treat these as coverage checks, not fixed fingerprints. Starting point, not tested against your logs.",
+  "filters": {
+    "platforms": ["Linux", "Windows", "macOS", "IaaS", "SaaS", "Identity Provider", "Office Suite"]
+  },
+  "sorting": 0,
+  "layout": {
+    "layout": "side",
+    "showID": true,
+    "showName": true
+  },
+  "hideDisabled": true,
+  "techniques": [
+    {
+      "techniqueID": "T1595",
+      "tactic": "reconnaissance",
+      "score": 1,
+      "comment": "Bundled nmap, netcat and an API-endpoint-discovery skill; model enumerates whatever is reachable. Claims C040, C041, C195. Detect: sigma/web_request_claims_authorised_test.yml.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1588.002",
+      "tactic": "resource-development",
+      "score": 1,
+      "comment": "ARTEX is the obtained tool; easy to fingerprint in your own estate (unauthenticated health check names service+version, default port 8787, consoles exposed at scale). Claims C100, C104, C121, C129. Detect: yara/artex.yar, indicators.csv.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1190",
+      "tactic": "initial-access",
+      "score": 1,
+      "comment": "Model exploits what it confirms; database stores repro steps and exploit code per confirmed target. Model-improvised, varies per run. Claims C042, C181. Keeps a WAF/block tally and is told to try every way round (C090, C091).",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1078.004",
+      "tactic": "initial-access",
+      "score": 1,
+      "comment": "Compromised long-lived keys used to search cloud logs for more secrets and abuse public sign-up pools; Bitrise entry via a dormant internal bot with no 2FA. Claims C126, C127, C219. Detect: sigma aws/azure/gcp unexpected-source rules.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1059.004",
+      "tactic": "execution",
+      "score": 1,
+      "comment": "Shell is the capability; planner, main agent and 3 workers get it by default. Engine floor = 4 catastrophic commands, no deny rules set (C014, C015). Claims C035, C036, C042. Detect on tempo, not command content.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1552.001",
+      "tactic": "credential-access",
+      "score": 1,
+      "comment": "Model reads secrets it finds (Bitrise: unmarked build secrets). ARTEX also leaves its own operator keys + DB password in every agent's environment (C106) — hunt a seized instance. Claims C106, C219.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1552.005",
+      "tactic": "credential-access",
+      "score": 1,
+      "comment": "Engine web fetch has no block on internal/private addresses, so the model can reach metadata and internal endpoints. Claim C019. Mitigate: IMDSv2, block internal fetches at app layer.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1110",
+      "tactic": "credential-access",
+      "score": 1,
+      "comment": "Agentic sign-in abuse, incl. the failed-attempt bursts before Bitrise entry. Claims C126, C219. Detect: sigma/signin_failure_burst.yml.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1046",
+      "tactic": "discovery",
+      "score": 1,
+      "comment": "nmap/netcat in image; model scans. Raw scans bypass ARTEX's own recording proxy (C061) but show on your network; visible even when the agent fails its goal (C131, C200). Claims C041, C061.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1526",
+      "tactic": "discovery",
+      "score": 1,
+      "comment": "Stolen keys used to search cloud logs and map the account; planner/worker/verification agents share a knowledge graph (C127). Claims C126, C127.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1005",
+      "tactic": "collection",
+      "score": 1,
+      "comment": "Model-improvised. Optional AI judge (off by default) explicitly does NOT treat reading password/.env files, keys or whole databases as a reason to block. Claim C183.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1530",
+      "tactic": "collection",
+      "score": 1,
+      "comment": "Model-improvised cloud-storage reads; same no-block-on-sensitive-reads judge default. Claim C183. Detect on bulk reads as a sequence, not singly.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1567",
+      "tactic": "exfiltration",
+      "score": 1,
+      "comment": "Findings can be sent to Telegram, email, webhooks and 3 workplace chat apps; the rule against piping data to another host ships OFF. Claims C064, C085. Mitigate: egress allow-listing.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1485",
+      "tactic": "impact",
+      "score": 1,
+      "comment": "WIDER CLASS, not found in ARTEX: autonomous-ransomware case (JADEPUFFER) destroyed originals end to end (C199). ARTEX's own destructive-command rules are ON by default (C015, C085). Included for coverage.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1486",
+      "tactic": "impact",
+      "score": 1,
+      "comment": "WIDER CLASS, not found in ARTEX: JADEPUFFER encrypted a database end to end (C199). ARTEX restrains destructive commands by default (C015, C085). Included for coverage.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1071.001",
+      "tactic": "command-and-control",
+      "score": 1,
+      "comment": "Agent reaches targets over HTTP via engine web fetch + Chromium. v0.3.30 rotates 20 desktop user agents and reuses the target's headers (first stealth feature); old tool-name indicators catch old builds only. Claims C041, C209, C210. Best surface: model-API boundary (C202, C205).",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1036",
+      "tactic": "defense-evasion",
+      "score": 1,
+      "comment": "v0.3.30 rotates 20 desktop user agents and reuses the target's own headers; agents told not to send CLI default headers (one stealth feature, C209). Old builds named the tool in UA (norma/0.4, artex-enrich/1.0) - historical-log search only (C208, C210). Prompts assert an unchecked 'authorised test' (C184). Detect: sigma/web_request_claims_authorised_test.yml; lean on behaviour + model-API boundary, not UA.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1550.001",
+      "tactic": "lateral-movement",
+      "score": 1,
+      "comment": "Public reporting, not ARTEX's reviewed code: stolen long-lived keys and already-issued tokens reused to reach further services. Bitrise - disabling a key didn't recall tokens minted from it (C219); AWS - stolen keys searched cloud logs for more secrets (C126, C127). Detect: sigma/*_unexpected_source.yml (key/principal used from outside own ranges).",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1021",
+      "tactic": "lateral-movement",
+      "score": 1,
+      "comment": "Model-improvised, not a shipped module: valid accounts + shell reach further hosts/services. Amazon describes planner/worker/verification agents sharing a knowledge graph, stolen keys funding further hunting (C127). Claims C126, C127. Detect: one identity reaching systems it doesn't normally touch at machine tempo (C203); internal apps must log requests (C213).",
+      "enabled": true
+    }
+  ],
+  "gradient": {
+    "colors": ["#ffe766", "#d94f4f"],
+    "minValue": 0,
+    "maxValue": 1
+  },
+  "metadata": [
+    {"name": "study", "value": "artex-2026-11"},
+    {"name": "source", "value": "https://github.com/cafesecurity/research"},
+    {"name": "caveat", "value": "Behaviours are model-improvised and vary per run (C128). Weight detection toward tempo, sequence and the model-API boundary."}
+  ],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#14223a",
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false
+}
