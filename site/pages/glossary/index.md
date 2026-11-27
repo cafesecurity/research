@@ -5,7 +5,7 @@ description: "Plain-English definitions of the AI and agent terms security leade
 
 # AI security glossary for CISOs
 
-This glossary is for security leaders who need to ask good questions about AI before they can answer them. Each term has three parts: **what it is**, in plain English; **why it matters to security**; and the **question to ask your vendor** in a security review. Where a term matches an entry in the OWASP Top 10 for LLM Applications or the OWASP Top 10 for Agentic Applications, the entry is named so you can read further.
+This glossary is for security leaders who need to ask good questions about AI before they can answer them. Each term has three parts: **what it is**, in plain English; **why it matters to security**; and the **question to ask your vendor** in a security review. Where a term matches an entry in the OWASP Top 10 for LLM Applications (2026 edition) or the OWASP Top 10 for Agentic Applications, the entry is named so you can read further. The standards bodies don't always use the same words for the same thing, so [Same idea, different names](#same-idea-different-names) maps the terms across NIST, ISO, OWASP, MITRE ATLAS and the EU AI Act, and [Frameworks](#frameworks) lists the main ones.
 
 !!! note "Current as of November 2026"
     Products, standards and vendor settings in this field change month to month. Each page change is dated in [Changes](#changes) at the foot of the page. If something here is out of date or wrong, [tell us](../about/contributing.md).
@@ -16,7 +16,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 <p id="gloss-count" class="cs-gloss-count" aria-live="polite"></p>
 </div>
 
-**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Sources](#sources)
+**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
 
 ## The basics
 
@@ -105,7 +105,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 ### System prompt { #system-prompt }
 
 - **What it is:** The standing instructions the vendor or developer gives the model before the user says anything.
-- **Why it matters:** It is guidance, not a security boundary. Attackers can often get a model to reveal or ignore it, so it should never hold secrets or be the only rule stopping a dangerous action. OWASP: LLM07 System Prompt Leakage ([OWASP LLM](#src-owasp-llm)).
+- **Why it matters:** It is guidance, not a security boundary. Attackers can often get a model to reveal or ignore it, so it should never hold secrets or be the only rule stopping a dangerous action. OWASP's 2026 list widened this risk to everything hidden in the context, not just the prompt: LLM08 Hidden Context Exposure, which replaced System Prompt Leakage ([OWASP LLM](#src-owasp-llm), [CSA](#src-csa-owasp2026)).
 - **Ask your vendor:** Which of your safeguards are enforced in code, and which only in the prompt?
 
 </div>
@@ -114,8 +114,8 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 ### Hallucination { #hallucination }
 
-- **What it is:** When a model states something false with confidence: a made-up citation, policy or figure.
-- **Why it matters:** In an agent, a made-up detail can become an action. One known case is the invented software package: code models suggest libraries that don't exist, and an attacker can register the name and publish malware under it. This is called slopsquatting ([CSO Online](#src-slopsquatting)). OWASP: LLM09 Misinformation.
+- **What it is:** When a model states something false with confidence: a made-up citation, policy or figure. NIST calls this *confabulation*, partly because "hallucination" makes the system sound human ([NIST AI 600-1](#src-nist-600-1)).
+- **Why it matters:** In an agent, a made-up detail can become an action. One known case is the invented software package: code models suggest libraries that don't exist, and an attacker can register the name and publish malware under it. This is called slopsquatting ([CSO Online](#src-slopsquatting)). OWASP: LLM07 Misinformation.
 - **Ask your vendor:** Where does the product check facts or outputs before acting on them?
 
 </div>
@@ -167,7 +167,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 ### Embeddings / vector database { #embeddings }
 
 - **What it is:** Documents turned into lists of numbers so that similar meanings can be found quickly, stored in a vector database that powers RAG.
-- **Why it matters:** Embeddings are derived from your data. Give the vector store the same access control, encryption and retention rules as the source documents. OWASP: LLM08 Vector and Embedding Weaknesses.
+- **Why it matters:** Embeddings are derived from your data. Give the vector store the same access control, encryption and retention rules as the source documents. OWASP: LLM09 Vector and Embedding Weaknesses.
 - **Ask your vendor:** Where are embeddings stored, who can query them, and are they deleted when the source document is?
 
 </div>
@@ -198,8 +198,8 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 ### Prompt injection (direct and indirect) { #prompt-injection }
 
-- **What it is:** Instructions slipped into a model's input to make it do something it shouldn't. *Direct*: the user types them. *Indirect*: they are hidden in content the agent reads, such as an email, web page, document or calendar invite ([NIST](#src-nist-aml)).
-- **Why it matters:** Indirect injection is the big one for business, because the attacker never needs access to your systems, only to something your agent will read. It is first in the OWASP Top 10 for LLM Applications (LLM01), and its agentic form, ASI01 Agent Goal Hijack, is first in the agentic list. We know of no defence that stops it completely, so design on the basis that it will sometimes work.
+- **What it is:** Instructions slipped into a model's input to make it do something it shouldn't. *Direct*: the user types them. *Indirect*: they are hidden in content the agent reads, such as an email, web page, document or calendar invite ([NIST](#src-nist-aml)). When indirect injection makes an agent take harmful actions, NIST's AI agent team calls it *agent hijacking* ([NIST CAISI](#src-caisi)). MITRE ATLAS adds a third kind, *triggered*, alongside direct and indirect ([ATLAS](#src-atlas)).
+- **Why it matters:** Indirect injection is the big one for business, because the attacker never needs access to your systems, only to something your agent will read. It is first in the OWASP Top 10 for LLM Applications (LLM01), and its agentic form, ASI01 Agent Goal Hijack, is first in the agentic list. MITRE ATLAS: AML.T0051 LLM Prompt Injection. We know of no defence that stops it completely, so design on the basis that it will sometimes work.
 - **Ask your vendor:** What happens when the agent reads a malicious instruction? What stops the action, and does that check sit outside the model?
 
 </div>
@@ -209,7 +209,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 ### Jailbreak { #jailbreak }
 
 - **What it is:** Getting a model to ignore its own safety rules, usually through clever wording or role-play.
-- **Why it matters:** It shows that a model's own refusals are not a dependable control. Plan as if any model can be talked round.
+- **Why it matters:** It shows that a model's own refusals are not a dependable control. Plan as if any model can be talked round. Frameworks file it differently: OWASP calls jailbreaking a form of prompt injection ([OWASP LLM01](#src-owasp-llm01)), while MITRE ATLAS lists it as a separate technique, AML.T0054 LLM Jailbreak ([ATLAS](#src-atlas)).
 - **Ask your vendor:** Which protections still hold if the model itself is jailbroken?
 
 </div>
@@ -229,7 +229,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 ### Zero-click exfiltration { #zero-click-exfiltration }
 
 - **What it is:** Data leaving without anyone clicking anything. A common route: an injected instruction makes the assistant put sensitive data into a link or image address, and the data is sent when the app loads it. EchoLeak (CVE-2025-32711), a critical flaw in Microsoft 365 Copilot that Microsoft fixed in 2025, let an attacker take data with a single crafted email ([Hack The Box](#src-echoleak)).
-- **Why it matters:** An agent that can only read can still leak, if its output is rendered automatically. OWASP: LLM05 Improper Output Handling.
+- **Why it matters:** An agent that can only read can still leak, if its output is rendered automatically. OWASP: LLM10 Improper Output Handling.
 - **Ask your vendor:** Does the product load external images or links from model output automatically, and can we turn that off?
 
 </div>
@@ -238,7 +238,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 ### Data poisoning { #data-poisoning }
 
-- **What it is:** Corrupting the data a model learns from or relies on (training data, fine-tuning sets, RAG sources) to change how it behaves. OWASP: LLM04 Data and Model Poisoning.
+- **What it is:** Corrupting the data a model learns from or relies on (training data, fine-tuning sets, RAG sources) to change how it behaves. OWASP: LLM05 Data and Model Poisoning.
 - **Why it matters:** The attack can be planted long before it is used, and it is hard to spot afterwards.
 - **Ask your vendor:** Where does the model's training and grounding data come from, and how is it checked?
 
@@ -248,7 +248,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 ### Tool misuse / excessive agency { #tool-misuse }
 
-- **What it is:** An agent using legitimate tools in harmful ways, often because it was given more permissions or autonomy than the task needed. OWASP: LLM06 Excessive Agency, ASI02 Tool Misuse and ASI03 Identity & Privilege Abuse.
+- **What it is:** An agent using legitimate tools in harmful ways, often because it was given more permissions or autonomy than the task needed. OWASP: LLM03 Excessive Agency, ASI02 Tool Misuse and ASI03 Identity & Privilege Abuse. MITRE ATLAS: AML.T0053 AI Agent Tool Invocation.
 - **Why it matters:** Nothing has to be hacked. Broad scopes plus one bad instruction is enough.
 - **Ask your vendor:** Can permissions be scoped per task, and is the default least privilege?
 
@@ -380,6 +380,16 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 <div class="cs-term" markdown="1">
 
+### Provider, deployer and other roles { #roles }
+
+- **What it is:** Names for who does what with an AI system. Under the EU AI Act, the *provider* develops a system and puts it on the market under its own name, and the *deployer* uses it under its own authority; together with importers, distributors, product manufacturers and authorised representatives they are *operators* ([EU AI Act](#src-eu-ai-act)). ISO/IEC 22989 uses a different set: AI provider, producer, customer, partner and subject ([ISO/IEC 22989](#src-iso-22989)). NIST's AI Risk Management Framework talks about *AI actors*.
+- **Why it matters:** The sets don't map one to one, and one organisation can hold several roles at once. A company that builds its own agent on a vendor's model may be a deployer of the model and the provider of the agent. Contracts, audits and incident duties follow the role.
+- **Ask your vendor:** Which role does each party hold under the frameworks we report against, and who carries which obligation when something goes wrong?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
 ### Data retention / zero data retention (ZDR) { #data-retention }
 
 - **What it is:** How long the vendor keeps your prompts, files and outputs. Zero data retention means the vendor doesn't store them after the request is answered, on the terms it publishes.
@@ -388,11 +398,29 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 </div>
 
+## Same idea, different names
+
+Standards bodies and threat catalogues often name the same thing differently, or draw its edges in different places. This table maps the terms on this page to what each one calls them. A dash means we didn't find a separate term for it in that framework, not that the framework ignores the topic. The table is wide: scroll it sideways to see every column.
+
+| Concept (this page) | NIST | ISO/IEC | OWASP | MITRE ATLAS | Others |
+| --- | --- | --- | --- | --- | --- |
+| [Prompt injection](#prompt-injection) | Direct and indirect prompt injection (AI 100-2 E2025) | — | LLM01:2026 Prompt Injection | AML.T0051 LLM Prompt Injection: .000 direct, .001 indirect, .002 triggered | ETSI EN 304 223 names indirect prompt injection |
+| Indirect injection against an agent | *Agent hijacking* (CAISI) | — | ASI01 Agent Goal Hijack (broader) | AML.T0051.001 | — |
+| [Jailbreak](#jailbreak) | — | — | A form of prompt injection (LLM01) | AML.T0054 LLM Jailbreak, a separate technique | — |
+| [Hallucination](#hallucination) | *Confabulation* (AI 600-1) | — | Part of LLM07:2026 Misinformation | — | — |
+| [System prompt](#system-prompt) exposure | — | — | LLM08:2026 Hidden Context Exposure (was LLM07:2025 System Prompt Leakage) | Extracting the LLM system prompt is a named technique | — |
+| [Tool misuse / excessive agency](#tool-misuse) | — | — | LLM03:2026 Excessive Agency; ASI02 Tool Misuse | AML.T0053 AI Agent Tool Invocation | — |
+| [Data poisoning](#data-poisoning) | Poisoning attacks (AI 100-2 E2025) | — | LLM05:2026 Data and Model Poisoning | — | ETSI EN 304 223 names data poisoning |
+| [Agent](#agent) | *AI agent systems*: able to take autonomous actions that affect real systems (CAISI) | *AI agent*: an automated entity that senses and responds to its environment and acts to achieve goals (22989), a much wider net | *Agentic applications* | — | — |
+| [Provider, deployer and other roles](#roles) | AI actors (AI RMF) | AI provider, producer, customer, partner, subject (22989) | — | — | EU AI Act: provider, deployer, operators |
+
+Sources for this table: [NIST AI 100-2](#src-nist-aml), [NIST AI 600-1](#src-nist-600-1), [NIST CAISI](#src-caisi), [ISO/IEC 22989](#src-iso-22989), [OWASP LLM](#src-owasp-llm), [OWASP LLM01](#src-owasp-llm01), [OWASP Agentic](#src-owasp-agentic), [ATLAS](#src-atlas), [ETSI EN 304 223](#src-etsi), [EU AI Act](#src-eu-ai-act).
+
 ## Commonly confused
 
 | These terms | The difference |
 | --- | --- |
-| **Prompt injection vs jailbreak** | Injection makes the AI follow an attacker's instructions instead of yours. A jailbreak makes it ignore its own safety rules. A jailbreak usually needs the attacker to be the user; injection doesn't. |
+| **Prompt injection vs jailbreak** | Injection makes the AI follow an attacker's instructions instead of yours. A jailbreak makes it ignore its own safety rules. A jailbreak usually needs the attacker to be the user; injection doesn't. OWASP treats jailbreaking as one kind of prompt injection; MITRE ATLAS lists them separately. |
 | **Hallucination vs injection** | A hallucinating model is wrong. An injected model is being steered. Both can lead to bad actions; only one has an attacker behind it. |
 | **AI safety vs AI security** | Safety is about the system causing harm by itself: bad advice, dangerous behaviour. Security is about someone attacking or misusing it. Agents need both. |
 | **Chatbot vs copilot vs agent vs workflow automation** | A chatbot answers. A copilot suggests while you decide. An agent acts. A workflow automation (scripts, traditional RPA) follows fixed steps; an agent chooses its own. |
@@ -431,11 +459,44 @@ This glossary is for security leaders who need to ask good questions about AI be
 | "Your data stays yours" | What is the retention period, is it used for training, and who at the vendor can see it? |
 | "Agents act with your permissions" | So a compromised agent has all of them? |
 
+## Frameworks
+
+The main standards, frameworks and catalogues for AI security, by what they're for. Status as of November 2026.
+
+**Vocabulary**
+
+- **ISO/IEC 22989:2022**, AI concepts and terminology. The shared vocabulary most ISO AI standards build on.
+- **NIST AI 100-2 E2025**, Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations. The main reference for attack names.
+
+**Risk management and governance**
+
+- **NIST AI Risk Management Framework (AI RMF 1.0)** and its **Generative AI Profile (NIST AI 600-1)**. Voluntary; widely used in the US.
+- **ISO/IEC 42001**, AI management systems. Certifiable, so it often turns up in audits and procurement.
+- **ISO/IEC 23894**, guidance on AI risk management.
+- **EU AI Act**. Law rather than a standard; its definitions bind anyone placing AI systems on the EU market.
+
+**Security baselines and controls**
+
+- **ETSI EN 304 223**, Baseline Cyber Security Requirements for AI Models and Systems (December 2025). Thirteen principles across five lifecycle phases. The UK's **AI Cyber Security Code of Practice** mirrors it ([gov.uk](#src-uk-mapping)).
+- **NCSC and CISA Guidelines for Secure AI System Development** (2023), which the UK code and the ETSI standard build on.
+- **CSA AI Controls Matrix (AICM)**. v1.0 had 243 control objectives across 18 domains, mapped to ISO 42001, ISO 27001, the NIST AI RMF and the EU AI Act ([CSA](#src-csa-aicm)); v1.1 followed in June 2026.
+
+**Threat catalogues**
+
+- **MITRE ATLAS**. Attack tactics and techniques against AI systems in the style of MITRE ATT&CK, with case studies.
+- **OWASP Top 10 for LLM Applications 2026** and **OWASP Top 10 for Agentic Applications**.
+- **CSA MAESTRO**, a threat-modelling method for agentic AI ([CSA](#src-csa-gap)).
+
+**Agent-specific work in progress**
+
+- **NIST CAISI AI Agent Standards Initiative**, launched February 2026, with research on agent hijacking ([CSA](#src-csa-caisi)).
+- **NCCoE concept paper on AI agent identity** ([CSA](#src-csa-gap)).
+
 ## Sources
 
 Checked on 27 November 2026.
 
-1. <span id="src-owasp-llm"></span>OWASP GenAI Security Project, [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/). Entry IDs LLM01 to LLM10.
+1. <span id="src-owasp-llm"></span>OWASP GenAI Security Project, [OWASP GenAI LLM Top 10 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/), published 4 August 2026 ([list on GitHub](https://github.com/GenAI-Security-Project/GenAI-LLM-Top10)). Entry IDs LLM01 to LLM10 on this page are the 2026 numbers.
 2. <span id="src-owasp-agentic"></span>OWASP GenAI Security Project, [OWASP Top 10 for Agentic Applications for 2026](https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/), 9 December 2025. Entry IDs ASI01 to ASI10.
 3. <span id="src-nist-aml"></span>NIST, [AI 100-2 E2025, Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations](https://csrc.nist.gov/pubs/ai/100/2/e2025/final), March 2025. Direct and indirect prompt injection.
 4. <span id="src-willison-trifecta"></span>Simon Willison, [The lethal trifecta for AI agents: private data, untrusted content, and external communication](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/), 16 June 2025.
@@ -447,9 +508,22 @@ Checked on 27 November 2026.
 10. <span id="src-duet-proactive"></span>Crypto Briefing, [Anthropic's Claude Duet AI agent](https://cryptobriefing.com/anthropic-claude-duet-ai-agent/), October 2026. An agent that starts work before the user opens a chat.
 11. <span id="src-newcore"></span>eWeek, [Grok Bots tried to access work apps 31 times without approval](https://www.eweek.com/news/grok-bots-unapproved-work-app-requests/), 2026.
 12. <span id="src-grokbot"></span>Cursor, [Grok Bot security](https://cursor.com/docs/grok-bot/security), November 2026. Audit logs available on the Enterprise plan only.
+13. <span id="src-owasp-llm01"></span>OWASP GenAI Security Project, [LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/). Jailbreaking as a form of prompt injection.
+14. <span id="src-csa-owasp2026"></span>Cloud Security Alliance, [OWASP's 2026 LLM Top 10 and new Agent Control Standard](https://labs.cloudsecurityalliance.org/research/csa-research-note-owasp-genai-top10-2026-agent-control-stand/), 4 September 2026. System Prompt Leakage replaced by Hidden Context Exposure.
+15. <span id="src-nist-600-1"></span>NIST, [AI 600-1, Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf), July 2024. Confabulation.
+16. <span id="src-caisi"></span>NIST CAISI, [Technical blog: strengthening AI agent hijacking evaluations](https://www.nist.gov/news-events/news/2025/01/technical-blog-strengthening-ai-agent-hijacking-evaluations), January 2025.
+17. <span id="src-atlas"></span>MITRE, ATLAS technique [AML.T0051 LLM Prompt Injection](https://d3fend.mitre.org/offensive-technique/attack/AML.T0051/) (as mirrored in MITRE D3FEND), with sub-techniques; AML.T0053 and AML.T0054 from the ATLAS matrix, release v2026.10.
+18. <span id="src-iso-22989"></span>ISO/IEC 22989:2022, Artificial intelligence concepts and terminology. Definitions as adopted in the Australian Government's [Guidance for AI adoption: terms and definitions](https://www.industry.gov.au/publications/guidance-for-ai-adoption/terms-and-definitions).
+19. <span id="src-eu-ai-act"></span>EU AI Act, Regulation (EU) 2024/1689, [Article 3: Definitions](https://artificialintelligenceact.eu/article/3/).
+20. <span id="src-etsi"></span>ETSI, [EN 304 223 V2.1.1, Securing Artificial Intelligence (SAI); Baseline Cyber Security Requirements for AI Models and Systems](https://www.etsi.org/deliver/etsi_en/304200_304299/304223/02.01.01_60/en_304223v020101p.pdf), December 2025; scope summarised by [techUK](https://www.techuk.org/insights/news/etsi-sets-out-new-european-standard-to-strengthen-ai-cyber-security).
+21. <span id="src-uk-mapping"></span>UK Government, [Mapping global AI security standards, regulations and guidance](https://www.gov.uk/government/publications/mapping-global-ai-security-standards-regulations-and-guidance). The AI Cyber Security Code of Practice mirrors EN 304 223.
+22. <span id="src-csa-aicm"></span>Cloud Security Alliance, [AI Controls Matrix v1.1](https://cloudsecurityalliance.org/artifacts/ai-controls-matrix-v1-1), released June 2026; v1.0 structure from CSA's [agentic gap analysis](https://labs.cloudsecurityalliance.org/agentic/agentic-aicm-supplement-gap-analysis-v1/).
+23. <span id="src-csa-caisi"></span>Cloud Security Alliance, [CAISI's AI agent security agenda](https://labs.cloudsecurityalliance.org/research/csa-research-note-nist-caisi-ai-agent-security-agenda-2026-2/), 14 April 2026.
+24. <span id="src-csa-gap"></span>Cloud Security Alliance, [The AI agent governance gap: what CISOs need now](https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-agent-governance-framework-gap-20260403/), April 2026.
 
 ## Changes
 
-- **27 November 2026:** first version. 36 terms, 13 commonly confused pairs, 12 misconceptions and the vendor-speak decoder.
+- **27 November 2026:** added "Same idea, different names", Frameworks, and an entry on roles; moved OWASP LLM IDs to the 2026 edition; noted NIST's "confabulation" and "agent hijacking" and how OWASP and ATLAS file jailbreaks.
+- **27 November 2026:** first version: 36 terms, 13 commonly confused pairs, 12 misconceptions and the vendor-speak decoder.
 
 *Text CC BY 4.0. Café Security Research.*
