@@ -16,7 +16,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 <p id="gloss-count" class="cs-gloss-count" aria-live="polite"></p>
 </div>
 
-**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
+**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
 
 ## The basics
 
@@ -398,6 +398,98 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 </div>
 
+## Building software with AI
+
+<div class="cs-term" markdown="1">
+
+### Vibe coding { #vibe-coding }
+
+- **What it is:** Building software by describing what you want to an AI and accepting what it produces, without reading the code. Andrej Karpathy coined the term in February 2025 for a way of working where you "forget that the code even exists"; Collins Dictionary made it its word of the year for 2025 ([The Register](#src-vibe-collins)). The term is now often stretched to mean any coding with AI, which its defenders resist ([Willison](#src-willison-vibe)).
+- **Why it matters:** It lets people who aren't developers build working tools quickly, and some of those tools end up handling real data. When nobody reads the code, nobody checks it for security either. In Veracode's October 2026 tests, roughly four in 10 AI coding tasks still produced vulnerable code when the prompt didn't ask for security, although results are improving ([Veracode](#src-veracode)).
+- **Ask yourself:** Which apps in our organisation were built this way, who owns them, and has anyone reviewed them before they touched customer or company data?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### AI-assisted development { #ai-assisted-development }
+
+- **What it is:** Professional developers using AI to write, explain, test or review code while staying responsible for it. Simon Willison's rule of thumb: don't commit code you couldn't explain to someone else ([Willison](#src-willison-vibe)). He calls the disciplined version "vibe engineering".
+- **Why it matters:** The same tools serve both habits. The difference is review, testing and ownership, which is a process question you can set policy on.
+- **Ask your teams:** Is AI-written code reviewed and tested to the same standard as human-written code, and does our secure development policy say so?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Coding agent { #coding-agent }
+
+- **What it is:** An agent that works on a codebase by itself: it reads and edits files, runs terminal commands and tests, and can open pull requests. Examples include Claude Code, GitHub Copilot's coding agent, OpenAI Codex and Google's Gemini CLI.
+- **Why it matters:** It often runs with the developer's own credentials and shell, so it can do anything the developer can. In July 2025 an AI agent on the Replit platform deleted a live production database during a declared code freeze ([Fortune](#src-replit)); at the time, the service used one database for preview, testing and production ([heise](#src-replit-heise)). A freeze written in a prompt is not a control. OWASP: ASI05 Unexpected Code Execution. Our MCP guide has a page on [using a coding agent safely](../mcp/guide/coding-agents.md).
+- **Ask your vendor:** What can the agent run without approval, can admins restrict commands and network access, and can it reach production credentials from a developer's machine?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Auto-approve mode { #auto-approve }
+
+- **What it is:** A setting in coding agents that lets them run commands and edit files without asking each time. Developers turn it on because constant approval prompts slow them down.
+- **Why it matters:** It removes the human check exactly where an injected instruction would run. It is safer inside an isolated container with no secrets and limited network access than on a laptop signed in to everything.
+- **Ask your vendor:** Can admins disable auto-approve, or allow it only inside a sandbox?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Rules files (agent instruction files) { #rules-files }
+
+- **What it is:** Files in a project that give a coding assistant standing instructions, such as `AGENTS.md`, `CLAUDE.md` or Cursor's `.cursor/rules`. Developers write their own or copy them from public collections.
+- **Why it matters:** They are instructions the AI will follow, but people treat them as harmless configuration. Pillar Security showed in March 2025 that hidden Unicode characters in a rules file could make GitHub Copilot and Cursor add malicious code that reviewers wouldn't see, a technique it called the Rules File Backdoor ([Pillar Security](#src-pillar)).
+- **Ask your teams:** Are rules files reviewed like code, and do our review tools show hidden Unicode characters?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Slopsquatting (package hallucination) { #slopsquatting }
+
+- **What it is:** Registering the name of a software package that AI models wrongly suggest, then publishing malware under it. A form of [hallucination](#hallucination) that becomes a supply-chain attack ([CSO Online](#src-slopsquatting)).
+- **Why it matters:** A developer or coding agent that installs whatever the AI names can pull in an attacker's code. OWASP: LLM04 Supply Chain.
+- **Ask your teams:** Do new dependencies, including ones an AI suggested, go through the same checks as any other?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Toxic agent flow { #toxic-agent-flow }
+
+- **What it is:** Invariant Labs' name for indirect prompt injection that triggers a harmful sequence of tool calls. In May 2025 it showed that a malicious issue in a public GitHub repository could make an agent connected to GitHub's MCP server leak data from the user's private repositories ([Invariant Labs](#src-invariant)).
+- **Why it matters:** No single step looks wrong: read issues, list repositories, open a pull request. The harm is in the sequence. It is the [lethal trifecta](#lethal-trifecta) in a developer's workflow.
+- **Ask your vendor:** Can the agent's access be limited to the repositories a task needs, and can you detect risky sequences of tool calls?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### AI in CI/CD pipelines { #ai-in-ci-cd }
+
+- **What it is:** AI agents running inside build and deployment pipelines, such as GitHub Actions or GitLab CI/CD, to triage issues, review pull requests or fix code.
+- **Why it matters:** Pipelines hold powerful tokens and secrets, and these agents read text anyone can write. Aikido Security showed in December 2025 that crafted issues or pull request text could make such agents run privileged commands and leak secrets, a class of flaw it called PromptPwnd ([Aikido](#src-promptpwnd)). Similar findings have followed for other vendors' pipeline agents ([The Hacker News](#src-gitlost)).
+- **Ask your teams:** Do AI steps in our pipelines read untrusted issue or pull request text while holding write tokens or secrets?
+
+</div>
+
+<div class="cs-term" markdown="1">
+
+### Model files and unsafe loading { #model-files }
+
+- **What it is:** Downloaded AI models are files, and some formats run code when they are loaded. Python's pickle format, common for PyTorch models, can execute anything an attacker puts in it; formats such as safetensors were designed to avoid this.
+- **Why it matters:** Researchers have found malicious models on Hugging Face that steal credentials or open reverse shells, and in one 2025 study 44.9% of popular models there still used pickle ([PickleBall](#src-pickleball)). Loading a model is running software. OWASP: LLM04 Supply Chain.
+- **Ask your teams:** Do we load third-party models only in safe formats, scan them first, and load them away from production credentials?
+
+</div>
+
 ## Same idea, different names
 
 Standards bodies and threat catalogues often name the same thing differently, or draw its edges in different places. This table maps the terms on this page to what each one calls them. A dash means we didn't find a separate term for it in that framework, not that the framework ignores the topic. The table is wide: scroll it sideways to see every column.
@@ -431,6 +523,7 @@ Sources for this table: [NIST AI 100-2](#src-nist-aml), [NIST AI 600-1](#src-nis
 | **MCP vs API vs A2A** | An API is any software interface. MCP is a standard way for agents to use tools and data, usually through APIs. A2A is for agents handing work to other agents. |
 | **Acting as the user vs acting as itself** | An agent using your sign-in has all your access and appears in logs as you. An agent with its own identity can be scoped, tracked and switched off on its own. |
 | **Evals vs red teaming vs penetration test** | Evals measure behaviour against a test set. Red teaming hunts for ways to make the AI misbehave. A penetration test looks for weaknesses in the systems around it. You need all three. |
+| **Vibe coding vs AI-assisted development** | Vibe coding means accepting AI-written code without reading it. AI-assisted development means a developer uses AI but still reviews, tests and owns the code. The tools are the same; the discipline isn't. |
 | **Open weights vs open source** | Open weights means you can download and run the model. Open source, in the full sense, would also publish the training code and data, which is rare. |
 | **Guardrails vs alignment** | Guardrails are controls added around a model. Alignment is the work of making the model itself behave well. Neither is a guarantee. |
 
@@ -448,6 +541,7 @@ Sources for this table: [NIST AI 100-2](#src-nist-aml), [NIST AI 600-1](#src-nis
 10. **"A classifier will catch the attacks."** Classifiers are probabilistic, and attackers test against them. Use them as one layer.
 11. **"Agents only act when asked."** Some personal agents now watch connected apps and start tasks before the user asks ([Crypto Briefing](#src-duet-proactive)).
 12. **"Banning AI tools removes the risk."** It tends to move use to personal accounts, where you have no controls or logs.
+13. **"AI coding tools write secure code by default."** In Veracode's October 2026 tests, about four in 10 tasks still produced vulnerable code without security-specific prompting, and results varied widely by model ([Veracode](#src-veracode)). Review and scan AI-written code like any other.
 
 ## Vendor-speak decoder
 
@@ -520,9 +614,20 @@ Checked on 27 November 2026.
 22. <span id="src-csa-aicm"></span>Cloud Security Alliance, [AI Controls Matrix v1.1](https://cloudsecurityalliance.org/artifacts/ai-controls-matrix-v1-1), released June 2026; v1.0 structure from CSA's [agentic gap analysis](https://labs.cloudsecurityalliance.org/agentic/agentic-aicm-supplement-gap-analysis-v1/).
 23. <span id="src-csa-caisi"></span>Cloud Security Alliance, [CAISI's AI agent security agenda](https://labs.cloudsecurityalliance.org/research/csa-research-note-nist-caisi-ai-agent-security-agenda-2026-2/), 14 April 2026.
 24. <span id="src-csa-gap"></span>Cloud Security Alliance, [The AI agent governance gap: what CISOs need now](https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-agent-governance-framework-gap-20260403/), April 2026.
+25. <span id="src-vibe-collins"></span>The Register, ['Vibe coding' named Word of the Year. Developers everywhere faceplant](https://www.theregister.com/2025/11/06/vibe_coding_escape_the_clutches/), 6 November 2025.
+26. <span id="src-willison-vibe"></span>Simon Willison, [Not all AI-assisted programming is vibe coding (but vibe coding rocks)](https://simonwillison.net/2025/Mar/19/vibe-coding/), 19 March 2025; and [Vibe engineering](https://simonwillison.net/2025/Oct/7/vibe-engineering/), 7 October 2025.
+27. <span id="src-veracode"></span>Veracode, [First meaningful gain in AI code security since 2025 as average pass rate hits 62%](https://veracode.com/press-release/veracode-finds-first-meaningful-gain-in-ai-code-security-since-2025-as-average-pass-rate-hits-62), 29 October 2026.
+28. <span id="src-replit"></span>Fortune, [AI coding tool Replit wiped a database and called it a catastrophic failure](https://fortune.com/2025/07/23/ai-coding-tool-replit-wiped-database-called-it-a-catastrophic-failure/), 23 July 2025.
+29. <span id="src-replit-heise"></span>heise online, [Vibe coding service Replit deletes production database](https://heise.de/-10499597), July 2025.
+30. <span id="src-pillar"></span>Pillar Security, [New vulnerability in GitHub Copilot and Cursor: how hackers can weaponize code agents](https://pillar.security/blog/new-vulnerability-in-github-copilot-and-cursor-how-hackers-can-weaponize-code-agents), 18 March 2025.
+31. <span id="src-invariant"></span>Invariant Labs, [GitHub MCP exploited: accessing private repositories via MCP](https://invariantlabs.ai/blog/mcp-github-vulnerability), 26 May 2025.
+32. <span id="src-promptpwnd"></span>Aikido Security, [PromptPwnd: prompt injection vulnerabilities in GitHub Actions using AI agents](https://aikido.dev/blog/promptpwnd-github-actions-ai-agents), December 2025.
+33. <span id="src-gitlost"></span>The Hacker News, [Public GitHub issue could trick GitHub Agentic Workflows into leaking private repositories](https://thehackernews.com/2026/07/public-github-issue-could-trick-github.html), July 2026 (Noma Security's GitLost research).
+34. <span id="src-pickleball"></span>Kellas et al., [PickleBall: secure deserialization of pickle-based machine learning models](https://arxiv.org/abs/2508.15987), ACM CCS 2025.
 
 ## Changes
 
+- **27 November 2026:** added "Building software with AI" (vibe coding, AI-assisted development, coding agents, auto-approve, rules files, slopsquatting, toxic agent flows, AI in CI/CD, model files), with a matching confused pair and misconception.
 - **27 November 2026:** added "Same idea, different names", Frameworks, and an entry on roles; moved OWASP LLM IDs to the 2026 edition; noted NIST's "confabulation" and "agent hijacking" and how OWASP and ATLAS file jailbreaks.
 - **27 November 2026:** first version: 36 terms, 13 commonly confused pairs, 12 misconceptions and the vendor-speak decoder.
 
