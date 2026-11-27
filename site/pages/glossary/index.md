@@ -16,7 +16,7 @@ This glossary is for security leaders who need to ask good questions about AI be
 <p id="gloss-count" class="cs-gloss-count" aria-live="polite"></p>
 </div>
 
-**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Inside the AI stack](#inside-the-ai-stack) · [Evaluating models](#evaluating-models) · [Who makes the models](#who-makes-the-models) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
+**On this page:** [The basics](#the-basics) · [How agents connect to things](#how-agents-connect-to-things) · [Attacks](#attacks) · [Defences and controls](#defences-and-controls) · [Governance](#governance) · [Building software with AI](#building-software-with-ai) · [Personal agents](#personal-agents-the-2026-products) · [Inside the AI stack](#inside-the-ai-stack) · [Evaluating models](#evaluating-models) · [Who makes the models](#who-makes-the-models) · [Same idea, different names](#same-idea-different-names) · [Commonly confused](#commonly-confused) · [Common misconceptions](#common-misconceptions) · [Vendor-speak decoder](#vendor-speak-decoder) · [Frameworks](#frameworks) · [Sources](#sources)
 
 ## The basics
 
@@ -490,6 +490,44 @@ This glossary is for security leaders who need to ask good questions about AI be
 
 </div>
 
+## Personal agents: the 2026 products
+
+Between May and October 2026 most big labs launched a personal or workplace agent that keeps working when you close the app. They use different names for the same pattern, so this section explains the pattern first, then the products.
+
+<div class="cs-term" markdown="1">
+
+### Always-on agent (personal agent) { #always-on-agent }
+
+- **What it is:** An agent that runs on its own computer in the vendor's cloud, connects to your email, calendar, files and other apps, and works in the background: watching for things that need attention, running scheduled jobs and coming back to you when it needs a decision. Most also act proactively, starting work you didn't ask for. Each product below works this way.
+- **Why it matters:** It is the [lethal trifecta](#lethal-trifecta) by design: private data, untrusted content (every email and web page it reads) and the ability to send and buy. It holds sign-ins to many services, acts while nobody is watching, and is often set up by staff on personal plans, which makes it [shadow AI](#shadow-ai) unless you plan for it. Activity between conversations may not show up in the chat history ([eWeek](#src-newcore)).
+- **Ask your vendor:** Is there a business plan with admin controls and audit logs, which actions always need approval, where are the agent's credentials kept, and can admins switch it off for everyone?
+
+</div>
+
+### The products { #personal-agent-products }
+
+Alphabetical. Status as of 27 November 2026, from launch announcements and press coverage; these products change monthly.
+
+| Product (maker) | Launched | Who can get it | How it works | Security design the vendor describes |
+| --- | --- | --- | --- | --- |
+| **Claude Duet** (Anthropic) | Research preview, 21 October 2026 | Claude Pro and Max subscribers in the US, by waitlist; not on Team or Enterprise plans yet ([iThinkDiff](#src-duet-launch)) | Runs on a cloud virtual machine with its own browser; sends a morning brief and checks in before acting ([Make Tech Easier](#src-duet-vm)) | Passwords and sign-in tokens never reach the agent directly; health and personal finance details go out only on the user's explicit instruction ([BetaNews](#src-duet-safety)) |
+| **dots** (OpenAI) | 29 September 2026 | ChatGPT Pro and Business Premium in eligible markets; Enterprise beta enabled by admins ([Unite.AI](#src-dots-launch)) | Each dot runs on GPT-6 Astra on its own cloud computer that the user can open to inspect its work; linking a personal computer is optional and off by default ([BetaNews](#src-dots-computer)) | Built-in rules on when to act and when to ask; specialist enterprise dots being integrated with Microsoft Agent 365 governance ([IBTimes](#src-dots-rules)) |
+| **Gemini agent** (Google Cloud) | 8 October 2026 | Gemini Enterprise customers, including through Workspace business and enterprise plans ([Implicator](#src-gemini-agent)) | Plans and runs work for hours or days in the cloud, routing tasks across Gemini and Anthropic's Claude models | Companies can give an AI coworker its own company email address, calendar and directory entry: an agent with its own [identity](#non-human-identity) ([Implicator](#src-gemini-agent)) |
+| **Gemini Spark** (Google) | Announced 19 May 2026; beta for Google AI Ultra in the US from 29 May ([Thurrott](#src-spark-beta)) | Consumers on Google AI plans; a Workspace and Gemini Enterprise preview was announced for business ([Duke](#src-spark-duke)) | Runs on Gemini 3.5 and Google's Antigravity agent harness; can take tasks by email at its own Gmail address ([The Next Web](#src-spark-tnw)) | Designed to check before major actions; purchases need review and approval at launch ([VentureBeat](#src-spark-vb)) |
+| **Grok Bot** (SpaceXAI, built on Cursor) | Early beta, 11 August 2026 ([SpaceXAI](#src-grokbot-launch)) | SuperGrok Heavy, Cursor Ultra and Cursor Teams Premium subscribers at launch ([GIGAZINE](#src-grokbot-plans)), with an enterprise waitlist ([SpaceXAI](#src-grokbot-launch)) | Each bot gets a cloud computer and signs into your tools, including ones with no API or MCP connection ([eWeek](#src-grokbot-eweek)) | Admin controls such as audit logs and network controls are Enterprise-only ([Cursor](#src-grokbot)); in testing, a security gateway caught 31 unapproved read requests ([eWeek](#src-newcore)) |
+| **Muse** (Meta) | 8 September 2026 | US; free for most uses with paid plans; app, web and WhatsApp, plus a Mac app ([Fast Company](#src-muse-agent-fc)) | Runs on Muse Secure VM, a dedicated virtual machine holding the agent and the person's data ([Meta](#src-muse-agent)) | A separate Sentinel agent must approve anything Muse sends to the internet; payments use single-use card numbers ([Meta](#src-muse-agent), [SiliconANGLE](#src-muse-link)) |
+| **OpenClaw** (open source) | Late 2025 | Anyone; self-hosted on your own machine | Runs locally with access to files, email, calendar and the command line, and wakes on a schedule ([TechRadar](#src-openclaw)) | Security depends on how you set it up. Researchers found a community skill that exfiltrated data, and its config file holds keys for every connected service ([TechRadar](#src-openclaw)) |
+
+Other personal agents in the same category include Hermes Agent, Instinct, Manus Cue and Poke ([Every](#src-every-agents)). Don't confuse OpenAI's **dots** with **Dot**, an unrelated iPhone assistant app from Emotion Computer.
+
+**What a CISO should check, whichever product staff use:**
+
+- **Which plan?** Several of these products launched for consumers or individual subscribers first, without business admin controls. A personal plan connected to work email is shadow AI.
+- **Whose identity?** Most act as the user with the user's sign-ins. Google's enterprise agent can have its own account. See [Acting as the user vs acting as itself](#commonly-confused).
+- **Where are the credentials?** Vendors increasingly keep passwords and tokens away from the model. Self-hosted agents usually keep them in a config file.
+- **What runs without asking?** Scheduled and proactive tasks may act with no approval at all.
+- **What gets logged, and where?** Ask for an audit log you can export to your SIEM, not just the chat history.
+
 ## Inside the AI stack
 
 <div class="cs-term" markdown="1">
@@ -935,9 +973,29 @@ Checked on 27 November 2026.
 65. <span id="src-metagaming"></span>OpenAI Alignment, [Metagaming](https://alignment.openai.com/metagaming/), 2026.
 66. <span id="src-rsp"></span>Anthropic, [Responsible Scaling Policy](https://www.anthropic.com/responsible-scaling-policy), version 3.4 effective 8 July 2026; [AI Safety Levels explained](https://www.anthropic.com/research/responsible-scaling-policy-v3).
 67. <span id="src-fsf"></span>Google, [Gemini 4 Argon](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/?hl=en), safety section referring to the Frontier Safety Framework, September 2026.
+68. <span id="src-duet-launch"></span>iThinkDiff, [Anthropic launches Claude Duet, a proactive AI agent app](https://www.ithinkdiff.com/claude-duet-anthropic-proactive-ai-agent-app/), October 2026.
+69. <span id="src-duet-vm"></span>Make Tech Easier, [Claude Duet](https://maketecheasier.com/?p=863308), October 2026.
+70. <span id="src-duet-safety"></span>BetaNews, [Claude Duet preview brings Anthropic's proactive agent to Pro and Max](https://betanews.com/article/proactive-ai-agent-claude-duet/), 21 October 2026.
+71. <span id="src-dots-launch"></span>Unite.AI, [OpenAI rolls out dots agents powered by GPT-6 Astra in ChatGPT](https://www.unite.ai/?p=475867), 29 September 2026.
+72. <span id="src-dots-computer"></span>BetaNews, [OpenAI launches dots, always-on ChatGPT agents with their own computers](https://betanews.com/article/openai-dots-agents-chatgpt/), 29 September 2026.
+73. <span id="src-dots-rules"></span>IBTimes UK, [OpenAI launches Dots, always-on AI agents](https://www.ibtimes.co.uk/openai-launches-dots-ai-agents-workplace-tasks-1822734), 30 September 2026.
+74. <span id="src-gemini-agent"></span>Implicator, [Google launches Gemini agent that gives AI coworkers their own Workspace email](https://implicator.ai/google-launches-gemini-agent-that-gives-ai-coworkers-their-own-workspace-email/), October 2026.
+75. <span id="src-spark-beta"></span>Thurrott, [Gemini Spark now available in beta](https://www.thurrott.com/?p=336765), May 2026.
+76. <span id="src-spark-duke"></span>Duke University, [Meet Gemini Spark, Google's 24/7 autonomous AI agent](https://sites.duke.edu/ddmc/2026/05/27/meet-gemini-spark-googles-24-7-autonomous-ai-agent/), 27 May 2026.
+77. <span id="src-spark-tnw"></span>The Next Web, [Gemini Spark, a 24/7 agentic assistant you can email like a colleague](https://thenextweb.com/news/google-gemini-spark-agentic-assistant-gmail-io-2026), May 2026.
+78. <span id="src-spark-vb"></span>VentureBeat, [Google's new AI agent can draft your emails, monitor your inbox and eventually spend your money](https://venturebeat.com/ai/googles-new-ai-agent-can-draft-your-emails-monitor-your-inbox-and-eventually-spend-your-money), May 2026.
+79. <span id="src-grokbot-launch"></span>SpaceXAI, [Introducing Grok Bot](https://x.ai/news/introducing-grok-bot), 11 August 2026.
+80. <span id="src-grokbot-plans"></span>GIGAZINE, [SpaceXAI releases Grok Bot](https://gigazine.net/gsc_news/en/20260812-spacexai-grok-bot/), 12 August 2026.
+81. <span id="src-grokbot-eweek"></span>eWeek, [SpaceXAI's Grok Bot runs workplace tasks on its own cloud computer](https://www.eweek.com/news/grok-bot-ai-agent/), 12 August 2026.
+82. <span id="src-muse-agent"></span>Meta, [Introducing Muse: the world's first personal AI agent built for everyone](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/), 8 September 2026.
+83. <span id="src-muse-agent-fc"></span>Fast Company, [Meta wants its new AI agent to run your digital life](https://fastcompany.com/91603856/meta-wants-its-new-ai-agent-to-run-your-digital-life), September 2026; Mac app per [Unite.AI](https://unite.ai/meta-launches-muse-mac-app-with-file-messages-and-calendar-access).
+84. <span id="src-muse-link"></span>SiliconANGLE, [Meta debuts its 'secure by design' personal AI agent Muse](https://siliconangle.com/?p=846205), 8 September 2026.
+85. <span id="src-openclaw"></span>TechRadar, [Here are the OpenClaw security risks you should know about](https://www.techradar.com/pro/here-are-the-openclaw-security-risks-you-should-know-about), 2026.
+86. <span id="src-every-agents"></span>Every, [Personal agents comparison](https://every.to/personal-agents-comparison), 2026.
 
 ## Changes
 
+- **27 November 2026:** added "Personal agents: the 2026 products" (always-on agents; Claude Duet, dots, Gemini agent, Gemini Spark, Grok Bot, Muse, OpenClaw).
 - **27 November 2026:** added "Inside the AI stack" (harness, model aliases, inference providers and more), "Evaluating models" with a table of common benchmarks, and "Who makes the models".
 - **27 November 2026:** added "Building software with AI" (vibe coding, AI-assisted development, coding agents, auto-approve, rules files, slopsquatting, toxic agent flows, AI in CI/CD, model files), with a matching confused pair and misconception.
 - **27 November 2026:** added "Same idea, different names", Frameworks, and an entry on roles; moved OWASP LLM IDs to the 2026 edition; noted NIST's "confabulation" and "agent hijacking" and how OWASP and ATLAS file jailbreaks.
